@@ -12,6 +12,7 @@ import {
 import { WarehouseFolder as FolderType, WarehouseWand } from '../types';
 import { clsx, type ClassValue } from 'clsx';
 import { twMerge } from 'tailwind-merge';
+import { useTranslation } from 'react-i18next';
 
 function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
@@ -54,6 +55,7 @@ export const WarehouseFolder: React.FC<WarehouseFolderProps> = React.memo((props
     onContextMenu,
   } = props;
 
+  const { t } = useTranslation();
   const isOpen = folder.isOpen;
   const childFolders = (groupedFolders[folder.id] || []);
   const isSelected = selectedFolderId === folder.id;
@@ -94,7 +96,7 @@ export const WarehouseFolder: React.FC<WarehouseFolderProps> = React.memo((props
           <button 
             onClick={(e) => { e.stopPropagation(); onCreateSubfolder(folder.id); }}
             className="p-1 hover:text-indigo-400 hover:bg-indigo-500/10 rounded"
-            title="新建子文件夹"
+            title={t('warehouse.new_subfolder')}
           >
             <FolderPlus size={10} />
           </button>

@@ -116,11 +116,36 @@ def load_translations():
     _TRANSLATIONS = translations
     return translations
 
+def load_spell_mapping():
+    mapping_path = os.path.join(BASE_DIR, "spell_mapping.md")
+    if not os.path.exists(mapping_path):
+        return {}
+    
+    mapping = {}
+    try:
+        with open(mapping_path, "r", encoding="utf-8") as f:
+            lines = f.readlines()
+            for line in lines:
+                if "|" not in line or line.startswith("SPELL ID") or line.startswith("---"):
+                    continue
+                parts = [p.strip() for p in line.split("|")]
+                if len(parts) >= 4:
+                    spell_id = parts[0]
+                    mapping[spell_id] = {
+                        "official": parts[1],
+                        "mod": parts[2],
+                        "aliases": parts[3]
+                    }
+    except Exception as e:
+        print(f"Error loading spell mapping: {e}")
+    return mapping
+
 def load_spell_database():
     global _SPELL_CACHE
     if _SPELL_CACHE: return _SPELL_CACHE
     
     trans = load_translations()
+    mapping = load_spell_mapping()
     actions_file = os.path.join(EXTRACTED_DATA_ROOT, "data/scripts/gun/gun_actions.lua")
     if not os.path.exists(actions_file):
         print(f"Warning: gun_actions.lua not found at {actions_file}")
@@ -173,6 +198,21 @@ def load_spell_database():
                 
                 py_full, py_init = get_pinyin_data(zh_name)
                 
+                # Merge from mapping
+                aliases = ""
+                alias_py = ""
+                alias_init = ""
+                if spell_id in mapping:
+                    m = mapping[spell_id]
+                    # If common.csv didn't have a good name, use mapping
+                    if zh_name == raw_name or not zh_name:
+                        zh_name = m["mod"] or m["official"] or zh_name
+                        py_full, py_init = get_pinyin_data(zh_name)
+                    
+                    aliases = m["aliases"]
+                    if aliases:
+                        alias_py, alias_init = get_pinyin_data(aliases)
+
                 type_str = type_match.group(1) if type_match else "ACTION_TYPE_PROJECTILE"
                 db[spell_id] = {
                     "icon": sprite_match.group(1).lstrip("/"),
@@ -180,6 +220,9 @@ def load_spell_database():
                     "en_name": en_name,
                     "pinyin": py_full,
                     "pinyin_initials": py_init,
+                    "aliases": aliases,
+                    "alias_pinyin": alias_py,
+                    "alias_initials": alias_init,
                     "type": TYPE_MAP.get(type_str, 0),
                     "max_uses": int(uses_match.group(1)) if uses_match else None
                 }

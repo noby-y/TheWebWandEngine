@@ -5,6 +5,9 @@ export interface SpellInfo {
   en_name?: string;
   pinyin?: string;
   pinyin_initials?: string;
+  aliases?: string;
+  alias_pinyin?: string;
+  alias_initials?: string;
   type: number;
   max_uses?: number;
 }

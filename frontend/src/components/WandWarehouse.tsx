@@ -39,6 +39,7 @@ import { WarehouseWandCard } from './WarehouseWandCard';
 import { getIconUrl } from '../lib/evaluatorAdapter';
 import { clsx, type ClassValue } from 'clsx';
 import { twMerge } from 'tailwind-merge';
+import { useTranslation } from 'react-i18next';
 
 function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
@@ -73,6 +74,7 @@ export function WandWarehouse({
   settings,
   isConnected
 }: WandWarehouseProps) {
+  const { t, i18n } = useTranslation();
   const [isMaximized, setIsMaximized] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
   const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid');
@@ -146,46 +148,48 @@ export function WandWarehouse({
 
   // --- Handlers ---
   const deleteWand = useCallback((id: string) => {
-    if (confirm('确定要删除这个魔杖存档吗？')) {
+    if (confirm(t('warehouse.delete_wand_confirm'))) {
       setWands(prev => prev.filter(w => w.id !== id));
     }
-  }, [setWands]);
+  }, [setWands, t]);
 
   const updateWand = useCallback((id: string, updates: Partial<WarehouseWand>) => {
     setWands(prev => prev.map(w => w.id === id ? { ...w, ...updates } : w));
   }, [setWands]);
 
   const handleRenameWand = useCallback(async (wand: WarehouseWand) => {
-    const newName = prompt('重命名魔杖', wand.name);
+    const newName = prompt(t('warehouse.rename_wand'), wand.name);
     if (newName) {
       let py = "", init = "";
-      try {
-        const res = await fetch('/api/pinyin', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ text: newName })
-        });
-        const pyData = await res.json();
-        if (pyData.success) {
-          py = pyData.pinyin;
-          init = pyData.initials;
-        }
-      } catch (e) {}
+      if (!i18n.language.startsWith('en')) {
+        try {
+          const res = await fetch('/api/pinyin', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ text: newName })
+          });
+          const pyData = await res.json();
+          if (pyData.success) {
+            py = pyData.pinyin;
+            init = pyData.initials;
+          }
+        } catch (e) {}
+      }
       updateWand(wand.id, { name: newName, pinyin: py, pinyin_initials: init });
     }
-  }, [updateWand]);
+  }, [updateWand, t, i18n.language]);
 
   const handleAddTag = useCallback((wand: WarehouseWand) => {
-    const tag = prompt('添加标签');
+    const tag = prompt(t('warehouse.add_tag'));
     if (tag) updateWand(wand.id, { tags: [...wand.tags, tag] });
-  }, [updateWand]);
+  }, [updateWand, t]);
 
   const toggleFolder = useCallback((id: string) => {
     setFolders(prev => prev.map(f => f.id === id ? { ...f, isOpen: !f.isOpen } : f));
   }, [setFolders]);
 
   const createFolder = useCallback((parentId: string | null = null) => {
-    const name = prompt('输入新文件夹名称');
+    const name = prompt(t('warehouse.new_folder'));
     if (name) {
       const newFolder: FolderType = {
         id: Math.random().toString(36).substring(2, 11),
@@ -200,24 +204,24 @@ export function WandWarehouse({
         setFolders(prev => prev.map(f => f.id === parentId ? { ...f, isOpen: true } : f));
       }
     }
-  }, [folders.length, setFolders]);
+  }, [folders.length, setFolders, t]);
 
   const deleteFolder = useCallback((id: string) => {
-    if (confirm('确定要删除文件夹吗？ (其中的魔杖将移至根目录)')) {
+    if (confirm(t('warehouse.delete_folder_confirm'))) {
       setFolders(prev => prev.filter(f => f.id !== id));
       setWands(prev => prev.map(w => w.folderId === id ? { ...w, folderId: null } : w));
       if (selectedFolderId === id) setSelectedFolderId('root');
     }
-  }, [setFolders, setWands, selectedFolderId]);
+  }, [setFolders, setWands, selectedFolderId, t]);
 
   const renameFolder = useCallback((id: string) => {
     const folder = folders.find(f => f.id === id);
     if (!folder) return;
-    const newName = prompt('重命名文件夹', folder.name);
+    const newName = prompt(t('warehouse.rename_folder'), folder.name);
     if (newName) {
       setFolders(prev => prev.map(f => f.id === id ? { ...f, name: newName } : f));
     }
-  }, [folders, setFolders]);
+  }, [folders, setFolders, t]);
 
   // Drag & Drop Handlers
   const handleDragStart = useCallback((e: React.DragEvent, type: 'wand' | 'folder', id: string) => {
@@ -385,6 +389,7 @@ export function WandWarehouse({
   // Filter wands based on search OR selected folder
   const displayWands = useMemo(() => {
     const q = searchQuery.toLowerCase();
+    const isEnglish = i18n.language.startsWith('en');
     
     // If searching, ignore folders and show all matching
     if (q) {
@@ -394,11 +399,11 @@ export function WandWarehouse({
             const matchesSpellSearch = Object.values(w.spells).some(sid => {
                 const s = spellDb[sid];
                 if (!s) return false;
-                return s.name.toLowerCase().includes(q) || 
-                       (s.en_name || "").toLowerCase().includes(q);
+                const sName = isEnglish && s.en_name ? s.en_name : s.name;
+                return sName.toLowerCase().includes(q);
             });
             return w.name.toLowerCase().includes(q) || 
-                   (w.pinyin || "").toLowerCase().includes(q) ||
+                   (!isEnglish && (w.pinyin || "").toLowerCase().includes(q)) ||
                    w.tags.some(t => t.toLowerCase().includes(q)) ||
                    wSmartTagNames.some(t => t.toLowerCase().includes(q)) ||
                    matchesSpellSearch;
@@ -426,7 +431,7 @@ export function WandWarehouse({
         }
         return b.createdAt - a.createdAt;
     });
-  }, [wands, searchQuery, selectedFolderId, selectedTags, sortBy, getWandSmartTags, spellDb]);
+  }, [wands, searchQuery, selectedFolderId, selectedTags, sortBy, getWandSmartTags, spellDb, i18n.language]);
 
   const folderProps = {
     groupedFolders,
@@ -471,7 +476,7 @@ export function WandWarehouse({
       <div className="h-12 border-b border-white/10 flex items-center justify-between px-4 bg-black/40 shrink-0">
         <div className="flex items-center gap-2">
           <Library size={18} className="text-purple-400" />
-          <h2 className="text-sm font-black uppercase tracking-widest text-zinc-200">魔杖仓库</h2>
+          <h2 className="text-sm font-black uppercase tracking-widest text-zinc-200">{t('warehouse.title')}</h2>
           <span className="bg-purple-500/20 text-purple-400 text-[10px] px-1.5 py-0.5 rounded-full font-mono">
             {wands.length}
           </span>
@@ -483,7 +488,7 @@ export function WandWarehouse({
                 <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-zinc-500" size={14} />
                 <input 
                     type="text"
-                    placeholder="搜索魔杖..."
+                    placeholder={t('warehouse.search_placeholder')}
                     value={searchQuery}
                     onChange={e => setSearchQuery(e.target.value)}
                     className="w-full bg-zinc-900 border border-white/5 rounded-full pl-9 pr-4 py-1.5 text-xs focus:outline-none focus:border-purple-500/50 transition-colors"
@@ -496,20 +501,20 @@ export function WandWarehouse({
                   className="flex items-center gap-1.5 px-3 py-1 bg-zinc-800 hover:bg-zinc-700 hover:text-white text-zinc-400 rounded-md text-[10px] font-bold transition-all"
                 >
                   <FolderPlus size={14} />
-                  新建文件夹
+                  {t('warehouse.new_folder')}
                 </button>
                 <div className="w-px h-4 bg-white/10 mx-1"/>
                 <button 
                   onClick={() => setSortBy('date')}
                   className={cn("p-1.5 rounded hover:bg-white/10 transition-colors", sortBy === 'date' ? "text-purple-400" : "text-zinc-500")}
-                  title="按时间排序"
+                  title={t('warehouse.sort_by_date')}
                 >
                     <Calendar size={14} />
                 </button>
                 <button 
                   onClick={() => setSortBy('name')}
                   className={cn("p-1.5 rounded hover:bg-white/10 transition-colors", sortBy === 'name' ? "text-purple-400" : "text-zinc-500")}
-                  title="按名称排序"
+                  title={t('warehouse.sort_by_name')}
                 >
                     <SortAsc size={14} />
                 </button>
@@ -532,7 +537,7 @@ export function WandWarehouse({
         {/* Sidebar: Folder Tree */}
         <div className="w-60 border-r border-white/5 bg-black/20 flex flex-col">
            <div className="p-2 border-b border-white/5 flex items-center justify-between">
-              <span className="text-[10px] font-black uppercase text-zinc-500 tracking-wider pl-2">文件夹</span>
+              <span className="text-[10px] font-black uppercase text-zinc-500 tracking-wider pl-2">{t('warehouse.folders')}</span>
            </div>
            
            <div 
@@ -552,7 +557,7 @@ export function WandWarehouse({
                 onDrop={(e) => handleDrop(e, 'root', 'root')}
               >
                  <Library size={14} />
-                 <span className="text-xs font-bold">所有存档 (根目录)</span>
+                 <span className="text-xs font-bold">{t('warehouse.root_folder')}</span>
               </div>
 
               {groupedFolders.root?.map(folder => (
@@ -563,7 +568,7 @@ export function WandWarehouse({
                  className="mt-4 p-4 border border-dashed border-white/5 rounded-lg text-center text-[10px] text-zinc-600 hover:text-zinc-400 hover:border-white/10 cursor-pointer transition-colors"
                  onClick={() => createFolder('root')}
               >
-                 + 新建文件夹
+                 + {t('warehouse.new_folder')}
               </div>
            </div>
            
@@ -573,7 +578,7 @@ export function WandWarehouse({
                   onClick={() => setIsSmartTagManagerOpen(true)}
                   className="w-full py-2 bg-amber-500/10 hover:bg-amber-500/20 text-amber-500 rounded-lg text-[10px] font-bold flex items-center justify-center gap-2 transition-colors"
               >
-                  <Sparkles size={14} /> 管理智能标签
+                  <Sparkles size={14} /> {t('warehouse.manage_smart_tags')}
               </button>
            </div>
         </div>
@@ -584,9 +589,9 @@ export function WandWarehouse({
             <div className="px-4 py-2 flex items-center gap-2 text-xs text-zinc-500 border-b border-white/5">
                 <FolderOpen size={14} />
                 <span className="font-bold">
-                    {selectedFolderId === 'root' ? '根目录' : folders.find(f => f.id === selectedFolderId)?.name || '未知文件夹'}
+                    {selectedFolderId === 'root' ? t('warehouse.root_folder') : folders.find(f => f.id === selectedFolderId)?.name || '???'}
                 </span>
-                <span className="bg-zinc-800 px-1.5 rounded-full text-[10px]">{displayWands.length} 个魔杖</span>
+                <span className="bg-zinc-800 px-1.5 rounded-full text-[10px]">{t('warehouse.all_wands', { count: displayWands.length })}</span>
                 
                 <div className="flex-1" />
                 
@@ -655,7 +660,7 @@ export function WandWarehouse({
                {displayWands.length === 0 ? (
                  <div className="flex flex-col items-center justify-center h-full text-zinc-600 gap-4 opacity-50">
                     <FolderOpen size={48} strokeWidth={1} />
-                    <p className="text-xs uppercase tracking-widest">此文件夹为空</p>
+                    <p className="text-xs uppercase tracking-widest">{t('warehouse.empty_folder')}</p>
                  </div>
                ) : (
                  <div className={cn(
@@ -691,7 +696,7 @@ export function WandWarehouse({
                )}
                {displayWands.length > displayLimit && (
                   <div className="py-4 text-center text-[10px] text-zinc-600 italic">
-                     正在加载更多... ({displayLimit} / {displayWands.length})
+                     {t('warehouse.loading_more')} ({displayLimit} / {displayWands.length})
                   </div>
                )}
             </div>
@@ -701,51 +706,50 @@ export function WandWarehouse({
                <div className="flex gap-2">
                  <button 
                     onClick={async () => {
-                      if (confirm('将尝试从 Wand Editor (Yukimi) 导入所有存档，是否继续？')) {
+                      if (confirm(t('warehouse.title') === '魔杖仓库' ? '将尝试从 Wand Editor (Yukimi) 导入所有存档，是否继续？' : 'Attempting to import all saves from Wand Editor (Yukimi), continue?')) {
                         try {
                           const res = await fetch('/api/import/wand-editor');
                           const data = await res.json();
                           if (data.success) {
                             setWands(prev => [...prev, ...data.wands]);
                             setFolders(prev => [...prev, ...data.folders]);
-                            alert(`成功导入 ${data.wands.length} 个法杖`);
+                            alert(t('warehouse.import_success', { count: data.wands.length }));
                           } else {
-                            alert('导入失败: ' + data.error);
+                            alert('Import failed: ' + data.error);
                           }
-                        } catch (e) { alert('导入出错'); }
+                        } catch (e) { alert('Import error'); }
                       }
                     }}
                     className="text-[10px] text-zinc-500 hover:text-zinc-300 flex items-center gap-1 transition-colors"
                  >
-                    <Download size={12} /> 导入 Wand Editor
+                    <Download size={12} /> {t('warehouse.import_wand_editor')}
                  </button>
                  <button 
                     onClick={async () => {
-                        // Spell Lab import logic...
-                         if (confirm('将尝试从 Spell Lab 导入所有存档，是否继续？')) {
+                      if (confirm(t('warehouse.title') === '魔杖仓库' ? '将尝试从 Spell Lab 导入所有存档，是否继续？' : 'Attempting to import all saves from Spell Lab, continue?')) {
                             try {
                               const res = await fetch('/api/import/spell-lab');
                               const data = await res.json();
                               if (data.success) {
                                 setWands(prev => [...prev, ...data.wands]);
                                 setFolders(prev => [...prev, ...data.folders]);
-                                alert(`成功导入 ${data.wands.length} 个法杖`);
+                                alert(t('warehouse.import_success', { count: data.wands.length }));
                               } else {
-                                alert('导入失败: ' + data.error);
+                                alert('Import failed: ' + data.error);
                               }
-                            } catch (e) { alert('导入出错'); }
+                            } catch (e) { alert('Import error'); }
                           }
                     }}
                     className="text-[10px] text-zinc-500 hover:text-zinc-300 flex items-center gap-1 transition-colors"
                  >
-                    <Download size={12} /> 导入 Spell Lab
+                    <Download size={12} /> {t('warehouse.import_spell_lab')}
                  </button>
                </div>
                
                <div className="flex gap-2">
                  <label className="px-3 py-1.5 bg-zinc-800 hover:bg-zinc-700 rounded text-[10px] font-bold text-zinc-300 hover:text-white transition-colors cursor-pointer flex items-center gap-2">
                     <Upload size={12} />
-                    恢复
+                    {t('warehouse.restore')}
                     <input 
                         type="file" 
                         accept=".json" 
@@ -758,7 +762,7 @@ export function WandWarehouse({
                                 try {
                                     const json = JSON.parse(ev.target?.result as string);
                                     if (json.wands) {
-                                        if (confirm(`检测到备份文件。\n包含 ${json.wands.length} 个魔杖，${json.folders?.length || 0} 个文件夹。\n\n是否合并到当前仓库？(点击“取消”则完全覆盖当前仓库)`)) {
+                                        if (confirm(t('warehouse.backup_detected', { wandCount: json.wands.length, folderCount: json.folders?.length || 0 }))) {
                                             setWands(prev => [...prev, ...json.wands]);
                                             if (json.folders) setFolders(prev => [...prev, ...json.folders]);
                                             if (json.smartTags) setSmartTags(prev => [...prev, ...json.smartTags]);
@@ -767,12 +771,12 @@ export function WandWarehouse({
                                             if (json.folders) setFolders(json.folders);
                                             if (json.smartTags) setSmartTags(json.smartTags);
                                         }
-                                        alert('导入成功！');
+                                        alert('Import success!');
                                     } else {
-                                        alert('无效的备份文件格式');
+                                        alert('Invalid backup file format');
                                     }
                                 } catch (err) {
-                                    alert('文件解析失败');
+                                    alert('File parsing failed');
                                     console.error(err);
                                 }
                             };
@@ -795,7 +799,7 @@ export function WandWarehouse({
                     className="px-3 py-1.5 bg-zinc-800 hover:bg-zinc-700 rounded text-[10px] font-bold text-zinc-300 hover:text-white transition-colors flex items-center gap-2"
                  >
                     <Download size={12} />
-                    备份
+                    {t('warehouse.backup')}
                  </button>
                </div>
             </div>
@@ -813,7 +817,7 @@ export function WandWarehouse({
             onClick={() => createFolder(contextMenu.folderId === 'root' ? null : contextMenu.folderId)}
             className="w-full px-4 py-2 text-left text-[11px] font-bold text-zinc-300 hover:bg-purple-600 hover:text-white flex items-center gap-2 transition-colors"
           >
-            <FolderPlus size={14} /> 新建子文件夹
+            <FolderPlus size={14} /> {t('warehouse.new_subfolder')}
           </button>
           {contextMenu.folderId !== 'root' && (
             <>
@@ -821,13 +825,13 @@ export function WandWarehouse({
                 onClick={() => renameFolder(contextMenu.folderId as string)}
                 className="w-full px-4 py-2 text-left text-[11px] font-bold text-zinc-300 hover:bg-purple-600 hover:text-white flex items-center gap-2 transition-colors"
               >
-                <Edit2 size={14} /> 重命名
+                <Edit2 size={14} /> {t('warehouse.rename_folder')}
               </button>
               <button 
                 onClick={() => deleteFolder(contextMenu.folderId as string)}
                 className="w-full px-4 py-2 text-left text-[11px] font-bold text-red-400 hover:bg-red-600 hover:text-white flex items-center gap-2 transition-colors"
               >
-                <Trash2 size={14} /> 删除
+                <Trash2 size={14} /> {t('warehouse.delete')}
               </button>
             </>
           )}
@@ -845,7 +849,7 @@ export function WandWarehouse({
           <div className="p-4 border-b border-white/10 flex items-center justify-between bg-black/40">
             <div className="flex items-center gap-2">
               <Sparkles size={18} className="text-amber-400" />
-              <h2 className="text-sm font-black uppercase tracking-widest">智能标签管理</h2>
+              <h2 className="text-sm font-black uppercase tracking-widest">{t('warehouse.smart_tags_title')}</h2>
             </div>
             <button 
               onClick={() => setIsSmartTagManagerOpen(false)}
@@ -857,16 +861,16 @@ export function WandWarehouse({
 
           <div className="flex-1 overflow-y-auto p-4 space-y-4 custom-scrollbar">
             <button 
-              onClick={() => setEditingSmartTag({ id: Math.random().toString(36).substring(2, 11), name: '新智能标签', spells: [], mode: 'strict' })}
+              onClick={() => setEditingSmartTag({ id: Math.random().toString(36).substring(2, 11), name: t('warehouse.new_smart_tag'), spells: [], mode: 'strict' })}
               className="w-full py-3 bg-amber-500/10 border border-amber-500/20 text-amber-400 rounded-xl text-xs font-black uppercase tracking-widest flex items-center justify-center gap-2 hover:bg-amber-500/20 transition-all"
             >
-              <Plus size={16} /> 新建智能标签
+              <Plus size={16} /> {t('warehouse.new_smart_tag')}
             </button>
 
             <div className="space-y-2">
               {smartTags.length === 0 ? (
                 <div className="text-center py-10 text-zinc-600 text-xs italic">
-                  暂无智能标签，点击上方按钮创建
+                  {t('warehouse.no_smart_tags')}
                 </div>
               ) : (
                 smartTags.map(st => (
@@ -878,7 +882,7 @@ export function WandWarehouse({
                           "text-[10px] px-2 py-0.5 rounded-full font-black uppercase tracking-tighter",
                           st.mode === 'strict' ? "bg-red-500/10 text-red-400" : "bg-blue-500/10 text-blue-400"
                         )}>
-                          {st.mode === 'strict' ? '严格连续' : '仅包含'}
+                          {st.mode === 'strict' ? t('warehouse.strict_order') : t('warehouse.contains')}
                         </span>
                       </div>
                       <div className="flex items-center gap-2">
@@ -969,7 +973,7 @@ export function WandWarehouse({
       {editingSmartTag && (
         <div className="absolute inset-0 z-[600] bg-zinc-950 flex flex-col animate-in zoom-in-95 duration-200">
           <div className="p-4 border-b border-white/10 flex items-center justify-between bg-black/40">
-            <h2 className="text-sm font-black uppercase tracking-widest">编辑智能标签</h2>
+            <h2 className="text-sm font-black uppercase tracking-widest">{t('warehouse.edit_smart_tag')}</h2>
             <button 
               onClick={() => setEditingSmartTag(null)}
               className="p-2 hover:bg-white/10 rounded-lg text-zinc-500 hover:text-white transition-colors"
@@ -980,7 +984,7 @@ export function WandWarehouse({
 
           <div className="flex-1 overflow-y-auto p-6 space-y-6 custom-scrollbar">
             <div className="space-y-2">
-              <label className="text-[10px] font-black text-zinc-500 uppercase tracking-widest">标签名称</label>
+              <label className="text-[10px] font-black text-zinc-500 uppercase tracking-widest">{t('warehouse.tag_name')}</label>
               <input 
                 type="text"
                 value={editingSmartTag.name}
@@ -991,7 +995,7 @@ export function WandWarehouse({
             </div>
 
             <div className="space-y-2">
-              <label className="text-[10px] font-black text-zinc-500 uppercase tracking-widest">匹配模式</label>
+              <label className="text-[10px] font-black text-zinc-500 uppercase tracking-widest">{t('warehouse.match_mode')}</label>
               <div className="grid grid-cols-2 gap-2">
                 <button 
                   onClick={() => setEditingSmartTag({ ...editingSmartTag, mode: 'strict' })}
@@ -1002,7 +1006,7 @@ export function WandWarehouse({
                       : "bg-zinc-900 border-white/5 text-zinc-500 hover:border-white/20"
                   )}
                 >
-                  严格连续 (Strict Order)
+                  {t('warehouse.strict_order')}
                 </button>
                 <button 
                   onClick={() => setEditingSmartTag({ ...editingSmartTag, mode: 'contains' })}
@@ -1013,7 +1017,7 @@ export function WandWarehouse({
                       : "bg-zinc-900 border-white/5 text-zinc-500 hover:border-white/20"
                   )}
                 >
-                  仅包含 (Contains)
+                  {t('warehouse.contains')}
                 </button>
               </div>
             </div>
@@ -1021,8 +1025,8 @@ export function WandWarehouse({
             <div className="space-y-3">
               <div className="flex items-center justify-between">
                 <label className="text-[10px] font-black text-zinc-500 uppercase tracking-widest flex items-center gap-2">
-                   <span>法术组合 (像编辑法杖一样编辑)</span>
-                   <span className="text-zinc-700 font-normal">| 右键清除, 支持 Ctrl+V 粘贴</span>
+                   <span>{t('warehouse.spell_combination')}</span>
+                   <span className="text-zinc-700 font-normal">| {t('settings.title') === 'Settings' ? 'Right click to clear, Ctrl+V to paste' : '右键清除, 支持 Ctrl+V 粘贴'}</span>
                 </label>
               </div>
 
@@ -1068,7 +1072,7 @@ export function WandWarehouse({
                 <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-zinc-500" size={12} />
                 <input 
                   type="text"
-                  placeholder="搜索并点击添加法术..."
+                  placeholder={t('warehouse.search_spells')}
                   value={spellSearchQuery}
                   className="w-full bg-zinc-900 border border-white/5 rounded-lg pl-9 pr-4 py-2 text-[10px] focus:outline-none focus:border-white/20"
                   onChange={(e) => setSpellSearchQuery(e.target.value)}
@@ -1116,7 +1120,7 @@ export function WandWarehouse({
               onClick={() => setEditingSmartTag(null)}
               className="flex-1 py-3 bg-zinc-800 hover:bg-zinc-700 text-zinc-400 rounded-xl text-xs font-black uppercase tracking-widest transition-all"
             >
-              取消
+              {t('warehouse.cancel')}
             </button>
             <button 
               onClick={() => {
@@ -1140,7 +1144,7 @@ export function WandWarehouse({
               }}
               className="flex-[2] py-3 bg-amber-600 hover:bg-amber-500 text-white rounded-xl text-xs font-black uppercase tracking-widest transition-all shadow-lg shadow-amber-900/20"
             >
-              保存智能标签
+              {t('warehouse.save_smart_tag')}
             </button>
           </div>
         </div>

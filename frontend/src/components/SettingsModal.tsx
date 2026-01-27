@@ -6,6 +6,8 @@ import {
 import { Plus, Trash2, Edit2, GripVertical } from 'lucide-react';
 import { AppSettings, WandData, SpellTypeConfig, SpellGroupConfig } from '../types';
 import { SPELL_GROUPS } from '../constants';
+import { LanguageSwitcher } from './LanguageSwitcher';
+import { useTranslation } from 'react-i18next';
 
 interface SettingsModalProps {
   isOpen: boolean;
@@ -28,6 +30,7 @@ export function SettingsModal({
 }: SettingsModalProps) {
   const [activeCategory, setActiveCategory] = useState<Category>('general');
   const [searchQuery, setSearchQuery] = useState('');
+  const { t } = useTranslation();
 
   if (!isOpen || !settings) return null;
 
@@ -107,13 +110,13 @@ export function SettingsModal({
   };
 
   const categories = [
-    { id: 'general', name: '常规', icon: <Settings size={16} /> },
-    { id: 'appearance', name: '外观', icon: <Layers size={16} /> },
-    { id: 'wand', name: '法杖', icon: <Wand2 size={16} /> },
-    { id: 'cast', name: '施法参数', icon: <Zap size={16} /> },
-    { id: 'spell_types', name: '法术分类', icon: <Star size={16} /> },
-    { id: 'sync', name: '同步', icon: <Activity size={16} /> },
-    { id: 'data', name: '数据', icon: <Database size={16} /> },
+    { id: 'general', name: t('settings.categories.general'), icon: <Settings size={16} /> },
+    { id: 'appearance', name: t('settings.categories.appearance'), icon: <Layers size={16} /> },
+    { id: 'wand', name: t('settings.categories.wand'), icon: <Wand2 size={16} /> },
+    { id: 'cast', name: t('settings.categories.cast'), icon: <Zap size={16} /> },
+    { id: 'spell_types', name: t('settings.categories.spell_types'), icon: <Star size={16} /> },
+    { id: 'sync', name: t('settings.categories.sync'), icon: <Activity size={16} /> },
+    { id: 'data', name: t('settings.categories.data'), icon: <Database size={16} /> },
   ];
 
   // --- Search Logic ---
@@ -170,6 +173,9 @@ export function SettingsModal({
             {/* GENERAL */}
             {(searchQuery || activeCategory === 'general') && (
               <div className="space-y-6">
+                {isMatch('语言 language') && (
+                  <LanguageSwitcher />
+                )}
                 {isMatch('常用统计数量') && (
                   <div className="space-y-2">
                     <label className="text-[10px] font-black text-zinc-400 uppercase tracking-widest">常用统计数量</label>
@@ -354,7 +360,7 @@ export function SettingsModal({
                       </div>
                       <div>
                         <div className="text-xs font-bold text-zinc-200">无限法术天赋 (Unlimited Spells)</div>
-                        <div className="text-[10px] text-zinc-500">模拟拥有“无限法术”天赋的情况。注意：黑洞、治疗弹等法术依然有限。</div>
+                        <div className="text-[10px] text-zinc-500">模拟拥有“无限法术”天赋的情况。注意：黑洞、治疗弹等法术依然有限。(由于目前bug,实际上这个设置并没有用,无论开关都只能ALT+鼠标左键设定黑洞治疗弹等 不能被无限法术天赋无限的 法术的次数)</div>
                       </div>
                     </div>
                     <button

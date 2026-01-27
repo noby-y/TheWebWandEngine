@@ -3,6 +3,7 @@ import { Monitor, X } from 'lucide-react';
 import { WandData, SpellInfo, AppSettings } from '../types';
 import { PropInput } from './Common';
 import { getIconUrl } from '../lib/evaluatorAdapter';
+import { useTranslation } from 'react-i18next';
 
 interface WandEditorProps {
   slot: string;
@@ -41,6 +42,7 @@ export function WandEditor({
   settings,
   isConnected
 }: WandEditorProps) {
+  const { t, i18n } = useTranslation();
   const renderTimeInput = (label: string, frames: number, updateKey: keyof WandData) => {
     const primaryValue = settings.showStatsInFrames ? frames : parseFloat((frames / 60).toFixed(3));
     const secondaryValue = settings.showStatsInFrames ? (frames / 60).toFixed(2) + 's' : frames + 'f';
@@ -108,6 +110,7 @@ export function WandEditor({
           <div className="flex flex-wrap gap-3">
             {data.always_cast.map((sid, i) => {
               const spell = spellDb[sid];
+              const displayName = spell ? (i18n.language.startsWith('en') && spell.en_name ? spell.en_name : spell.name) : sid;
               return (
                 <div key={i} className="group/ac relative">
                   <div className="w-12 h-12 rounded-lg border border-amber-500/30 bg-amber-500/5 flex items-center justify-center relative shadow-[0_0_15px_rgba(245,158,11,0.1)] transition-transform hover:scale-105">
@@ -116,7 +119,7 @@ export function WandEditor({
                         src={getIconUrl(spell.icon, isConnected)} 
                         className="w-10 h-10 image-pixelated" 
                         alt="" 
-                        title={`Always Cast: ${spell.name}`}
+                        title={`Always Cast: ${displayName}`}
                       />
                     ) : (
                       <span className="text-amber-500/20 text-xs">?</span>
@@ -200,7 +203,8 @@ export function WandEditor({
 
                       const newUses = uses === 0 ? (spell.max_uses ?? -1) : 0;
                       const newSpellUses = { ...(data.spell_uses || {}), [idx]: newUses };
-                      updateWand(slot, { spell_uses: newSpellUses }, `修改法术次数: ${newUses === 0 ? '设为 0' : '还原默认'}`);
+                      const actionName = newUses === 0 ? t('app.notification.set_charges_0') : t('app.notification.restore_charges');
+                      updateWand(slot, { spell_uses: newSpellUses }, actionName);
                       return;
                     }
                     if (selection && selection.indices.length > 1) {

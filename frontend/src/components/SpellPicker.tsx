@@ -3,6 +3,7 @@ import { Search, Star, Minimize2, Plus } from 'lucide-react';
 import { SpellInfo, AppSettings, SpellTypeConfig } from '../types';
 import { SPELL_GROUPS } from '../constants';
 import { getIconUrl } from '../lib/evaluatorAdapter';
+import { useTranslation } from 'react-i18next';
 
 interface SpellPickerProps {
   pickerConfig: { x: number; y: number; wandSlot: string; spellIdx: string; isAlwaysCast?: boolean } | null;
@@ -31,6 +32,7 @@ export function SpellPicker({
   setPickerExpandedGroups,
   isConnected
 }: SpellPickerProps) {
+  const { t, i18n } = useTranslation();
   if (!pickerConfig) return null;
 
   return (
@@ -48,7 +50,7 @@ export function SpellPicker({
           <Search size={14} className="text-zinc-500" />
           <input
             autoFocus
-            placeholder="搜索法术..."
+            placeholder={t('settings.title') === 'Settings' ? 'Search spells...' : '搜索法术...'}
             className="bg-transparent flex-1 text-sm outline-none placeholder:text-zinc-600"
             value={pickerSearch}
             onChange={e => setPickerSearch(e.target.value)}
@@ -58,7 +60,7 @@ export function SpellPicker({
             }}
           />
           <button onClick={() => pickSpell(null)} className="text-[10px] font-black text-red-400 bg-red-400/10 px-2 py-1 rounded hover:bg-red-400/20">
-            清除槽位
+            {t('settings.title') === 'Settings' ? 'CLEAR' : '清除槽位'}
           </button>
         </div>
 
@@ -75,6 +77,8 @@ export function SpellPicker({
                 <div className={`flex flex-wrap gap-1.5 px-1 ${settings.hideLabels ? 'mb-4' : ''}`}>
                   {searchResults[0].map((s: SpellInfo) => {
                     const typeConfig = settings.spellTypes.find(t => t.id === s.type);
+                    const displayName = i18n.language.startsWith('en') && s.en_name ? s.en_name : s.name;
+                    const tooltip = `${displayName}${s.aliases ? ` (${s.aliases})` : ''}\nID: ${s.id}`;
                     return (
                       <button
                         key={s.id}
@@ -85,7 +89,7 @@ export function SpellPicker({
                           backgroundColor: typeConfig?.color || 'rgba(255,255,255,0.05)' 
                         }}
                         className="aspect-square hover:bg-white/10 border border-white/5 rounded flex items-center justify-center transition-all group overflow-hidden"
-                        title={`${s.name} (${s.en_name})\nID: ${s.id}`}
+                        title={tooltip}
                       >
                         <img src={getIconUrl(s.icon, isConnected)} className="w-7 h-7 image-pixelated group-hover:scale-110" alt="" />
                       </button>
@@ -125,6 +129,8 @@ export function SpellPicker({
                     <div className="flex flex-wrap gap-1.5 px-0.5">
                       {spellStats.overall.map((s: SpellInfo) => {
                         const typeConfig = settings.spellTypes.find(t => t.id === s.type);
+                        const displayName = i18n.language.startsWith('en') && s.en_name ? s.en_name : s.name;
+                        const tooltip = `${displayName}${s.aliases ? ` (${s.aliases})` : ''}\nID: ${s.id}`;
                         return (
                           <button
                             key={s.id}
@@ -135,7 +141,7 @@ export function SpellPicker({
                               backgroundColor: typeConfig?.color || 'rgba(0,0,0,0.2)' 
                             }}
                             className="aspect-square hover:bg-black/40 border border-white/5 rounded flex items-center justify-center transition-all group overflow-hidden"
-                            title={s.name}
+                            title={tooltip}
                           >
                             <img src={getIconUrl(s.icon, isConnected)} className="w-7 h-7 image-pixelated group-hover:scale-110" alt="" />
                           </button>
@@ -175,6 +181,8 @@ export function SpellPicker({
                     <div className="flex flex-wrap gap-1.5 px-0.5">
                       {spellStats.categories[gIdx].map((s: SpellInfo) => {
                         const typeConfig = settings.spellTypes.find(t => t.id === s.type);
+                        const displayName = i18n.language.startsWith('en') && s.en_name ? s.en_name : s.name;
+                        const tooltip = `${displayName}${s.aliases ? ` (${s.aliases})` : ''}\nID: ${s.id}`;
                         return (
                           <button
                             key={s.id}
@@ -185,7 +193,7 @@ export function SpellPicker({
                               backgroundColor: typeConfig?.color || 'rgba(0,0,0,0.2)'
                             }}
                             className="aspect-square hover:bg-black/40 border border-white/5 rounded flex items-center justify-center transition-all group overflow-hidden"
-                            title={s.name}
+                            title={tooltip}
                           >
                             <img src={getIconUrl(s.icon, isConnected)} className="w-7 h-7 image-pixelated group-hover:scale-110" alt="" />
                           </button>

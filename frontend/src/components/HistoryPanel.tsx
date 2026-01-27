@@ -2,6 +2,7 @@ import React from 'react';
 import { History, X, Undo2, Redo2, Clock } from 'lucide-react';
 import { Tab, SpellInfo } from '../types';
 import { getIconUrl } from '../lib/evaluatorAdapter';
+import { useTranslation } from 'react-i18next';
 
 interface HistoryPanelProps {
   isOpen: boolean;
@@ -26,6 +27,7 @@ export function HistoryPanel({
   onRedo,
   isConnected
 }: HistoryPanelProps) {
+  const { t } = useTranslation();
   if (!isOpen) return null;
 
   return (
@@ -33,12 +35,12 @@ export function HistoryPanel({
       <div className="p-4 border-b border-white/10 flex items-center justify-between bg-black/40">
         <div className="flex items-center gap-2">
           <History size={18} className="text-indigo-400" />
-          <h2 className="text-sm font-black uppercase tracking-widest">历史记录</h2>
+          <h2 className="text-sm font-black uppercase tracking-widest">{t('history.title')}</h2>
         </div>
         <button 
           onClick={onClose} 
           className="p-2 hover:bg-white/10 rounded-full text-zinc-500 hover:text-white transition-colors"
-          title="关闭面板"
+          title={t('history.close')}
         >
           <X size={18} />
         </button>
@@ -49,7 +51,7 @@ export function HistoryPanel({
           {(!activeTab.past || activeTab.past.length === 0) && (!activeTab.future || activeTab.future.length === 0) && (
             <div className="flex flex-col items-center justify-center h-64 text-zinc-600 gap-2">
               <Clock size={32} className="opacity-10" />
-              <p className="text-[10px] font-black uppercase tracking-widest opacity-40">暂无操作记录</p>
+              <p className="text-[10px] font-black uppercase tracking-widest opacity-40">{t('history.no_records')}</p>
             </div>
           )}
 
@@ -92,9 +94,9 @@ export function HistoryPanel({
             <div className="px-4 py-4 bg-indigo-600/20 border-l-4 border-l-indigo-500 border-y border-white/10 sticky top-0 z-10 backdrop-blur-md">
               <div className="flex items-center gap-2">
                 <div className="w-2 h-2 rounded-full bg-indigo-400 animate-pulse" />
-                <span className="text-xs font-black text-white uppercase tracking-wider">当前状态</span>
+                <span className="text-xs font-black text-white uppercase tracking-wider">{t('history.current_state')}</span>
               </div>
-              <div className="text-[9px] text-indigo-400/70 uppercase font-black tracking-widest mt-1">Latest Working Version</div>
+              <div className="text-[9px] text-indigo-400/70 uppercase font-black tracking-widest mt-1">{t('history.latest_version')}</div>
             </div>
           )}
 
@@ -139,19 +141,19 @@ export function HistoryPanel({
             className="flex-1 py-2.5 bg-zinc-800 hover:bg-indigo-600 disabled:bg-zinc-900 disabled:opacity-20 disabled:cursor-not-allowed rounded-lg text-[10px] font-black uppercase tracking-widest transition-all flex items-center justify-center gap-2 group shadow-lg active:scale-95"
           >
             <Undo2 size={14} className="group-hover:-translate-x-0.5 transition-transform" />
-            后退 (Ctrl+Z)
+            {t('history.undo')}
           </button>
           <button
             onClick={onRedo}
             disabled={!activeTab.future || activeTab.future.length === 0}
             className="flex-1 py-2.5 bg-zinc-800 hover:bg-emerald-600 disabled:bg-zinc-900 disabled:opacity-20 disabled:cursor-not-allowed rounded-lg text-[10px] font-black uppercase tracking-widest transition-all flex items-center justify-center gap-2 group shadow-lg active:scale-95"
           >
-            前进 (Ctrl+Y)
+            {t('history.redo')}
             <Redo2 size={14} className="group-hover:translate-x-0.5 transition-transform" />
           </button>
         </div>
         <p className="text-[9px] text-zinc-600 text-center uppercase font-black tracking-[0.2em] opacity-50">
-          操作记录仅针对当前工作流
+          {t('history.scope_info')}
         </p>
       </div>
     </div>

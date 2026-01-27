@@ -6,6 +6,7 @@ import { WandEditor } from './WandEditor';
 import WandEvaluator from './WandEvaluator';
 import { getIconUrl } from '../lib/evaluatorAdapter';
 import { Library } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 
 interface WandCardProps {
   slot: string;
@@ -62,6 +63,7 @@ export function WandCard({
   settings,
   onSaveToWarehouse,
 }: WandCardProps) {
+  const { t, i18n } = useTranslation();
   const renderTimeStat = (label: string, frames: number, colorClass: string) => {
     const primary = settings.showStatsInFrames ? frames : (frames / 60).toFixed(2) + 's';
     const secondary = settings.showStatsInFrames ? (frames / 60).toFixed(2) + 's' : frames;
@@ -108,13 +110,16 @@ export function WandCard({
               const isGrayscale = (uses === 0) || isTriggered;
               const shouldShowCharge = (uses === 0 || settings.showSpellCharges) && !isTriggered;
               
-              return spell ? (
+              if (!spell) return null;
+              const displayName = i18n.language.startsWith('en') && spell.en_name ? spell.en_name : spell.name;
+              
+              return (
                 <div key={idx} className="relative shrink-0">
                   <img
                     src={getIconUrl(spell.icon, isConnected)}
                     className={`w-7 h-7 image-pixelated border border-white/10 rounded bg-black/20 ${isGrayscale ? 'grayscale opacity-50' : ''}`}
-                    alt={spell.name}
-                    title={`${idx}: ${spell.name}${uses !== undefined ? ` (次数: ${uses})` : ''}`}
+                    alt={displayName}
+                    title={`${idx}: ${displayName}${uses !== undefined ? ` (${t('evaluator.cast_stats')} x${uses})` : ''}`}
                   />
                   {isTriggered && (
                     <div className="absolute bottom-0 left-0">
@@ -129,10 +134,10 @@ export function WandCard({
                     </div>
                   )}
                 </div>
-              ) : null;
+              );
             })}
           {Object.keys(data.spells).length === 0 && (
-            <span className="text-[10px] text-zinc-700 italic font-medium ml-2">空法杖</span>
+            <span className="text-[10px] text-zinc-700 italic font-medium ml-2">{t('tabs.empty_wand')}</span>
           )}
         </div>
 

@@ -13,6 +13,7 @@ import { WarehouseWand, SpellInfo, SmartTag } from '../types';
 import { getIconUrl } from '../lib/evaluatorAdapter';
 import { clsx, type ClassValue } from 'clsx';
 import { twMerge } from 'tailwind-merge';
+import { useTranslation } from 'react-i18next';
 
 function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
@@ -59,6 +60,7 @@ export const WarehouseWandCard = React.memo(({
   onDrop,
   isConnected
 }: WarehouseWandCardProps) => {
+  const { t, i18n } = useTranslation();
   
   const spellsList = useMemo(() => {
     const list: (SpellInfo | null)[] = [];
@@ -129,29 +131,30 @@ export const WarehouseWandCard = React.memo(({
         <div className="flex items-start justify-between gap-2 relative">
           <div className="min-w-0 w-full">
             <h3 className="text-xs font-bold text-zinc-300 truncate leading-tight group-hover:text-purple-300">
-              {wand.name || "未命名魔杖"}
+              {wand.name || t('app.notification.my_wand')}
             </h3>
             
             {/* Stats Compact - Only show on hover via CSS tooltip style overlay */}
             <div className="hidden group-hover:flex absolute top-full left-0 right-0 mt-1 bg-zinc-900/95 border border-white/10 rounded-lg p-2 flex-col gap-1 z-50 shadow-xl backdrop-blur-md pointer-events-none animate-in fade-in slide-in-from-top-1 duration-200">
                <div className="flex items-center justify-between text-[10px] font-bold text-zinc-400 border-b border-white/5 pb-1 mb-1">
-                  <span>法杖属性</span>
+                  <span>{t('settings.categories.wand')}</span>
                </div>
                <div className="grid grid-cols-2 gap-x-4 gap-y-1 text-[10px] font-mono">
-                  <div className="flex justify-between"><span className="text-zinc-500">法力</span> <span className="text-cyan-400">{wand.mana_max}</span></div>
-                  <div className="flex justify-between"><span className="text-zinc-500">充能</span> <span className="text-cyan-400">{wand.mana_charge_speed}</span></div>
-                  <div className="flex justify-between"><span className="text-zinc-500">延迟</span> <span className="text-amber-400">{wand.fire_rate_wait}s</span></div>
-                  <div className="flex justify-between"><span className="text-zinc-500">重装</span> <span className="text-green-400">{wand.reload_time}s</span></div>
-                  <div className="flex justify-between"><span className="text-zinc-500">容量</span> <span className="text-zinc-300">{wand.deck_capacity}</span></div>
-                  <div className="flex justify-between"><span className="text-zinc-500">扩散</span> <span className="text-zinc-300">{wand.spread_degrees}°</span></div>
+                  <div className="flex justify-between"><span className="text-zinc-500">{t('settings.default_wand_stats').includes('法力') ? '法力' : 'Mana'}</span> <span className="text-cyan-400">{wand.mana_max}</span></div>
+                  <div className="flex justify-between"><span className="text-zinc-500">{t('settings.default_wand_stats').includes('充能') ? '充能' : 'Recharge'}</span> <span className="text-cyan-400">{wand.mana_charge_speed}</span></div>
+                  <div className="flex justify-between"><span className="text-zinc-500">{t('settings.default_wand_stats').includes('延迟') ? '延迟' : 'Delay'}</span> <span className="text-amber-400">{wand.fire_rate_wait}s</span></div>
+                  <div className="flex justify-between"><span className="text-zinc-500">{t('settings.default_wand_stats').includes('重装') ? '重装' : 'Rechg'}</span> <span className="text-green-400">{wand.reload_time}s</span></div>
+                  <div className="flex justify-between"><span className="text-zinc-500">{t('settings.default_wand_stats').includes('容量') ? '容量' : 'Cap.'}</span> <span className="text-zinc-300">{wand.deck_capacity}</span></div>
+                  <div className="flex justify-between"><span className="text-zinc-500">{t('settings.default_wand_stats').includes('扩散') ? '扩散' : 'Spr.'}</span> <span className="text-zinc-300">{wand.spread_degrees}°</span></div>
                </div>
                {wand.always_cast && wand.always_cast.length > 0 && (
                   <div className="mt-1 pt-1 border-t border-white/5">
-                     <span className="text-[9px] text-blue-400 block mb-0.5">始终施放:</span>
+                     <span className="text-[9px] text-blue-400 block mb-0.5">{t('settings.title') === 'Settings' ? 'Always Casts:' : '始终施放:'}</span>
                      <div className="flex gap-0.5">
                         {wand.always_cast.map((sid, i) => {
                            const s = spellDb[sid];
-                           return s ? <img key={i} src={getIconUrl(s.icon, isConnected)} className="w-4 h-4" /> : null;
+                           const sDisplayName = s ? (i18n.language.startsWith('en') && s.en_name ? s.en_name : s.name) : sid;
+                           return s ? <img key={i} src={getIconUrl(s.icon, isConnected)} className="w-4 h-4" title={sDisplayName} /> : null;
                         })}
                      </div>
                   </div>
@@ -179,13 +182,13 @@ export const WarehouseWandCard = React.memo(({
       
       {/* Actions (Hover only) */}
       <div className="absolute top-2 right-2 flex flex-col gap-1 opacity-0 group-hover:opacity-100 transition-opacity bg-zinc-900/90 rounded-lg border border-white/10 p-0.5 backdrop-blur-sm z-20">
-        <button onClick={() => onImport(wand)} className="p-1.5 hover:bg-purple-500 hover:text-white text-zinc-400 rounded transition-colors" title="导入">
+        <button onClick={() => onImport(wand)} className="p-1.5 hover:bg-purple-500 hover:text-white text-zinc-400 rounded transition-colors" title={t('nav.import')}>
           <ArrowUpRight size={12} />
         </button>
-        <button onClick={() => onRename(wand)} className="p-1.5 hover:bg-white/20 hover:text-white text-zinc-400 rounded transition-colors" title="重命名">
-          <Edit2 size={12} />
+        <button onClick={() => onRename(wand)} className="p-1.5 hover:bg-white/20 hover:text-white text-zinc-400 rounded transition-colors" title={t('tabs.rename')}>
+          <ArrowUpRight size={12} />
         </button>
-        <button onClick={() => onDelete(wand.id)} className="p-1.5 hover:bg-red-500 hover:text-white text-zinc-400 rounded transition-colors" title="删除">
+        <button onClick={() => onDelete(wand.id)} className="p-1.5 hover:bg-red-500 hover:text-white text-zinc-400 rounded transition-colors" title={t('warehouse.delete')}>
           <Trash2 size={12} />
         </button>
       </div>

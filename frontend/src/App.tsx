@@ -49,6 +49,7 @@ import { CompactStat } from './components/Common';
 import WandEvaluator from './components/WandEvaluator';
 import { WandWarehouse } from './components/WandWarehouse';
 import { evaluateWand, getIconUrl } from './lib/evaluatorAdapter';
+import { useTranslation } from 'react-i18next';
 
 const cloneTabs = (tbs: any[]): any[] => {
   return tbs.map(t => ({
@@ -59,6 +60,7 @@ const cloneTabs = (tbs: any[]): any[] => {
 };
 
 function App() {
+  const { t, i18n } = useTranslation();
   const [tabs, setTabs] = useState<Tab[]>(() => {
     const saved = localStorage.getItem('twwe_tabs') || localStorage.getItem('wand2h_tabs');
     if (saved) {
@@ -77,8 +79,8 @@ function App() {
       }
     }
     return [
-      { id: '1', name: '游戏同步', isRealtime: true, wands: { '1': { ...DEFAULT_WAND } }, expandedWands: new Set(['1']), past: [], future: [] },
-      { id: '2', name: '自由沙盒', isRealtime: false, wands: { '1': { ...DEFAULT_WAND } }, expandedWands: new Set(['1']), past: [], future: [] }
+      { id: '1', name: t('tabs.realtime'), isRealtime: true, wands: { '1': { ...DEFAULT_WAND } }, expandedWands: new Set(['1']), past: [], future: [] },
+      { id: '2', name: t('tabs.sandbox'), isRealtime: false, wands: { '1': { ...DEFAULT_WAND } }, expandedWands: new Set(['1']), past: [], future: [] }
     ];
   });
 
@@ -178,7 +180,7 @@ function App() {
   }, [smartTags]);
 
   const saveToWarehouse = async (data: WandData) => {
-    const name = prompt('输入魔杖名称', '我的魔杖');
+    const name = prompt(t('app.notification.enter_wand_name'), t('app.notification.my_wand'));
     if (!name) return;
 
     let py = "", init = "";
@@ -206,7 +208,7 @@ function App() {
       folderId: null
     };
     setWarehouseWands(prev => [newWand, ...prev]);
-    setNotification({ msg: `已存入仓库: ${name}`, type: 'success' });
+    setNotification({ msg: t('app.notification.saved_to_warehouse', { name }), type: 'success' });
     setIsWarehouseOpen(true);
   };
 
@@ -505,6 +507,7 @@ function App() {
     if (!query) return null;
 
     const allSpells = Object.values(spellDb);
+    const isEnglish = i18n.language.startsWith('en');
     
     // Score-based search
     const scored = allSpells.map(s => {
@@ -514,25 +517,33 @@ function App() {
       const en = (s.en_name || "").toLowerCase();
       const py = (s.pinyin || "").toLowerCase();
       const init = (s.pinyin_initials || "").toLowerCase();
+      const aliases = (s.aliases || "").toLowerCase();
+      const apy = (s.alias_pinyin || "").toLowerCase();
+      const ainit = (s.alias_initials || "").toLowerCase();
 
       // Exact matches
       if (id === query) score += 100;
       else if (name === query) score += 90;
       else if (en === query) score += 85;
+      else if (aliases.includes(query)) score += 80;
       
       // Starts with
       else if (id.startsWith(query)) score += 70;
       else if (name.startsWith(query)) score += 65;
       else if (en.startsWith(query)) score += 60;
-      else if (init.startsWith(query)) score += 55;
-      else if (py.startsWith(query)) score += 50;
+      else if (!isEnglish && init.startsWith(query)) score += 55;
+      else if (!isEnglish && py.startsWith(query)) score += 50;
+      else if (!isEnglish && ainit.startsWith(query)) score += 45;
+      else if (!isEnglish && apy.startsWith(query)) score += 40;
 
       // Includes
       else if (id.includes(query)) score += 30;
       else if (name.includes(query)) score += 25;
       else if (en.includes(query)) score += 20;
-      else if (init.includes(query)) score += 15;
-      else if (py.includes(query)) score += 10;
+      else if (!isEnglish && init.includes(query)) score += 15;
+      else if (!isEnglish && py.includes(query)) score += 10;
+      else if (!isEnglish && ainit.includes(query)) score += 8;
+      else if (!isEnglish && apy.includes(query)) score += 5;
 
       return { spell: s, score };
     }).filter(x => x.score > 0);
@@ -541,7 +552,7 @@ function App() {
     scored.sort((a, b) => b.score - a.score || a.spell.id.localeCompare(b.spell.id));
 
     return [scored.map(x => x.spell)];
-  }, [pickerSearch, spellDb]);
+  }, [pickerSearch, spellDb, i18n.language]);
 
   // --- Selection & Clipboard Logic ---
   const handleSlotMouseDown = (wandSlot: string, idx: number, isRightClick: boolean = false) => {
@@ -850,7 +861,7 @@ function App() {
           expandedWands: new Set([...t.expandedWands, nextSlot])
         } : t));
 
-        setNotification({ msg: `已从剪贴板粘贴为新法杖 (槽位 ${nextSlot})`, type: 'success' });
+        setNotification({ msg: t('app.notification.pasted_new_wand', { slot: nextSlot }), type: 'success' });
         return true;
       }
       return false;
@@ -1465,7 +1476,7 @@ function App() {
 }}`;
       try {
         await navigator.clipboard.writeText(wikiText);
-        setNotification({ msg: '法杖数据已同步至系统剪贴板', type: 'success' });
+        setNotification({ msg: t('app.notification.copied_to_clipboard'), type: 'success' });
       } catch (err) {
         console.error('Clipboard error:', err);
       }
@@ -1705,7 +1716,7 @@ function App() {
           {Object.keys(activeTab.wands).length === 0 && (
             <div className="h-64 flex flex-col items-center justify-center text-zinc-700 gap-4">
               <Activity size={32} className="opacity-20 animate-pulse" />
-              <p className="font-black text-[10px] uppercase tracking-widest">等待数据同步或在该工作流添加法杖...</p>
+              <p className="font-black text-[10px] uppercase tracking-widest">{t('tabs.waiting_data')}</p>
             </div>
           )}
         </div>
@@ -1740,7 +1751,7 @@ function App() {
             onClick={e => e.stopPropagation()}
           >
             <div className="px-3 py-1.5 border-b border-white/5 mb-1">
-              <span className="text-[10px] font-black text-zinc-500 uppercase tracking-widest">工作流选项</span>
+              <span className="text-[10px] font-black text-zinc-500 uppercase tracking-widest">{t('tabs.workflow_options')}</span>
             </div>
             
             <button
@@ -1751,13 +1762,13 @@ function App() {
               className="w-full px-3 py-2 text-left text-xs text-zinc-300 hover:bg-white/5 flex items-center gap-2"
             >
               <Activity size={12} className={tabs.find(t => t.id === tabMenu.tabId)?.isRealtime ? "text-green-500" : "text-zinc-500"} />
-              {tabs.find(t => t.id === tabMenu.tabId)?.isRealtime ? '关闭自动同步' : '开启自动同步'}
+              {tabs.find(t => t.id === tabMenu.tabId)?.isRealtime ? t('tabs.off_sync') : t('tabs.on_sync')}
             </button>
 
             <button
               onClick={() => {
                 const tab = tabs.find(t => t.id === tabMenu.tabId);
-                const newName = prompt('重命名工作流:', tab?.name);
+                const newName = prompt(t('app.notification.renamed_workflow'), tab?.name);
                 if (newName) {
                   setTabs(prev => prev.map(t => t.id === tabMenu.tabId ? { ...t, name: newName } : t));
                 }
@@ -1765,7 +1776,7 @@ function App() {
               }}
               className="w-full px-3 py-2 text-left text-xs text-zinc-300 hover:bg-white/5 flex items-center gap-2"
             >
-              <RefreshCw size={12} className="text-zinc-500" /> 重命名
+              <RefreshCw size={12} className="text-zinc-500" /> {t('tabs.rename')}
             </button>
 
             <button
@@ -1775,7 +1786,7 @@ function App() {
               }}
               className="w-full px-3 py-2 text-left text-xs text-zinc-300 hover:bg-white/5 flex items-center gap-2"
             >
-              <Download size={12} className="text-zinc-500" /> 导出此工作流 (.json)
+              <Download size={12} className="text-zinc-500" /> {t('tabs.export_json')}
             </button>
 
             <div className="h-px bg-white/5 my-1" />
@@ -1788,7 +1799,7 @@ function App() {
               className="w-full px-3 py-2 text-left text-xs text-zinc-300 hover:bg-white/5 flex items-center justify-between group"
             >
               <div className="flex items-center gap-2">
-                <Library size={12} className="text-indigo-400" /> 打开魔杖仓库
+                <Library size={12} className="text-indigo-400" /> {t('tabs.open_warehouse')}
               </div>
               <span className="text-[9px] text-zinc-500 font-mono group-hover:text-zinc-400">Ctrl+B</span>
             </button>
@@ -1801,21 +1812,21 @@ function App() {
               className="w-full px-3 py-2 text-left text-xs text-zinc-300 hover:bg-white/5 flex items-center justify-between group"
             >
               <div className="flex items-center gap-2">
-                <History size={12} className="text-indigo-400" /> 打开历史记录面板
+                <History size={12} className="text-indigo-400" /> {t('tabs.open_history')}
               </div>
               <span className="text-[9px] text-zinc-500 font-mono group-hover:text-zinc-400">Ctrl+H</span>
             </button>
 
             <button
               onClick={() => {
-                if (confirm('确定要清除所有历史记录吗？(无法撤销)')) {
+                if (confirm(t('tabs.clear_history_confirm'))) {
                   setTabs(prev => prev.map(t => t.id === tabMenu.tabId ? { ...t, past: [], future: [] } : t));
                 }
                 setTabMenu(null);
               }}
               className="w-full px-3 py-2 text-left text-xs text-red-400 hover:bg-red-400/10 flex items-center gap-2"
             >
-              <Trash2 size={12} /> 清除历史
+              <Trash2 size={12} /> {t('tabs.clear_history')}
             </button>
           </div>
         )}

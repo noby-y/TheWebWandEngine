@@ -2,6 +2,7 @@ import React, { useState, useMemo, useEffect } from 'react';
 import { EvalNode, ShotState, SpellInfo, AppSettings } from '../types';
 import { ChevronRight, ChevronDown } from 'lucide-react';
 import { getIconUrl } from '../lib/evaluatorAdapter';
+import { useTranslation } from 'react-i18next';
 
 interface Props {
   data: {
@@ -55,6 +56,7 @@ const areStatesEqual = (a: Record<string, any>[], b: Record<string, any>[]): boo
 };
 
 const WandEvaluator: React.FC<Props> = ({ data, spellDb, onHoverSlots, settings }) => {
+  const { t, i18n } = useTranslation();
   const [userExpandedCasts, setUserExpandedCasts] = useState<Record<number, boolean>>({});
   const [userShowAllCasts, setUserShowAllCasts] = useState<Record<number, boolean>>({}); // 控制是否展开合并的每一轮
 
@@ -144,11 +146,12 @@ const WandEvaluator: React.FC<Props> = ({ data, spellDb, onHoverSlots, settings 
         <section>
           <h3 className="text-[10px] font-black text-zinc-500 mb-4 flex items-center gap-2 tracking-widest uppercase">
             <span className="w-1.5 h-1.5 bg-amber-500 shadow-[0_0_8px_rgba(245,158,11,0.5)] rounded-full"></span>
-            法术放出总量统计 (Overall)
+            {t('evaluator.overall_counts')} (Overall)
           </h3>
           <div className="flex flex-wrap gap-2 opacity-60 grayscale-[0.5] hover:opacity-100 hover:grayscale-0 transition-all duration-300">
             {sortedOverallCounts.map(([id, count]) => {
               const spell = spellDb[id];
+              const displayName = spell ? (i18n.language.startsWith('en') && spell.en_name ? spell.en_name : spell.name) : id;
               return (
                 <div key={id} className="flex items-center gap-2 bg-zinc-900/40 border border-white/5 pl-1 pr-3 py-0.5 rounded-md transition-all group/count">
                   {spell ? (
@@ -158,7 +161,7 @@ const WandEvaluator: React.FC<Props> = ({ data, spellDb, onHoverSlots, settings 
                   )}
                   <div className="flex flex-col -space-y-1">
                     <span className="text-[8px] font-bold text-zinc-500 uppercase tracking-tighter truncate max-w-[60px]" title={id}>
-                      {spell ? spell.name : id}
+                      {displayName}
                     </span>
                     <span className="text-[9px] font-black text-amber-500/80 font-mono">
                       {count.toLocaleString()}
@@ -176,7 +179,7 @@ const WandEvaluator: React.FC<Props> = ({ data, spellDb, onHoverSlots, settings 
         <div className="flex items-center justify-between mb-4">
           <h3 className="text-[10px] font-black text-zinc-500 flex items-center gap-2 tracking-widest uppercase">
             <span className="w-1.5 h-1.5 bg-blue-500 shadow-[0_0_8px_rgba(59,130,246,0.5)] rounded-full"></span>
-            射击状态详情 (Shot States)
+            {t('evaluator.shot_states')} (Shot States)
           </h3>
         </div>
         
@@ -197,7 +200,7 @@ const WandEvaluator: React.FC<Props> = ({ data, spellDb, onHoverSlots, settings 
                       {isRange ? `Cast #${group.start} - #${group.end}` : `Cast #${group.start}`}
                     </span>
                     {isRange && (
-                      <span className="text-[7px] font-bold bg-amber-500/20 px-1 rounded">重复已合并</span>
+                      <span className="text-[7px] font-bold bg-amber-500/20 px-1 rounded">{t('evaluator.repeat_merged')}</span>
                     )}
                   </div>
                   
@@ -209,7 +212,7 @@ const WandEvaluator: React.FC<Props> = ({ data, spellDb, onHoverSlots, settings 
                       }}
                       className="text-[8px] font-black text-zinc-500 hover:text-white bg-white/5 px-2 py-0.5 rounded border border-white/5 transition-all uppercase"
                     >
-                      {isShowingAll ? '收起为预览模式' : `展开全部 ${group.end - group.start + 1} 轮详情`}
+                      {isShowingAll ? t('evaluator.collapse_preview') : t('evaluator.expand_all_details', { count: group.end - group.start + 1 })}
                     </button>
                   )}
 
@@ -264,7 +267,7 @@ const WandEvaluator: React.FC<Props> = ({ data, spellDb, onHoverSlots, settings 
       <section>
         <h3 className="text-[10px] font-black text-zinc-500 mb-4 flex items-center gap-2 tracking-widest uppercase">
           <span className="w-1.5 h-1.5 bg-emerald-500 shadow-[0_0_8px_rgba(16,185,129,0.5)] rounded-full"></span>
-          执行流 (递归树)
+          {t('evaluator.execution_flow')}
         </h3>
         <div className="space-y-4">
           {castGroups.map((group) => {
@@ -285,7 +288,7 @@ const WandEvaluator: React.FC<Props> = ({ data, spellDb, onHoverSlots, settings 
                     <span className={`text-[10px] font-black uppercase ${isRange ? 'text-amber-500' : 'text-emerald-500'}`}>
                       {isRange ? `Cast #${group.start} - #${group.end}` : `Cast #${group.start}`}
                     </span>
-                    <span className="text-[8px] text-zinc-600 font-mono">节点数: {complexity}</span>
+                    <span className="text-[8px] text-zinc-600 font-mono">{t('evaluator.nodes_count')}: {complexity}</span>
                     
                     {isRange && isVisible && (
                       <button 
@@ -295,12 +298,12 @@ const WandEvaluator: React.FC<Props> = ({ data, spellDb, onHoverSlots, settings 
                         }}
                         className="text-[8px] font-black text-zinc-500 hover:text-white bg-white/5 px-2 py-0.5 rounded border border-white/5 transition-all uppercase"
                       >
-                        {isShowingAll ? '收起为预览模式' : `展开全部 ${group.end - group.start + 1} 个树形图`}
+                        {isShowingAll ? t('evaluator.collapse_preview') : t('evaluator.expand_all_trees', { count: group.end - group.start + 1 })}
                       </button>
                     )}
 
                     {isAutoFolded && !isVisible && (
-                      <span className="text-[8px] bg-amber-500/10 text-amber-500 px-1.5 py-0.5 rounded border border-amber-500/20">已自动折叠</span>
+                      <span className="text-[8px] bg-amber-500/10 text-amber-500 px-1.5 py-0.5 rounded border border-amber-500/20">{t('evaluator.auto_folded')}</span>
                     )}
                   </div>
                   <div className="text-zinc-500 group-hover/treeh:text-zinc-300">
@@ -357,17 +360,19 @@ const WandEvaluator: React.FC<Props> = ({ data, spellDb, onHoverSlots, settings 
 
 // 抽离出的子组件，保持主组件整洁
 const CastStatsPanel: React.FC<{ group: any, spellDb: Record<string, SpellInfo> }> = React.memo(({ group, spellDb }) => {
+  const { t, i18n } = useTranslation();
   const sortedCastCounts = Object.entries(group.counts || {}).sort(([, a], [, b]) => (b as number) - (a as number));
   if (sortedCastCounts.length === 0) return null;
   return (
     <div className="flex-shrink-0 w-48 space-y-2">
       <div className="text-[8px] font-black text-zinc-600 uppercase tracking-widest flex items-center gap-1.5">
         <div className="w-1 h-1 bg-amber-500/50 rounded-full"></div>
-        本轮放出统计
+        {t('evaluator.cast_stats')}
       </div>
       <div className="flex flex-col gap-1.5 max-h-48 overflow-y-auto custom-scrollbar-mini pr-2">
         {sortedCastCounts.map(([id, count]) => {
           const spell = spellDb[id];
+          const displayName = spell ? (i18n.language.startsWith('en') && spell.en_name ? spell.en_name : spell.name) : id;
           return (
             <div key={id} className="flex items-center gap-2 bg-zinc-900/60 border border-white/5 pl-1 pr-2 py-1 rounded transition-all">
               {spell ? (
@@ -377,7 +382,7 @@ const CastStatsPanel: React.FC<{ group: any, spellDb: Record<string, SpellInfo> 
               )}
               <div className="flex-1 flex justify-between items-baseline min-w-0">
                 <span className="text-[9px] font-bold text-zinc-400 truncate uppercase tracking-tighter mr-2" title={id}>
-                  {spell ? spell.name : id}
+                  {displayName}
                 </span>
                 <span className="text-[10px] font-black text-amber-500 font-mono">
                   x{(count as number).toLocaleString()}
@@ -391,22 +396,25 @@ const CastStatsPanel: React.FC<{ group: any, spellDb: Record<string, SpellInfo> 
   );
 });
 
-const ShotStateCard: React.FC<{ state: ShotState }> = React.memo(({ state }) => (
-  <div className="flex-shrink-0 w-56 p-3 bg-zinc-900/50 border border-white/5 rounded-md hover:border-blue-500/30 transition-colors group/state">
-    <div className="text-[10px] font-mono font-bold text-blue-400 mb-3 border-b border-white/5 pb-1.5 flex justify-between items-center uppercase tracking-tighter">
-      <span>第 {state.id} 阶</span>
-      <span className="opacity-0 group-hover/state:opacity-100 text-[8px] text-zinc-600 transition-opacity">PROJ STATE</span>
+const ShotStateCard: React.FC<{ state: ShotState }> = React.memo(({ state }) => {
+  const { t } = useTranslation();
+  return (
+    <div className="flex-shrink-0 w-56 p-3 bg-zinc-900/50 border border-white/5 rounded-md hover:border-blue-500/30 transition-colors group/state">
+      <div className="text-[10px] font-mono font-bold text-blue-400 mb-3 border-b border-white/5 pb-1.5 flex justify-between items-center uppercase tracking-tighter">
+        <span>{t('evaluator.stage', { id: state.id })}</span>
+        <span className="opacity-0 group-hover/state:opacity-100 text-[8px] text-zinc-600 transition-opacity">PROJ STATE</span>
+      </div>
+      <div className="space-y-1.5">
+        {Object.entries(state.stats).map(([key, value]) => (
+          <div key={key} className="flex justify-between text-[10px] font-mono leading-none">
+            <span className="text-zinc-500 uppercase text-[9px]">{key.replace(/_/g, ' ')}</span>
+            <span className="text-zinc-300">{value}</span>
+          </div>
+        ))}
+      </div>
     </div>
-    <div className="space-y-1.5">
-      {Object.entries(state.stats).map(([key, value]) => (
-        <div key={key} className="flex justify-between text-[10px] font-mono leading-none">
-          <span className="text-zinc-500 uppercase text-[9px]">{key.replace(/_/g, ' ')}</span>
-          <span className="text-zinc-300">{value}</span>
-        </div>
-      ))}
-    </div>
-  </div>
-));
+  );
+});
 
 const TreeNode: React.FC<{ 
   node: EvalNode; 
@@ -414,8 +422,10 @@ const TreeNode: React.FC<{
   isRoot?: boolean;
   onHover?: (indices: number[] | null) => void;
 }> = React.memo(({ node, spellDb, isRoot, onHover }) => {
+  const { i18n } = useTranslation();
   const isCast = node.name.startsWith('Cast #') || node.name === 'Wand';
   const spell = spellDb[node.name];
+  const displayName = spell ? (i18n.language.startsWith('en') && spell.en_name ? spell.en_name : spell.name) : node.name;
   
   const iconUrl = spell ? getIconUrl(spell.icon, false) : null;
 
@@ -438,10 +448,10 @@ const TreeNode: React.FC<{
         >
           <div className="flex items-center gap-2 min-w-[24px] justify-center">
             {iconUrl ? (
-              <img src={iconUrl} alt={node.name} className="w-7 h-7 image-pixelated drop-shadow-md" title={node.name} />
+              <img src={iconUrl} alt={node.name} className="w-7 h-7 image-pixelated drop-shadow-md" title={displayName} />
             ) : (
               <span className="text-[10px] font-black font-mono text-zinc-400 px-1 whitespace-nowrap uppercase italic tracking-tighter">
-                {node.name}
+                {displayName}
               </span>
             )}
             

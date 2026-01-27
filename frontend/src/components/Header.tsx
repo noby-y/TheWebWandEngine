@@ -1,6 +1,7 @@
 import React from 'react';
 import { Cpu, Activity, Layers, X, Plus, RefreshCw, Lock, Unlock, Clipboard, Upload, Download, Settings, Library } from 'lucide-react';
 import { Tab, WandData } from '../types';
+import { useTranslation } from 'react-i18next';
 
 interface HeaderProps {
   tabs: Tab[];
@@ -45,13 +46,14 @@ export function Header({
   isConnected,
   setIsWarehouseOpen
 }: HeaderProps) {
+  const { t } = useTranslation();
   return (
     <header className="flex items-center px-4 pt-2 bg-zinc-900/50 border-b border-white/5 space-x-0.5">
       <div className="flex items-center gap-2.5 px-3 py-2 mr-4">
         <button 
           onClick={() => setIsWarehouseOpen(prev => !prev)}
           className="w-8 h-8 rounded bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center shadow-lg shadow-indigo-500/20 hover:scale-105 active:scale-95 transition-all group"
-          title="打开魔杖仓库 (Ctrl+B)"
+          title={t('nav.warehouse') + ' (Ctrl+B)'}
         >
           <Library size={16} className="text-white group-hover:rotate-12 transition-transform" />
         </button>
@@ -99,7 +101,7 @@ export function Header({
         <button
           onClick={addNewTab}
           className="p-2 text-zinc-600 hover:text-zinc-300 transition-colors"
-          title="添加新工作流"
+          title={t('tabs.new_workflow')}
         >
           <Plus size={16} />
         </button>
@@ -127,8 +129,8 @@ export function Header({
               <RefreshCw size={14} />
             )}
             <div className="flex flex-col items-start leading-none">
-              <span className="text-[8px] opacity-70 mb-0.5">{activeTab.isRealtime ? '自动同步' : '同步模式'}</span>
-              <span className="font-black">{activeTab.isRealtime ? 'ON' : '手动'}</span>
+              <span className="text-[8px] opacity-70 mb-0.5">{activeTab.isRealtime ? t('tabs.realtime') : t('tabs.manual')}</span>
+              <span className="font-black">{activeTab.isRealtime ? 'ON' : 'OFF'}</span>
             </div>
           </div>
           {activeTab.isRealtime ? <Unlock size={10} className="opacity-50" /> : <Lock size={10} className="opacity-50" />}
@@ -137,15 +139,15 @@ export function Header({
         <div className="h-4 w-[1px] bg-white/10 mx-2" />
 
         <button onClick={addWand} className="neo-button bg-indigo-500/10 text-indigo-400 hover:bg-indigo-500/20">
-          <Plus size={14} /> 新法杖
+          <Plus size={14} /> {t('nav.new_wand')}
         </button>
 
         <label className="neo-button bg-white/5 hover:bg-white/10 cursor-pointer text-[10px]">
-          <Upload size={14} /> 导入
+          <Upload size={14} /> {t('nav.import')}
           <input type="file" className="hidden" onChange={importWorkflow} />
         </label>
         <button onClick={() => exportWorkflow()} className="neo-button bg-white/5 hover:bg-white/10 text-[10px]">
-          <Download size={14} /> 导出
+          <Download size={14} /> {t('nav.export')}
         </button>
         <button onClick={() => setIsSettingsOpen(true)} className="p-2 text-zinc-500 hover:text-white transition-colors">
           <Settings size={18} />
