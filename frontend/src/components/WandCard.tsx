@@ -4,6 +4,7 @@ import { WandData, Tab, SpellInfo, EvalResponse, AppSettings, WarehouseWand } fr
 import { CompactStat } from './Common';
 import { WandEditor } from './WandEditor';
 import WandEvaluator from './WandEvaluator';
+import { getIconUrl } from '../lib/evaluatorAdapter';
 import { Library } from 'lucide-react';
 
 interface WandCardProps {
@@ -110,7 +111,7 @@ export function WandCard({
               return spell ? (
                 <div key={idx} className="relative shrink-0">
                   <img
-                    src={`/api/icon/${spell.icon}`}
+                    src={getIconUrl(spell.icon, isConnected)}
                     className={`w-7 h-7 image-pixelated border border-white/10 rounded bg-black/20 ${isGrayscale ? 'grayscale opacity-50' : ''}`}
                     alt={spell.name}
                     title={`${idx}: ${spell.name}${uses !== undefined ? ` (次数: ${uses})` : ''}`}
@@ -230,6 +231,7 @@ export function WandCard({
             setSelection={setSelection}
             setSettings={setSettings}
             settings={settings}
+            isConnected={isConnected}
           />
           {evalData && (
             <div className="px-4 pb-4">

@@ -48,6 +48,7 @@ import { SpellPicker } from './components/SpellPicker';
 import { CompactStat } from './components/Common';
 import WandEvaluator from './components/WandEvaluator';
 import { WandWarehouse } from './components/WandWarehouse';
+import { evaluateWand, getIconUrl } from './lib/evaluatorAdapter';
 
 const cloneTabs = (tbs: any[]): any[] => {
   return tbs.map(t => ({
@@ -437,36 +438,23 @@ function App() {
   const activeTab = useMemo(() => tabs.find(t => t.id === activeTabId) || tabs[0], [tabs, activeTabId]);
 
   const requestEvaluation = useCallback(async (tabId: string, slot: string, wand: WandData) => {
-    const spells: string[] = [];
-    // wand_eval_tree expects an array of spell IDs, including empty strings for slots
-    for (let i = 1; i <= wand.deck_capacity; i++) {
-      spells.push(wand.spells[i.toString()] || "");
-    }
-
     try {
-      const res = await fetch('/api/evaluate', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          ...wand,
-          spells,
-          spell_uses: wand.spell_uses || {},
-          number_of_casts: settings.numCasts || 10,
-          unlimited_spells: settings.unlimitedSpells,
-          initial_if_half: settings.initialIfHalf,
-          simulate_low_hp: settings.simulateLowHp,
-          simulate_many_enemies: settings.simulateManyEnemies,
-          simulate_many_projectiles: settings.simulateManyProjectiles
-        })
-      });
-      const data = await res.json();
-      if (data.success) {
-        setEvalResults(prev => ({ ...prev, [`${tabId}-${slot}`]: data.data }));
+      const data = await evaluateWand(wand, settings, isConnected);
+      if (data) {
+        setEvalResults(prev => ({ ...prev, [`${tabId}-${slot}`]: data }));
       }
     } catch (e) {
       console.error("Evaluation failed:", e);
     }
-  }, [settings.numCasts, settings.unlimitedSpells, settings.initialIfHalf, settings.simulateLowHp, settings.simulateManyEnemies, settings.simulateManyProjectiles]);
+  }, [
+    settings.numCasts, 
+    settings.unlimitedSpells, 
+    settings.initialIfHalf, 
+    settings.simulateLowHp, 
+    settings.simulateManyEnemies, 
+    settings.simulateManyProjectiles,
+    isConnected
+  ]);
 
   useEffect(() => {
     if (!activeTab || !activeTab.expandedWands) return;
@@ -1158,6 +1146,11 @@ function App() {
   // --- Effects ---
   useEffect(() => {
     fetchSpellDb();
+    const isStaticMode = (import.meta as any).env?.VITE_STATIC_MODE === 'true';
+    if (isStaticMode) {
+      setIsConnected(false);
+      return;
+    }
     const statusTimer = setInterval(checkStatus, 3000);
     return () => clearInterval(statusTimer);
   }, []);
@@ -1180,7 +1173,7 @@ function App() {
             console.log(`[Performance] All ${spells.length} icons preloaded and cached.`);
           }
         };
-        img.src = `/api/icon/${s.icon}`;
+        img.src = getIconUrl(s.icon, isConnected);
       });
       preloadedRef.current = true;
     }, 1000);
@@ -1220,15 +1213,23 @@ function App() {
       const res = await fetch('/api/fetch-spells');
       const data = await res.json();
       if (data.success && data.spells) {
-        // Fix: Ensure the spell objects have the ID inside them
         const enriched: Record<string, SpellInfo> = {};
         Object.entries(data.spells as Record<string, any>).forEach(([id, info]) => {
-          enriched[id] = { ...info, id };
+          enriched[id] = { ...info, id }; // 保持 icon 为原始路径
         });
         setSpellDb(enriched);
+        return;
       }
     } catch (e) {
-      console.error("Failed to fetch spells:", e);
+      console.log("API fetch-spells failed, trying static...");
+    }
+
+    try {
+      const res = await fetch('./static_data/spells.json');
+      const data = await res.json();
+      setSpellDb(data); // static_data/spells.json 里已经是原始路径
+    } catch (e) {
+      console.error("Failed to fetch spells from anywhere:", e);
     }
   };
 
@@ -1720,6 +1721,7 @@ function App() {
           settings={settings}
           pickerExpandedGroups={pickerExpandedGroups}
           setPickerExpandedGroups={setPickerExpandedGroups}
+          isConnected={isConnected}
         />
 
         <SettingsModal
@@ -1856,6 +1858,7 @@ function App() {
           onJumpFuture={jumpToFuture}
           onUndo={undo}
           onRedo={redo}
+          isConnected={isConnected}
         />
 
         <WandWarehouse
@@ -1869,6 +1872,7 @@ function App() {
           smartTags={smartTags}
           setSmartTags={setSmartTags}
           settings={settings}
+          isConnected={isConnected}
           onImportWand={(w: WarehouseWand) => {
             const nextSlot = (Math.max(0, ...Object.keys(activeTab.wands).map(Number)) + 1).toString();
             performAction(prevWands => ({
@@ -1902,7 +1906,7 @@ function App() {
           style={{ left: mousePos.x + 5, top: mousePos.y + 5 }}
         >
           <img 
-            src={`/api/icon/${spellDb[dragSource.sid].icon}`} 
+            src={getIconUrl(spellDb[dragSource.sid].icon, isConnected)} 
             className="w-full h-full image-pixelated border-2 border-indigo-500 rounded bg-zinc-900/80 shadow-2xl animate-pulse" 
             alt="" 
           />

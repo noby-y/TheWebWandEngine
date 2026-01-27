@@ -36,6 +36,7 @@ import {
 import { WandData, WarehouseWand, SpellInfo, SmartTag, WarehouseFolder as FolderType, AppSettings } from '../types';
 import { WarehouseFolder } from './WarehouseFolder';
 import { WarehouseWandCard } from './WarehouseWandCard';
+import { getIconUrl } from '../lib/evaluatorAdapter';
 import { clsx, type ClassValue } from 'clsx';
 import { twMerge } from 'tailwind-merge';
 
@@ -55,6 +56,7 @@ interface WandWarehouseProps {
   smartTags: SmartTag[];
   setSmartTags: React.Dispatch<React.SetStateAction<SmartTag[]>>;
   settings: AppSettings;
+  isConnected: boolean;
 }
 
 export function WandWarehouse({ 
@@ -68,7 +70,8 @@ export function WandWarehouse({
   setFolders,
   smartTags,
   setSmartTags,
-  settings
+  settings,
+  isConnected
 }: WandWarehouseProps) {
   const [isMaximized, setIsMaximized] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
@@ -682,8 +685,7 @@ export function WandWarehouse({
                              setDragOverWandId(null);
                              setDragOverPos(null);
                           }}
-                          onDrop={(e, id) => handleDrop(e, 'wand', id)}
-                       />
+                          onDrop={(e, id) => handleDrop(e, 'wand', id)} isConnected={isConnected} />
                     ))}
                  </div>
                )}
@@ -903,7 +905,7 @@ export function WandWarehouse({
                         const spell = spellDb[sid];
                         return (
                           <div key={i} className="w-8 h-8 bg-black/40 border border-white/5 rounded flex items-center justify-center overflow-hidden">
-                            {spell && <img src={`/api/icon/${spell.icon}`} className="w-6 h-6 image-pixelated" alt="" title={spell.name} />}
+                            {spell && <img src={getIconUrl(spell.icon, isConnected)} className="w-6 h-6 image-pixelated" alt="" title={spell.name} />}
                           </div>
                         );
                       })}
@@ -1051,7 +1053,7 @@ export function WandWarehouse({
                                 )}
                                 title={spell?.name || "空槽位 (点击下方列表添加，右键清除)"}
                             >
-                                {spell && <img src={`/api/icon/${spell.icon}`} className="w-8 h-8 image-pixelated" alt="" />}
+                                {spell && <img src={getIconUrl(spell.icon, isConnected)} className="w-8 h-8 image-pixelated" alt="" />}
                                 <div className="absolute top-0.5 right-0.5 w-1.5 h-1.5 rounded-full bg-zinc-700/50" />
                             </button>
                         );
@@ -1102,7 +1104,7 @@ export function WandWarehouse({
                     className="aspect-square bg-black/40 border border-white/5 rounded hover:border-amber-500/50 transition-all flex items-center justify-center group"
                     title={s.name}
                   >
-                    <img src={`/api/icon/${s.icon}`} className="w-7 h-7 image-pixelated group-hover:scale-110 transition-transform" alt="" />
+                    <img src={getIconUrl(s.icon, isConnected)} className="w-7 h-7 image-pixelated group-hover:scale-110 transition-transform" alt="" />
                   </button>
                 ))}
               </div>

@@ -1,0 +1,4222 @@
+{
+  "BOMB": {
+    "id": "BOMB",
+    "icon": "data/ui_gfx/gun_actions/bomb.png",
+    "name": "炸弹",
+    "en_name": "Bomb",
+    "pinyin": "zhadan",
+    "pinyin_initials": "zd",
+    "type": 0,
+    "max_uses": 3
+  },
+  "LIGHT_BULLET": {
+    "id": "LIGHT_BULLET",
+    "icon": "data/ui_gfx/gun_actions/light_bullet.png",
+    "name": "火花弹",
+    "en_name": "Spark bolt",
+    "pinyin": "huohuadan",
+    "pinyin_initials": "hhd",
+    "type": 0,
+    "max_uses": null
+  },
+  "LIGHT_BULLET_TRIGGER": {
+    "id": "LIGHT_BULLET_TRIGGER",
+    "icon": "data/ui_gfx/gun_actions/light_bullet_trigger.png",
+    "name": "带有触发的火花弹",
+    "en_name": "Spark bolt with trigger",
+    "pinyin": "daiyouchufadehuohuadan",
+    "pinyin_initials": "dycfdhhd",
+    "type": 0,
+    "max_uses": null
+  },
+  "LIGHT_BULLET_TRIGGER_2": {
+    "id": "LIGHT_BULLET_TRIGGER_2",
+    "icon": "data/ui_gfx/gun_actions/light_bullet_trigger_2.png",
+    "name": "带有双重触发的火花弹",
+    "en_name": "Spark bolt with double trigger",
+    "pinyin": "daiyoushuangchongchufadehuohuadan",
+    "pinyin_initials": "dysccfdhhd",
+    "type": 0,
+    "max_uses": null
+  },
+  "LIGHT_BULLET_TIMER": {
+    "id": "LIGHT_BULLET_TIMER",
+    "icon": "data/ui_gfx/gun_actions/light_bullet_timer.png",
+    "name": "带有定时的火花弹",
+    "en_name": "Spark bolt with timer",
+    "pinyin": "daiyoudingshidehuohuadan",
+    "pinyin_initials": "dydsdhhd",
+    "type": 0,
+    "max_uses": null
+  },
+  "BULLET": {
+    "id": "BULLET",
+    "icon": "data/ui_gfx/gun_actions/bullet.png",
+    "name": "魔法箭",
+    "en_name": "Magic arrow",
+    "pinyin": "mofajian",
+    "pinyin_initials": "mfj",
+    "type": 0,
+    "max_uses": null
+  },
+  "BULLET_TRIGGER": {
+    "id": "BULLET_TRIGGER",
+    "icon": "data/ui_gfx/gun_actions/bullet_trigger.png",
+    "name": "带有触发的魔法箭",
+    "en_name": "Magic arrow with trigger",
+    "pinyin": "daiyouchufademofajian",
+    "pinyin_initials": "dycfdmfj",
+    "type": 0,
+    "max_uses": null
+  },
+  "BULLET_TIMER": {
+    "id": "BULLET_TIMER",
+    "icon": "data/ui_gfx/gun_actions/bullet_timer.png",
+    "name": "带有定时的魔法箭",
+    "en_name": "Magic arrow with timer",
+    "pinyin": "daiyoudingshidemofajian",
+    "pinyin_initials": "dydsdmfj",
+    "type": 0,
+    "max_uses": null
+  },
+  "HEAVY_BULLET": {
+    "id": "HEAVY_BULLET",
+    "icon": "data/ui_gfx/gun_actions/heavy_bullet.png",
+    "name": "魔法弹",
+    "en_name": "Magic bolt",
+    "pinyin": "mofadan",
+    "pinyin_initials": "mfd",
+    "type": 0,
+    "max_uses": null
+  },
+  "HEAVY_BULLET_TRIGGER": {
+    "id": "HEAVY_BULLET_TRIGGER",
+    "icon": "data/ui_gfx/gun_actions/heavy_bullet_trigger.png",
+    "name": "带有触发的魔法弹",
+    "en_name": "Magic bolt with trigger",
+    "pinyin": "daiyouchufademofadan",
+    "pinyin_initials": "dycfdmfd",
+    "type": 0,
+    "max_uses": null
+  },
+  "HEAVY_BULLET_TIMER": {
+    "id": "HEAVY_BULLET_TIMER",
+    "icon": "data/ui_gfx/gun_actions/heavy_bullet_timer.png",
+    "name": "带有定时的魔法弹",
+    "en_name": "Magic bolt with timer",
+    "pinyin": "daiyoudingshidemofadan",
+    "pinyin_initials": "dydsdmfd",
+    "type": 0,
+    "max_uses": null
+  },
+  "AIR_BULLET": {
+    "id": "AIR_BULLET",
+    "icon": "data/ui_gfx/gun_actions/air_bullet.png",
+    "name": "强气流",
+    "en_name": "Burst of air",
+    "pinyin": "qiangqiliu",
+    "pinyin_initials": "qql",
+    "type": 0,
+    "max_uses": null
+  },
+  "SLOW_BULLET": {
+    "id": "SLOW_BULLET",
+    "icon": "data/ui_gfx/gun_actions/slow_bullet.png",
+    "name": "能量球",
+    "en_name": "Energy orb",
+    "pinyin": "nengliangqiu",
+    "pinyin_initials": "nlq",
+    "type": 0,
+    "max_uses": null
+  },
+  "SLOW_BULLET_TRIGGER": {
+    "id": "SLOW_BULLET_TRIGGER",
+    "icon": "data/ui_gfx/gun_actions/slow_bullet_trigger.png",
+    "name": "带有触发的能量球",
+    "en_name": "Energy orb with a trigger",
+    "pinyin": "daiyouchufadenengliangqiu",
+    "pinyin_initials": "dycfdnlq",
+    "type": 0,
+    "max_uses": null
+  },
+  "SLOW_BULLET_TIMER": {
+    "id": "SLOW_BULLET_TIMER",
+    "icon": "data/ui_gfx/gun_actions/slow_bullet_timer.png",
+    "name": "带有定时的能量球",
+    "en_name": "Energy orb with a timer",
+    "pinyin": "daiyoudingshidenengliangqiu",
+    "pinyin_initials": "dydsdnlq",
+    "type": 0,
+    "max_uses": null
+  },
+  "HOOK": {
+    "id": "HOOK",
+    "icon": "data/ui_gfx/gun_actions/hook.png",
+    "name": "飞钩",
+    "en_name": "Hookbolt",
+    "pinyin": "feigou",
+    "pinyin_initials": "fg",
+    "type": 0,
+    "max_uses": null
+  },
+  "BLACK_HOLE": {
+    "id": "BLACK_HOLE",
+    "icon": "data/ui_gfx/gun_actions/black_hole.png",
+    "name": "黑洞",
+    "en_name": "Black hole",
+    "pinyin": "heidong",
+    "pinyin_initials": "hd",
+    "type": 0,
+    "max_uses": 3
+  },
+  "BLACK_HOLE_DEATH_TRIGGER": {
+    "id": "BLACK_HOLE_DEATH_TRIGGER",
+    "icon": "data/ui_gfx/gun_actions/black_hole_timer.png",
+    "name": "带有死亡触发的黑洞",
+    "en_name": "Black Hole with Death Trigger",
+    "pinyin": "daiyousiwangchufadeheidong",
+    "pinyin_initials": "dyswcfdhd",
+    "type": 0,
+    "max_uses": 3
+  },
+  "WHITE_HOLE": {
+    "id": "WHITE_HOLE",
+    "icon": "data/ui_gfx/gun_actions/white_hole.png",
+    "name": "白洞",
+    "en_name": "White hole",
+    "pinyin": "baidong",
+    "pinyin_initials": "bd",
+    "type": 0,
+    "max_uses": 3
+  },
+  "BLACK_HOLE_BIG": {
+    "id": "BLACK_HOLE_BIG",
+    "icon": "data/ui_gfx/gun_actions/black_hole_big.png",
+    "name": "巨大黑洞",
+    "en_name": "Giga black hole",
+    "pinyin": "judaheidong",
+    "pinyin_initials": "jdhd",
+    "type": 1,
+    "max_uses": 6
+  },
+  "WHITE_HOLE_BIG": {
+    "id": "WHITE_HOLE_BIG",
+    "icon": "data/ui_gfx/gun_actions/white_hole_big.png",
+    "name": "巨大白洞",
+    "en_name": "Giga white hole",
+    "pinyin": "judabaidong",
+    "pinyin_initials": "jdbd",
+    "type": 1,
+    "max_uses": 6
+  },
+  "BLACK_HOLE_GIGA": {
+    "id": "BLACK_HOLE_GIGA",
+    "icon": "data/ui_gfx/gun_actions/black_hole_giga.png",
+    "name": "终结黑洞",
+    "en_name": "Omega Black Hole",
+    "pinyin": "zhongjieheidong",
+    "pinyin_initials": "zjhd",
+    "type": 1,
+    "max_uses": 6
+  },
+  "WHITE_HOLE_GIGA": {
+    "id": "WHITE_HOLE_GIGA",
+    "icon": "data/ui_gfx/gun_actions/white_hole_giga.png",
+    "name": "终结白洞",
+    "en_name": "Omega white hole",
+    "pinyin": "zhongjiebaidong",
+    "pinyin_initials": "zjbd",
+    "type": 1,
+    "max_uses": 6
+  },
+  "TENTACLE_PORTAL": {
+    "id": "TENTACLE_PORTAL",
+    "icon": "data/ui_gfx/gun_actions/tentacle_portal.png",
+    "name": "怪异传送门",
+    "en_name": "Eldritch portal",
+    "pinyin": "guaiyichuansongmen",
+    "pinyin_initials": "gycsm",
+    "type": 0,
+    "max_uses": 5
+  },
+  "SPITTER": {
+    "id": "SPITTER",
+    "icon": "data/ui_gfx/gun_actions/spitter.png",
+    "name": "分裂弹",
+    "en_name": "Spitter bolt",
+    "pinyin": "fenliedan",
+    "pinyin_initials": "fld",
+    "type": 0,
+    "max_uses": null
+  },
+  "SPITTER_TIMER": {
+    "id": "SPITTER_TIMER",
+    "icon": "data/ui_gfx/gun_actions/spitter_timer.png",
+    "name": "带有定时的分裂弹",
+    "en_name": "Spitter bolt with timer",
+    "pinyin": "daiyoudingshidefenliedan",
+    "pinyin_initials": "dydsdfld",
+    "type": 0,
+    "max_uses": null
+  },
+  "SPITTER_TIER_2": {
+    "id": "SPITTER_TIER_2",
+    "icon": "data/ui_gfx/gun_actions/spitter_green.png",
+    "name": "大型分裂弹",
+    "en_name": "Large spitter bolt",
+    "pinyin": "daxingfenliedan",
+    "pinyin_initials": "dxfld",
+    "type": 0,
+    "max_uses": null
+  },
+  "SPITTER_TIER_2_TIMER": {
+    "id": "SPITTER_TIER_2_TIMER",
+    "icon": "data/ui_gfx/gun_actions/spitter_green_timer.png",
+    "name": "带有定时的大型分裂弹",
+    "en_name": "Large spitter bolt with timer",
+    "pinyin": "daiyoudingshidedaxingfenliedan",
+    "pinyin_initials": "dydsddxfld",
+    "type": 0,
+    "max_uses": null
+  },
+  "SPITTER_TIER_3": {
+    "id": "SPITTER_TIER_3",
+    "icon": "data/ui_gfx/gun_actions/spitter_purple.png",
+    "name": "巨型分裂弹",
+    "en_name": "Giant spitter bolt",
+    "pinyin": "juxingfenliedan",
+    "pinyin_initials": "jxfld",
+    "type": 0,
+    "max_uses": null
+  },
+  "SPITTER_TIER_3_TIMER": {
+    "id": "SPITTER_TIER_3_TIMER",
+    "icon": "data/ui_gfx/gun_actions/spitter_purple_timer.png",
+    "name": "带有定时的巨型分裂弹",
+    "en_name": "Giant spitter bolt with timer",
+    "pinyin": "daiyoudingshidejuxingfenliedan",
+    "pinyin_initials": "dydsdjxfld",
+    "type": 0,
+    "max_uses": null
+  },
+  "BUBBLESHOT": {
+    "id": "BUBBLESHOT",
+    "icon": "data/ui_gfx/gun_actions/bubbleshot.png",
+    "name": "泡泡火花",
+    "en_name": "Bubble spark",
+    "pinyin": "paopaohuohua",
+    "pinyin_initials": "pphh",
+    "type": 0,
+    "max_uses": null
+  },
+  "BUBBLESHOT_TRIGGER": {
+    "id": "BUBBLESHOT_TRIGGER",
+    "icon": "data/ui_gfx/gun_actions/bubbleshot_trigger.png",
+    "name": "带有触发的泡泡火花",
+    "en_name": "Bubble spark with trigger",
+    "pinyin": "daiyouchufadepaopaohuohua",
+    "pinyin_initials": "dycfdpphh",
+    "type": 0,
+    "max_uses": null
+  },
+  "DISC_BULLET": {
+    "id": "DISC_BULLET",
+    "icon": "data/ui_gfx/gun_actions/disc_bullet.png",
+    "name": "碟状投射物",
+    "en_name": "Disc projectile",
+    "pinyin": "diezhuangtoushewu",
+    "pinyin_initials": "dztsw",
+    "type": 0,
+    "max_uses": null
+  },
+  "DISC_BULLET_BIG": {
+    "id": "DISC_BULLET_BIG",
+    "icon": "data/ui_gfx/gun_actions/disc_bullet_big.png",
+    "name": "巨型碟状投射物",
+    "en_name": "Giga disc projectile",
+    "pinyin": "juxingdiezhuangtoushewu",
+    "pinyin_initials": "jxdztsw",
+    "type": 0,
+    "max_uses": null
+  },
+  "DISC_BULLET_BIGGER": {
+    "id": "DISC_BULLET_BIGGER",
+    "icon": "data/ui_gfx/gun_actions/omega_disc_bullet.png",
+    "name": "召唤终结锯刃",
+    "en_name": "Summon Omega Sawblade",
+    "pinyin": "zhaohuanzhongjiejuren",
+    "pinyin_initials": "zhzjjr",
+    "type": 0,
+    "max_uses": null
+  },
+  "BOUNCY_ORB": {
+    "id": "BOUNCY_ORB",
+    "icon": "data/ui_gfx/gun_actions/bouncy_orb.png",
+    "name": "能量球体",
+    "en_name": "Energy sphere",
+    "pinyin": "nengliangqiuti",
+    "pinyin_initials": "nlqt",
+    "type": 0,
+    "max_uses": null
+  },
+  "BOUNCY_ORB_TIMER": {
+    "id": "BOUNCY_ORB_TIMER",
+    "icon": "data/ui_gfx/gun_actions/bouncy_orb_timer.png",
+    "name": "带有定时的能量球体",
+    "en_name": "Energy sphere with timer",
+    "pinyin": "daiyoudingshidenengliangqiuti",
+    "pinyin_initials": "dydsdnlqt",
+    "type": 0,
+    "max_uses": null
+  },
+  "RUBBER_BALL": {
+    "id": "RUBBER_BALL",
+    "icon": "data/ui_gfx/gun_actions/rubber_ball.png",
+    "name": "弹跳爆发",
+    "en_name": "Bouncing burst",
+    "pinyin": "dantiaobaofa",
+    "pinyin_initials": "dtbf",
+    "type": 0,
+    "max_uses": null
+  },
+  "ARROW": {
+    "id": "ARROW",
+    "icon": "data/ui_gfx/gun_actions/arrow.png",
+    "name": "箭矢",
+    "en_name": "Arrow",
+    "pinyin": "jianshi",
+    "pinyin_initials": "js",
+    "type": 0,
+    "max_uses": null
+  },
+  "POLLEN": {
+    "id": "POLLEN",
+    "icon": "data/ui_gfx/gun_actions/pollen.png",
+    "name": "花粉",
+    "en_name": "Pollen",
+    "pinyin": "huafen",
+    "pinyin_initials": "hf",
+    "type": 0,
+    "max_uses": null
+  },
+  "LANCE": {
+    "id": "LANCE",
+    "icon": "data/ui_gfx/gun_actions/lance.png",
+    "name": "闪耀之枪",
+    "en_name": "Glowing lance",
+    "pinyin": "shanyaozhiqiang",
+    "pinyin_initials": "syzq",
+    "type": 0,
+    "max_uses": null
+  },
+  "LANCE_HOLY": {
+    "id": "LANCE_HOLY",
+    "icon": "data/ui_gfx/gun_actions/lance_holy.png",
+    "name": "圣枪",
+    "en_name": "Holy Lance",
+    "pinyin": "shengqiang",
+    "pinyin_initials": "sq",
+    "type": 0,
+    "max_uses": null
+  },
+  "ROCKET": {
+    "id": "ROCKET",
+    "icon": "data/ui_gfx/gun_actions/rocket.png",
+    "name": "魔法飞弹",
+    "en_name": "Magic missile",
+    "pinyin": "mofafeidan",
+    "pinyin_initials": "mffd",
+    "type": 0,
+    "max_uses": 10
+  },
+  "ROCKET_TIER_2": {
+    "id": "ROCKET_TIER_2",
+    "icon": "data/ui_gfx/gun_actions/rocket_tier_2.png",
+    "name": "大型魔法飞弹",
+    "en_name": "Large magic missile",
+    "pinyin": "daxingmofafeidan",
+    "pinyin_initials": "dxmffd",
+    "type": 0,
+    "max_uses": 8
+  },
+  "ROCKET_TIER_3": {
+    "id": "ROCKET_TIER_3",
+    "icon": "data/ui_gfx/gun_actions/rocket_tier_3.png",
+    "name": "巨型魔法飞弹",
+    "en_name": "Giant magic missile",
+    "pinyin": "juxingmofafeidan",
+    "pinyin_initials": "jxmffd",
+    "type": 0,
+    "max_uses": 6
+  },
+  "GRENADE": {
+    "id": "GRENADE",
+    "icon": "data/ui_gfx/gun_actions/grenade.png",
+    "name": "火焰弹",
+    "en_name": "Firebolt",
+    "pinyin": "huoyandan",
+    "pinyin_initials": "hyd",
+    "type": 0,
+    "max_uses": 25
+  },
+  "GRENADE_TRIGGER": {
+    "id": "GRENADE_TRIGGER",
+    "icon": "data/ui_gfx/gun_actions/grenade_trigger.png",
+    "name": "带有触发的火焰弹",
+    "en_name": "Firebolt with trigger",
+    "pinyin": "daiyouchufadehuoyandan",
+    "pinyin_initials": "dycfdhyd",
+    "type": 0,
+    "max_uses": 25
+  },
+  "GRENADE_TIER_2": {
+    "id": "GRENADE_TIER_2",
+    "icon": "data/ui_gfx/gun_actions/grenade_tier_2.png",
+    "name": "大型火焰弹",
+    "en_name": "Large firebolt",
+    "pinyin": "daxinghuoyandan",
+    "pinyin_initials": "dxhyd",
+    "type": 0,
+    "max_uses": 20
+  },
+  "GRENADE_TIER_3": {
+    "id": "GRENADE_TIER_3",
+    "icon": "data/ui_gfx/gun_actions/grenade_tier_3.png",
+    "name": "巨型火焰弹",
+    "en_name": "Giant firebolt",
+    "pinyin": "juxinghuoyandan",
+    "pinyin_initials": "jxhyd",
+    "type": 0,
+    "max_uses": 20
+  },
+  "GRENADE_ANTI": {
+    "id": "GRENADE_ANTI",
+    "icon": "data/ui_gfx/gun_actions/grenade_anti.png",
+    "name": "怪异火焰弹",
+    "en_name": "Odd Firebolt",
+    "pinyin": "guaiyihuoyandan",
+    "pinyin_initials": "gyhyd",
+    "type": 0,
+    "max_uses": 25
+  },
+  "GRENADE_LARGE": {
+    "id": "GRENADE_LARGE",
+    "icon": "data/ui_gfx/gun_actions/grenade_large.png",
+    "name": "坠落弹",
+    "en_name": "Dropper bolt",
+    "pinyin": "zhuiluodan",
+    "pinyin_initials": "zld",
+    "type": 0,
+    "max_uses": 35
+  },
+  "MINE": {
+    "id": "MINE",
+    "icon": "data/ui_gfx/gun_actions/mine.png",
+    "name": "不稳晶体",
+    "en_name": "Unstable crystal",
+    "pinyin": "buwenjingti",
+    "pinyin_initials": "bwjt",
+    "type": 0,
+    "max_uses": 15
+  },
+  "MINE_DEATH_TRIGGER": {
+    "id": "MINE_DEATH_TRIGGER",
+    "icon": "data/ui_gfx/gun_actions/mine_death_trigger.png",
+    "name": "带有触发的不稳晶体",
+    "en_name": "Unstable crystal with trigger",
+    "pinyin": "daiyouchufadebuwenjingti",
+    "pinyin_initials": "dycfdbwjt",
+    "type": 0,
+    "max_uses": 15
+  },
+  "PIPE_BOMB": {
+    "id": "PIPE_BOMB",
+    "icon": "data/ui_gfx/gun_actions/pipe_bomb.png",
+    "name": "休眠晶体",
+    "en_name": "Dormant crystal",
+    "pinyin": "xiumianjingti",
+    "pinyin_initials": "xmjt",
+    "type": 0,
+    "max_uses": 20
+  },
+  "PIPE_BOMB_DEATH_TRIGGER": {
+    "id": "PIPE_BOMB_DEATH_TRIGGER",
+    "icon": "data/ui_gfx/gun_actions/pipe_bomb_death_trigger.png",
+    "name": "带有触发的休眠晶体",
+    "en_name": "Dormant crystal with trigger",
+    "pinyin": "daiyouchufadexiumianjingti",
+    "pinyin_initials": "dycfdxmjt",
+    "type": 0,
+    "max_uses": 20
+  },
+  "FISH": {
+    "id": "FISH",
+    "icon": "data/ui_gfx/gun_actions/fish.png",
+    "name": "召唤鱼类",
+    "en_name": "Summon fish",
+    "pinyin": "zhaohuanyulei",
+    "pinyin_initials": "zhyl",
+    "type": 0,
+    "max_uses": 20
+  },
+  "EXPLODING_DEER": {
+    "id": "EXPLODING_DEER",
+    "icon": "data/ui_gfx/gun_actions/exploding_deer.png",
+    "name": "召唤鹿诱饵",
+    "en_name": "Summon deercoy",
+    "pinyin": "zhaohuanluyouer",
+    "pinyin_initials": "zhlye",
+    "type": 0,
+    "max_uses": 10
+  },
+  "EXPLODING_DUCKS": {
+    "id": "EXPLODING_DUCKS",
+    "icon": "data/ui_gfx/gun_actions/duck_2.png",
+    "name": "鸭群",
+    "en_name": "Flock of Ducks",
+    "pinyin": "yaqun",
+    "pinyin_initials": "yq",
+    "type": 0,
+    "max_uses": 20
+  },
+  "WORM_SHOT": {
+    "id": "WORM_SHOT",
+    "icon": "data/ui_gfx/gun_actions/worm.png",
+    "name": "蠕虫发射器",
+    "en_name": "Worm Launcher",
+    "pinyin": "ruchongfasheqi",
+    "pinyin_initials": "rcfsq",
+    "type": 0,
+    "max_uses": 10
+  },
+  "BOMB_DETONATOR": {
+    "id": "BOMB_DETONATOR",
+    "icon": "data/ui_gfx/gun_actions/pipe_bomb_detonator.png",
+    "name": "炸药引爆器",
+    "en_name": "Explosive Detonator",
+    "pinyin": "zhayaoyinbaoqi",
+    "pinyin_initials": "zyybq",
+    "type": 1,
+    "max_uses": null
+  },
+  "LASER": {
+    "id": "LASER",
+    "icon": "data/ui_gfx/gun_actions/laser.png",
+    "name": "汇聚之光",
+    "en_name": "Concentrated light",
+    "pinyin": "huijuzhiguang",
+    "pinyin_initials": "hjzg",
+    "type": 0,
+    "max_uses": null
+  },
+  "MEGALASER": {
+    "id": "MEGALASER",
+    "icon": "data/ui_gfx/gun_actions/megalaser.png",
+    "name": "强烈汇聚之光",
+    "en_name": "Intense concentrated light",
+    "pinyin": "qiangliehuijuzhiguang",
+    "pinyin_initials": "qlhjzg",
+    "type": 0,
+    "max_uses": null
+  },
+  "LIGHTNING": {
+    "id": "LIGHTNING",
+    "icon": "data/ui_gfx/gun_actions/lightning.png",
+    "name": "闪电弹",
+    "en_name": "Lightning bolt",
+    "pinyin": "shandiandan",
+    "pinyin_initials": "sdd",
+    "type": 0,
+    "max_uses": null
+  },
+  "BALL_LIGHTNING": {
+    "id": "BALL_LIGHTNING",
+    "icon": "data/ui_gfx/gun_actions/ball_lightning.png",
+    "name": "球状闪电",
+    "en_name": "Ball Lightning",
+    "pinyin": "qiuzhuangshandian",
+    "pinyin_initials": "qzsd",
+    "type": 0,
+    "max_uses": null
+  },
+  "LASER_EMITTER": {
+    "id": "LASER_EMITTER",
+    "icon": "data/ui_gfx/gun_actions/laser_emitter.png",
+    "name": "电浆束",
+    "en_name": "Plasma beam",
+    "pinyin": "dianjiangshu",
+    "pinyin_initials": "djs",
+    "type": 0,
+    "max_uses": null
+  },
+  "LASER_EMITTER_FOUR": {
+    "id": "LASER_EMITTER_FOUR",
+    "icon": "data/ui_gfx/gun_actions/laser_emitter_four.png",
+    "name": "电浆束十字",
+    "en_name": "Plasma Beam Cross",
+    "pinyin": "dianjiangshushizi",
+    "pinyin_initials": "djssz",
+    "type": 0,
+    "max_uses": null
+  },
+  "LASER_EMITTER_CUTTER": {
+    "id": "LASER_EMITTER_CUTTER",
+    "icon": "data/ui_gfx/gun_actions/laser_emitter_cutter.png",
+    "name": "电浆切割器",
+    "en_name": "Plasma Cutter",
+    "pinyin": "dianjiangqiegeqi",
+    "pinyin_initials": "djqgq",
+    "type": 0,
+    "max_uses": null
+  },
+  "DIGGER": {
+    "id": "DIGGER",
+    "icon": "data/ui_gfx/gun_actions/digger.png",
+    "name": "挖掘魔弹",
+    "en_name": "Digging bolt",
+    "pinyin": "wajuemodan",
+    "pinyin_initials": "wjmd",
+    "type": 0,
+    "max_uses": null
+  },
+  "POWERDIGGER": {
+    "id": "POWERDIGGER",
+    "icon": "data/ui_gfx/gun_actions/powerdigger.png",
+    "name": "挖掘爆破",
+    "en_name": "Digging blast",
+    "pinyin": "wajuebaopo",
+    "pinyin_initials": "wjbp",
+    "type": 0,
+    "max_uses": null
+  },
+  "CHAINSAW": {
+    "id": "CHAINSAW",
+    "icon": "data/ui_gfx/gun_actions/chainsaw.png",
+    "name": "链锯",
+    "en_name": "Chainsaw",
+    "pinyin": "lianju",
+    "pinyin_initials": "lj",
+    "type": 0,
+    "max_uses": null
+  },
+  "LUMINOUS_DRILL": {
+    "id": "LUMINOUS_DRILL",
+    "icon": "data/ui_gfx/gun_actions/luminous_drill.png",
+    "name": "光明穿凿",
+    "en_name": "Luminous drill",
+    "pinyin": "guangmingchuanzao",
+    "pinyin_initials": "gmcz",
+    "type": 0,
+    "max_uses": null
+  },
+  "LASER_LUMINOUS_DRILL": {
+    "id": "LASER_LUMINOUS_DRILL",
+    "icon": "data/ui_gfx/gun_actions/luminous_drill_timer.png",
+    "name": "带有定时的光明穿凿",
+    "en_name": "Luminous drill with timer",
+    "pinyin": "daiyoudingshideguangmingchuanzao",
+    "pinyin_initials": "dydsdgmcz",
+    "type": 0,
+    "max_uses": null
+  },
+  "TENTACLE": {
+    "id": "TENTACLE",
+    "icon": "data/ui_gfx/gun_actions/tentacle.png",
+    "name": "召唤触手",
+    "en_name": "Summon Tentacle",
+    "pinyin": "zhaohuanchushou",
+    "pinyin_initials": "zhcs",
+    "type": 0,
+    "max_uses": null
+  },
+  "TENTACLE_TIMER": {
+    "id": "TENTACLE_TIMER",
+    "icon": "data/ui_gfx/gun_actions/tentacle_timer.png",
+    "name": "带有定时的触手",
+    "en_name": "Summon Tentacle with timer",
+    "pinyin": "daiyoudingshidechushou",
+    "pinyin_initials": "dydsdcs",
+    "type": 0,
+    "max_uses": null
+  },
+  "HEAL_BULLET": {
+    "id": "HEAL_BULLET",
+    "icon": "data/ui_gfx/gun_actions/heal_bullet.png",
+    "name": "治疗魔弹",
+    "en_name": "Healing bolt",
+    "pinyin": "zhiliaomodan",
+    "pinyin_initials": "zlmd",
+    "type": 0,
+    "max_uses": 20
+  },
+  "ANTIHEAL": {
+    "id": "ANTIHEAL",
+    "icon": "data/ui_gfx/gun_actions/antiheal.png",
+    "name": "致命治愈",
+    "en_name": "Deadly heal",
+    "pinyin": "zhimingzhiyu",
+    "pinyin_initials": "zmzy",
+    "type": 0,
+    "max_uses": 20
+  },
+  "SPIRAL_SHOT": {
+    "id": "SPIRAL_SHOT",
+    "icon": "data/ui_gfx/gun_actions/spiral_shot.png",
+    "name": "螺旋魔弹",
+    "en_name": "Spiral shot",
+    "pinyin": "luoxuanmodan",
+    "pinyin_initials": "lxmd",
+    "type": 0,
+    "max_uses": 15
+  },
+  "MAGIC_SHIELD": {
+    "id": "MAGIC_SHIELD",
+    "icon": "data/ui_gfx/gun_actions/magic_shield.png",
+    "name": "魔法护卫",
+    "en_name": "Magic guard",
+    "pinyin": "mofahuwei",
+    "pinyin_initials": "mfhw",
+    "type": 0,
+    "max_uses": null
+  },
+  "BIG_MAGIC_SHIELD": {
+    "id": "BIG_MAGIC_SHIELD",
+    "icon": "data/ui_gfx/gun_actions/big_magic_shield.png",
+    "name": "大型魔法护卫",
+    "en_name": "Big magic guard",
+    "pinyin": "daxingmofahuwei",
+    "pinyin_initials": "dxmfhw",
+    "type": 0,
+    "max_uses": null
+  },
+  "CHAIN_BOLT": {
+    "id": "CHAIN_BOLT",
+    "icon": "data/ui_gfx/gun_actions/chain_bolt.png",
+    "name": "连环魔弹",
+    "en_name": "Chain bolt",
+    "pinyin": "lianhuanmodan",
+    "pinyin_initials": "lhmd",
+    "type": 0,
+    "max_uses": null
+  },
+  "FIREBALL": {
+    "id": "FIREBALL",
+    "icon": "data/ui_gfx/gun_actions/fireball.png",
+    "name": "火球",
+    "en_name": "Fireball",
+    "pinyin": "huoqiu",
+    "pinyin_initials": "hq",
+    "type": 0,
+    "max_uses": 15
+  },
+  "METEOR": {
+    "id": "METEOR",
+    "icon": "data/ui_gfx/gun_actions/meteor.png",
+    "name": "陨石",
+    "en_name": "Meteor",
+    "pinyin": "yunshi",
+    "pinyin_initials": "ys",
+    "type": 0,
+    "max_uses": 10
+  },
+  "FLAMETHROWER": {
+    "id": "FLAMETHROWER",
+    "icon": "data/ui_gfx/gun_actions/flamethrower.png",
+    "name": "火焰喷射器",
+    "en_name": "Flamethrower",
+    "pinyin": "huoyanpensheqi",
+    "pinyin_initials": "hypsq",
+    "type": 0,
+    "max_uses": 60
+  },
+  "ICEBALL": {
+    "id": "ICEBALL",
+    "icon": "data/ui_gfx/gun_actions/iceball.png",
+    "name": "冰球",
+    "en_name": "Iceball",
+    "pinyin": "bingqiu",
+    "pinyin_initials": "bq",
+    "type": 0,
+    "max_uses": 15
+  },
+  "SLIMEBALL": {
+    "id": "SLIMEBALL",
+    "icon": "data/ui_gfx/gun_actions/slimeball.png",
+    "name": "粘液球",
+    "en_name": "Slimeball",
+    "pinyin": "nianyeqiu",
+    "pinyin_initials": "nyq",
+    "type": 0,
+    "max_uses": null
+  },
+  "DARKFLAME": {
+    "id": "DARKFLAME",
+    "icon": "data/ui_gfx/gun_actions/darkflame.png",
+    "name": "黑焰之道",
+    "en_name": "Path of dark flame",
+    "pinyin": "heiyanzhidao",
+    "pinyin_initials": "hyzd",
+    "type": 0,
+    "max_uses": 60
+  },
+  "MISSILE": {
+    "id": "MISSILE",
+    "icon": "data/ui_gfx/gun_actions/missile.png",
+    "name": "召唤飞弹",
+    "en_name": "Summon missile",
+    "pinyin": "zhaohuanfeidan",
+    "pinyin_initials": "zhfd",
+    "type": 0,
+    "max_uses": 20
+  },
+  "FUNKY_SPELL": {
+    "id": "FUNKY_SPELL",
+    "icon": "data/ui_gfx/gun_actions/machinegun_bullet.png",
+    "name": "???",
+    "en_name": "???",
+    "pinyin": "???",
+    "pinyin_initials": "???",
+    "type": 0,
+    "max_uses": null
+  },
+  "PEBBLE": {
+    "id": "PEBBLE",
+    "icon": "data/ui_gfx/gun_actions/pebble.png",
+    "name": "召唤岩石精灵",
+    "en_name": "Summon rock spirit",
+    "pinyin": "zhaohuanyanshijingling",
+    "pinyin_initials": "zhysjl",
+    "type": 0,
+    "max_uses": 10
+  },
+  "DYNAMITE": {
+    "id": "DYNAMITE",
+    "icon": "data/ui_gfx/gun_actions/dynamite.png",
+    "name": "炸药",
+    "en_name": "Dynamite",
+    "pinyin": "zhayao",
+    "pinyin_initials": "zy",
+    "type": 0,
+    "max_uses": 16
+  },
+  "GLITTER_BOMB": {
+    "id": "GLITTER_BOMB",
+    "icon": "data/ui_gfx/gun_actions/glitter_bomb.png",
+    "name": "闪烁炸弹",
+    "en_name": "Glitter bomb",
+    "pinyin": "shanshuozhadan",
+    "pinyin_initials": "sszd",
+    "type": 0,
+    "max_uses": 16
+  },
+  "BUCKSHOT": {
+    "id": "BUCKSHOT",
+    "icon": "data/ui_gfx/gun_actions/buckshot.png",
+    "name": "三联魔弹",
+    "en_name": "Triplicate bolt",
+    "pinyin": "sanlianmodan",
+    "pinyin_initials": "slmd",
+    "type": 0,
+    "max_uses": null
+  },
+  "FREEZING_GAZE": {
+    "id": "FREEZING_GAZE",
+    "icon": "data/ui_gfx/gun_actions/freezing_gaze.png",
+    "name": "冰冷凝视",
+    "en_name": "Freezing gaze",
+    "pinyin": "binglengningshi",
+    "pinyin_initials": "blns",
+    "type": 0,
+    "max_uses": 20
+  },
+  "GLOWING_BOLT": {
+    "id": "GLOWING_BOLT",
+    "icon": "data/ui_gfx/gun_actions/glowing_bolt.png",
+    "name": "汇聚之光",
+    "en_name": "Pinpoint of light",
+    "pinyin": "huijuzhiguang",
+    "pinyin_initials": "hjzg",
+    "type": 0,
+    "max_uses": null
+  },
+  "SPORE_POD": {
+    "id": "SPORE_POD",
+    "icon": "data/ui_gfx/gun_actions/spore_pod.png",
+    "name": "多刺孢子荚",
+    "en_name": "Prickly Spore Pod",
+    "pinyin": "duocibaozijia",
+    "pinyin_initials": "dcbzj",
+    "type": 0,
+    "max_uses": null
+  },
+  "GLUE_SHOT": {
+    "id": "GLUE_SHOT",
+    "icon": "data/ui_gfx/gun_actions/glue_shot.png",
+    "name": "胶球",
+    "en_name": "Glue Ball",
+    "pinyin": "jiaoqiu",
+    "pinyin_initials": "jq",
+    "type": 0,
+    "max_uses": null
+  },
+  "BOMB_HOLY": {
+    "id": "BOMB_HOLY",
+    "icon": "data/ui_gfx/gun_actions/bomb_holy.png",
+    "name": "神圣炸弹",
+    "en_name": "Holy Bomb",
+    "pinyin": "shenshengzhadan",
+    "pinyin_initials": "sszd",
+    "type": 0,
+    "max_uses": 2
+  },
+  "BOMB_HOLY_GIGA": {
+    "id": "BOMB_HOLY_GIGA",
+    "icon": "data/ui_gfx/gun_actions/bomb_holy_giga.png",
+    "name": "巨型神圣炸弹",
+    "en_name": "Giga Holy Bomb",
+    "pinyin": "juxingshenshengzhadan",
+    "pinyin_initials": "jxsszd",
+    "type": 0,
+    "max_uses": 2
+  },
+  "PROPANE_TANK": {
+    "id": "PROPANE_TANK",
+    "icon": "data/ui_gfx/gun_actions/propane_tank.png",
+    "name": "丙烷罐",
+    "en_name": "Propane tank",
+    "pinyin": "bingwanguan",
+    "pinyin_initials": "bwg",
+    "type": 0,
+    "max_uses": 10
+  },
+  "BOMB_CART": {
+    "id": "BOMB_CART",
+    "icon": "data/ui_gfx/gun_actions/bomb_cart.png",
+    "name": "炸弹矿车",
+    "en_name": "Bomb cart",
+    "pinyin": "zhadankuangche",
+    "pinyin_initials": "zdkc",
+    "type": 0,
+    "max_uses": 6
+  },
+  "CURSED_ORB": {
+    "id": "CURSED_ORB",
+    "icon": "data/ui_gfx/gun_actions/cursed_orb.png",
+    "name": "诅咒之球",
+    "en_name": "Cursed sphere",
+    "pinyin": "zuzhouzhiqiu",
+    "pinyin_initials": "zzzq",
+    "type": 0,
+    "max_uses": null
+  },
+  "EXPANDING_ORB": {
+    "id": "EXPANDING_ORB",
+    "icon": "data/ui_gfx/gun_actions/expanding_orb.png",
+    "name": "扩张之球",
+    "en_name": "Expanding Sphere",
+    "pinyin": "kuozhangzhiqiu",
+    "pinyin_initials": "kzzq",
+    "type": 0,
+    "max_uses": null
+  },
+  "CRUMBLING_EARTH": {
+    "id": "CRUMBLING_EARTH",
+    "icon": "data/ui_gfx/gun_actions/crumbling_earth.png",
+    "name": "地震",
+    "en_name": "Earthquake",
+    "pinyin": "dizhen",
+    "pinyin_initials": "dz",
+    "type": 0,
+    "max_uses": 3
+  },
+  "SUMMON_ROCK": {
+    "id": "SUMMON_ROCK",
+    "icon": "data/ui_gfx/gun_actions/summon_rock.png",
+    "name": "岩石",
+    "en_name": "Rock",
+    "pinyin": "yanshi",
+    "pinyin_initials": "ys",
+    "type": 0,
+    "max_uses": 3
+  },
+  "SUMMON_EGG": {
+    "id": "SUMMON_EGG",
+    "icon": "data/ui_gfx/gun_actions/summon_egg.png",
+    "name": "召唤蛋",
+    "en_name": "Summon egg",
+    "pinyin": "zhaohuandan",
+    "pinyin_initials": "zhd",
+    "type": 0,
+    "max_uses": 2
+  },
+  "SUMMON_HOLLOW_EGG": {
+    "id": "SUMMON_HOLLOW_EGG",
+    "icon": "data/ui_gfx/gun_actions/summon_hollow_egg.png",
+    "name": "召唤空的蛋",
+    "en_name": "Summon hollow egg",
+    "pinyin": "zhaohuankongdedan",
+    "pinyin_initials": "zhkdd",
+    "type": 0,
+    "max_uses": null
+  },
+  "TNTBOX": {
+    "id": "TNTBOX",
+    "icon": "data/ui_gfx/gun_actions/tntbox.png",
+    "name": "召唤炸药箱",
+    "en_name": "Summon Explosive Box",
+    "pinyin": "zhaohuanzhayaoxiang",
+    "pinyin_initials": "zhzyx",
+    "type": 0,
+    "max_uses": 15
+  },
+  "TNTBOX_BIG": {
+    "id": "TNTBOX_BIG",
+    "icon": "data/ui_gfx/gun_actions/tntbox_big.png",
+    "name": "召唤大号炸药箱",
+    "en_name": "Summon Large Explosive Box",
+    "pinyin": "zhaohuandahaozhayaoxiang",
+    "pinyin_initials": "zhdhzyx",
+    "type": 0,
+    "max_uses": 15
+  },
+  "SWARM_FLY": {
+    "id": "SWARM_FLY",
+    "icon": "data/ui_gfx/gun_actions/swarm_fly.png",
+    "name": "召唤苍蝇群",
+    "en_name": "Summon fly swarm",
+    "pinyin": "zhaohuancangyingqun",
+    "pinyin_initials": "zhcyq",
+    "type": 1,
+    "max_uses": null
+  },
+  "SWARM_FIREBUG": {
+    "id": "SWARM_FIREBUG",
+    "icon": "data/ui_gfx/gun_actions/swarm_firebug.png",
+    "name": "召唤萤火虫群",
+    "en_name": "Summon Firebug swarm",
+    "pinyin": "zhaohuanyinghuochongqun",
+    "pinyin_initials": "zhyhcq",
+    "type": 1,
+    "max_uses": null
+  },
+  "SWARM_WASP": {
+    "id": "SWARM_WASP",
+    "icon": "data/ui_gfx/gun_actions/swarm_wasp.png",
+    "name": "召唤黄蜂群",
+    "en_name": "Summon Wasp swarm",
+    "pinyin": "zhaohuanhuangfengqun",
+    "pinyin_initials": "zhhfq",
+    "type": 1,
+    "max_uses": null
+  },
+  "FRIEND_FLY": {
+    "id": "FRIEND_FLY",
+    "icon": "data/ui_gfx/gun_actions/friend_fly.png",
+    "name": "召唤友好苍蝇",
+    "en_name": "Summon Friendly fly",
+    "pinyin": "zhaohuanyouhaocangying",
+    "pinyin_initials": "zhyhcy",
+    "type": 1,
+    "max_uses": null
+  },
+  "ACIDSHOT": {
+    "id": "ACIDSHOT",
+    "icon": "data/ui_gfx/gun_actions/acidshot.png",
+    "name": "酸液球",
+    "en_name": "Acid ball",
+    "pinyin": "suanyeqiu",
+    "pinyin_initials": "syq",
+    "type": 0,
+    "max_uses": 20
+  },
+  "THUNDERBALL": {
+    "id": "THUNDERBALL",
+    "icon": "data/ui_gfx/gun_actions/thunderball.png",
+    "name": "雷霆放射",
+    "en_name": "Thunder charge",
+    "pinyin": "leitingfangshe",
+    "pinyin_initials": "ltfs",
+    "type": 0,
+    "max_uses": 3
+  },
+  "FIREBOMB": {
+    "id": "FIREBOMB",
+    "icon": "data/ui_gfx/gun_actions/firebomb.png",
+    "name": "火焰炸弹",
+    "en_name": "Firebomb",
+    "pinyin": "huoyanzhadan",
+    "pinyin_initials": "hyzd",
+    "type": 0,
+    "max_uses": null
+  },
+  "SOILBALL": {
+    "id": "SOILBALL",
+    "icon": "data/ui_gfx/gun_actions/soil.png",
+    "name": "一把泥土",
+    "en_name": "Chunk of soil",
+    "pinyin": "yibanitu",
+    "pinyin_initials": "ybnt",
+    "type": 4,
+    "max_uses": null
+  },
+  "DEATH_CROSS": {
+    "id": "DEATH_CROSS",
+    "icon": "data/ui_gfx/gun_actions/death_cross.png",
+    "name": "死亡十字",
+    "en_name": "Death cross",
+    "pinyin": "siwangshizi",
+    "pinyin_initials": "swsz",
+    "type": 0,
+    "max_uses": null
+  },
+  "DEATH_CROSS_BIG": {
+    "id": "DEATH_CROSS_BIG",
+    "icon": "data/ui_gfx/gun_actions/death_cross_big.png",
+    "name": "巨大死亡十字",
+    "en_name": "Giga death cross",
+    "pinyin": "judasiwangshizi",
+    "pinyin_initials": "jdswsz",
+    "type": 0,
+    "max_uses": 8
+  },
+  "INFESTATION": {
+    "id": "INFESTATION",
+    "icon": "data/ui_gfx/gun_actions/infestation.png",
+    "name": "侵扰",
+    "en_name": "Infestation",
+    "pinyin": "qinrao",
+    "pinyin_initials": "qr",
+    "type": 0,
+    "max_uses": null
+  },
+  "WALL_HORIZONTAL": {
+    "id": "WALL_HORIZONTAL",
+    "icon": "data/ui_gfx/gun_actions/wall_horizontal.png",
+    "name": "水平屏障",
+    "en_name": "Horizontal barrier",
+    "pinyin": "shuipingpingzhang",
+    "pinyin_initials": "sppz",
+    "type": 1,
+    "max_uses": null
+  },
+  "WALL_VERTICAL": {
+    "id": "WALL_VERTICAL",
+    "icon": "data/ui_gfx/gun_actions/wall_vertical.png",
+    "name": "垂直屏障",
+    "en_name": "Vertical barrier",
+    "pinyin": "chuizhipingzhang",
+    "pinyin_initials": "czpz",
+    "type": 1,
+    "max_uses": null
+  },
+  "WALL_SQUARE": {
+    "id": "WALL_SQUARE",
+    "icon": "data/ui_gfx/gun_actions/wall_square.png",
+    "name": "方形屏障",
+    "en_name": "Square barrier",
+    "pinyin": "fangxingpingzhang",
+    "pinyin_initials": "fxpz",
+    "type": 1,
+    "max_uses": 20
+  },
+  "TEMPORARY_WALL": {
+    "id": "TEMPORARY_WALL",
+    "icon": "data/ui_gfx/gun_actions/temporary_wall.png",
+    "name": "召唤墙壁",
+    "en_name": "Summon Wall",
+    "pinyin": "zhaohuanqiangbi",
+    "pinyin_initials": "zhqb",
+    "type": 6,
+    "max_uses": 20
+  },
+  "TEMPORARY_PLATFORM": {
+    "id": "TEMPORARY_PLATFORM",
+    "icon": "data/ui_gfx/gun_actions/temporary_platform.png",
+    "name": "召唤平台",
+    "en_name": "Summon Platform",
+    "pinyin": "zhaohuanpingtai",
+    "pinyin_initials": "zhpt",
+    "type": 6,
+    "max_uses": 20
+  },
+  "PURPLE_EXPLOSION_FIELD": {
+    "id": "PURPLE_EXPLOSION_FIELD",
+    "icon": "data/ui_gfx/gun_actions/purple_explosion_field.png",
+    "name": "盛大场面",
+    "en_name": "Glittering field",
+    "pinyin": "shengdachangmian",
+    "pinyin_initials": "sdcm",
+    "type": 1,
+    "max_uses": 20
+  },
+  "DELAYED_SPELL": {
+    "id": "DELAYED_SPELL",
+    "icon": "data/ui_gfx/gun_actions/delayed_spell.png",
+    "name": "延迟施法",
+    "en_name": "Delayed spellcast",
+    "pinyin": "yanchishifa",
+    "pinyin_initials": "ycsf",
+    "type": 1,
+    "max_uses": null
+  },
+  "LONG_DISTANCE_CAST": {
+    "id": "LONG_DISTANCE_CAST",
+    "icon": "data/ui_gfx/gun_actions/long_distance_cast.png",
+    "name": "远距离施放",
+    "en_name": "Long-distance cast",
+    "pinyin": "yuanjulishifang",
+    "pinyin_initials": "yjlsf",
+    "type": 6,
+    "max_uses": null
+  },
+  "TELEPORT_CAST": {
+    "id": "TELEPORT_CAST",
+    "icon": "data/ui_gfx/gun_actions/teleport_cast.png",
+    "name": "传送施放",
+    "en_name": "Teleporting cast",
+    "pinyin": "chuansongshifang",
+    "pinyin_initials": "cssf",
+    "type": 6,
+    "max_uses": null
+  },
+  "SUPER_TELEPORT_CAST": {
+    "id": "SUPER_TELEPORT_CAST",
+    "icon": "data/ui_gfx/gun_actions/super_teleport_cast.png",
+    "name": "传送施放",
+    "en_name": "Warp cast",
+    "pinyin": "chuansongshifang",
+    "pinyin_initials": "cssf",
+    "type": 6,
+    "max_uses": null
+  },
+  "CASTER_CAST": {
+    "id": "CASTER_CAST",
+    "icon": "data/ui_gfx/gun_actions/caster_cast.png",
+    "name": "随心法术",
+    "en_name": "Inner spell",
+    "pinyin": "suixinfashu",
+    "pinyin_initials": "sxfs",
+    "type": 6,
+    "max_uses": null
+  },
+  "MIST_RADIOACTIVE": {
+    "id": "MIST_RADIOACTIVE",
+    "icon": "data/ui_gfx/gun_actions/mist_radioactive.png",
+    "name": "毒雾",
+    "en_name": "Toxic mist",
+    "pinyin": "duwu",
+    "pinyin_initials": "dw",
+    "type": 0,
+    "max_uses": null
+  },
+  "MIST_ALCOHOL": {
+    "id": "MIST_ALCOHOL",
+    "icon": "data/ui_gfx/gun_actions/mist_alcohol.png",
+    "name": "烈酒云雾",
+    "en_name": "mist of spirits",
+    "pinyin": "liejiuyunwu",
+    "pinyin_initials": "ljyw",
+    "type": 0,
+    "max_uses": null
+  },
+  "MIST_SLIME": {
+    "id": "MIST_SLIME",
+    "icon": "data/ui_gfx/gun_actions/mist_slime.png",
+    "name": "粘液雾",
+    "en_name": "Slime mist",
+    "pinyin": "nianyewu",
+    "pinyin_initials": "nyw",
+    "type": 0,
+    "max_uses": null
+  },
+  "MIST_BLOOD": {
+    "id": "MIST_BLOOD",
+    "icon": "data/ui_gfx/gun_actions/mist_blood.png",
+    "name": "血雾",
+    "en_name": "Blood mist",
+    "pinyin": "xuewu",
+    "pinyin_initials": "xw",
+    "type": 0,
+    "max_uses": 10
+  },
+  "CIRCLE_FIRE": {
+    "id": "CIRCLE_FIRE",
+    "icon": "data/ui_gfx/gun_actions/circle_fire.png",
+    "name": "烈火之环",
+    "en_name": "Circle of fire",
+    "pinyin": "liehuozhihuan",
+    "pinyin_initials": "lhzh",
+    "type": 4,
+    "max_uses": 15
+  },
+  "CIRCLE_ACID": {
+    "id": "CIRCLE_ACID",
+    "icon": "data/ui_gfx/gun_actions/circle_acid.png",
+    "name": "酸液之环",
+    "en_name": "Circle of acid",
+    "pinyin": "suanyezhihuan",
+    "pinyin_initials": "syzh",
+    "type": 4,
+    "max_uses": 4
+  },
+  "CIRCLE_OIL": {
+    "id": "CIRCLE_OIL",
+    "icon": "data/ui_gfx/gun_actions/circle_oil.png",
+    "name": "油液之环",
+    "en_name": "Circle of oil",
+    "pinyin": "youyezhihuan",
+    "pinyin_initials": "yyzh",
+    "type": 4,
+    "max_uses": 15
+  },
+  "CIRCLE_WATER": {
+    "id": "CIRCLE_WATER",
+    "icon": "data/ui_gfx/gun_actions/circle_water.png",
+    "name": "清水之环",
+    "en_name": "Circle of water",
+    "pinyin": "qingshuizhihuan",
+    "pinyin_initials": "qszh",
+    "type": 4,
+    "max_uses": 15
+  },
+  "MATERIAL_WATER": {
+    "id": "MATERIAL_WATER",
+    "icon": "data/ui_gfx/gun_actions/material_water.png",
+    "name": "水",
+    "en_name": "Water",
+    "pinyin": "shui",
+    "pinyin_initials": "s",
+    "type": 4,
+    "max_uses": null
+  },
+  "MATERIAL_OIL": {
+    "id": "MATERIAL_OIL",
+    "icon": "data/ui_gfx/gun_actions/material_oil.png",
+    "name": "油",
+    "en_name": "Oil",
+    "pinyin": "you",
+    "pinyin_initials": "y",
+    "type": 4,
+    "max_uses": null
+  },
+  "MATERIAL_BLOOD": {
+    "id": "MATERIAL_BLOOD",
+    "icon": "data/ui_gfx/gun_actions/material_blood.png",
+    "name": "血液",
+    "en_name": "Blood",
+    "pinyin": "xueye",
+    "pinyin_initials": "xy",
+    "type": 4,
+    "max_uses": 250
+  },
+  "MATERIAL_ACID": {
+    "id": "MATERIAL_ACID",
+    "icon": "data/ui_gfx/gun_actions/material_acid.png",
+    "name": "酸液",
+    "en_name": "Acid",
+    "pinyin": "suanye",
+    "pinyin_initials": "sy",
+    "type": 4,
+    "max_uses": null
+  },
+  "MATERIAL_CEMENT": {
+    "id": "MATERIAL_CEMENT",
+    "icon": "data/ui_gfx/gun_actions/material_cement.png",
+    "name": "水泥",
+    "en_name": "Cement",
+    "pinyin": "shuini",
+    "pinyin_initials": "sn",
+    "type": 4,
+    "max_uses": null
+  },
+  "TELEPORT_PROJECTILE": {
+    "id": "TELEPORT_PROJECTILE",
+    "icon": "data/ui_gfx/gun_actions/teleport_projectile.png",
+    "name": "传送魔弹",
+    "en_name": "Teleport bolt",
+    "pinyin": "chuansongmodan",
+    "pinyin_initials": "csmd",
+    "type": 0,
+    "max_uses": null
+  },
+  "TELEPORT_PROJECTILE_SHORT": {
+    "id": "TELEPORT_PROJECTILE_SHORT",
+    "icon": "data/ui_gfx/gun_actions/teleport_projectile_short.png",
+    "name": "小传送魔弹",
+    "en_name": "Small Teleport Bolt",
+    "pinyin": "xiaozhuansongmodan",
+    "pinyin_initials": "xzsmd",
+    "type": 0,
+    "max_uses": null
+  },
+  "TELEPORT_PROJECTILE_STATIC": {
+    "id": "TELEPORT_PROJECTILE_STATIC",
+    "icon": "data/ui_gfx/gun_actions/teleport_projectile_static.png",
+    "name": "返回",
+    "en_name": "Return",
+    "pinyin": "fanhui",
+    "pinyin_initials": "fh",
+    "type": 0,
+    "max_uses": null
+  },
+  "SWAPPER_PROJECTILE": {
+    "id": "SWAPPER_PROJECTILE",
+    "icon": "data/ui_gfx/gun_actions/swapper_projectile.png",
+    "name": "交换者",
+    "en_name": "Swapper",
+    "pinyin": "jiaohuanzhe",
+    "pinyin_initials": "jhz",
+    "type": 0,
+    "max_uses": null
+  },
+  "TELEPORT_PROJECTILE_CLOSER": {
+    "id": "TELEPORT_PROJECTILE_CLOSER",
+    "icon": "data/ui_gfx/gun_actions/teleport_projectile_closer.png",
+    "name": "“归家”传送魔弹",
+    "en_name": "Homebringer Teleport Bolt",
+    "pinyin": "“guijia”chuansongmodan",
+    "pinyin_initials": "“gj”csmd",
+    "type": 0,
+    "max_uses": null
+  },
+  "NUKE": {
+    "id": "NUKE",
+    "icon": "data/ui_gfx/gun_actions/nuke.png",
+    "name": "核弹",
+    "en_name": "Nuke",
+    "pinyin": "hedan",
+    "pinyin_initials": "hd",
+    "type": 0,
+    "max_uses": 1
+  },
+  "NUKE_GIGA": {
+    "id": "NUKE_GIGA",
+    "icon": "data/ui_gfx/gun_actions/nuke_giga.png",
+    "name": "巨型核弹",
+    "en_name": "Giga Nuke",
+    "pinyin": "juxinghedan",
+    "pinyin_initials": "jxhd",
+    "type": 0,
+    "max_uses": 1
+  },
+  "FIREWORK": {
+    "id": "FIREWORK",
+    "icon": "data/ui_gfx/gun_actions/fireworks.png",
+    "name": "烟火！",
+    "en_name": "Fireworks!",
+    "pinyin": "yanhuo！",
+    "pinyin_initials": "yh！",
+    "type": 0,
+    "max_uses": 25
+  },
+  "SUMMON_WANDGHOST": {
+    "id": "SUMMON_WANDGHOST",
+    "icon": "data/ui_gfx/gun_actions/summon_wandghost.png",
+    "name": "召唤魔法棒",
+    "en_name": "Summon Taikasauva",
+    "pinyin": "zhaohuanmofabang",
+    "pinyin_initials": "zhmfb",
+    "type": 6,
+    "max_uses": 1
+  },
+  "TOUCH_GOLD": {
+    "id": "TOUCH_GOLD",
+    "icon": "data/ui_gfx/gun_actions/touch_gold.png",
+    "name": "黄金之触",
+    "en_name": "Touch of Gold",
+    "pinyin": "huangjinzhichu",
+    "pinyin_initials": "hjzc",
+    "type": 4,
+    "max_uses": 1
+  },
+  "TOUCH_WATER": {
+    "id": "TOUCH_WATER",
+    "icon": "data/ui_gfx/gun_actions/touch_water.png",
+    "name": "清水之触",
+    "en_name": "Touch of Water",
+    "pinyin": "qingshuizhichu",
+    "pinyin_initials": "qszc",
+    "type": 4,
+    "max_uses": 5
+  },
+  "TOUCH_OIL": {
+    "id": "TOUCH_OIL",
+    "icon": "data/ui_gfx/gun_actions/touch_oil.png",
+    "name": "油脂之触",
+    "en_name": "Touch of Oil",
+    "pinyin": "youzhizhichu",
+    "pinyin_initials": "yzzc",
+    "type": 4,
+    "max_uses": 5
+  },
+  "TOUCH_ALCOHOL": {
+    "id": "TOUCH_ALCOHOL",
+    "icon": "data/ui_gfx/gun_actions/touch_alcohol.png",
+    "name": "烈酒之触",
+    "en_name": "Touch of Spirits",
+    "pinyin": "liejiuzhichu",
+    "pinyin_initials": "ljzc",
+    "type": 4,
+    "max_uses": 5
+  },
+  "TOUCH_PISS": {
+    "id": "TOUCH_PISS",
+    "icon": "data/ui_gfx/gun_actions/touch_piss.png",
+    "name": "黄金之触？",
+    "en_name": "Touch of Gold?",
+    "pinyin": "huangjinzhichu？",
+    "pinyin_initials": "hjzc？",
+    "type": 4,
+    "max_uses": 4
+  },
+  "TOUCH_GRASS": {
+    "id": "TOUCH_GRASS",
+    "icon": "data/ui_gfx/gun_actions/touch_grass.png",
+    "name": "草之触",
+    "en_name": "Touch of Grass",
+    "pinyin": "caozhichu",
+    "pinyin_initials": "czc",
+    "type": 4,
+    "max_uses": 4
+  },
+  "TOUCH_BLOOD": {
+    "id": "TOUCH_BLOOD",
+    "icon": "data/ui_gfx/gun_actions/touch_blood.png",
+    "name": "鲜血之触",
+    "en_name": "Touch of Blood",
+    "pinyin": "xianxuezhichu",
+    "pinyin_initials": "xxzc",
+    "type": 4,
+    "max_uses": 3
+  },
+  "TOUCH_SMOKE": {
+    "id": "TOUCH_SMOKE",
+    "icon": "data/ui_gfx/gun_actions/touch_smoke.png",
+    "name": "烟雾之触",
+    "en_name": "Touch of Smoke",
+    "pinyin": "yanwuzhichu",
+    "pinyin_initials": "ywzc",
+    "type": 4,
+    "max_uses": 5
+  },
+  "DESTRUCTION": {
+    "id": "DESTRUCTION",
+    "icon": "data/ui_gfx/gun_actions/destruction.png",
+    "name": "破坏",
+    "en_name": "Destruction",
+    "pinyin": "pohuai",
+    "pinyin_initials": "ph",
+    "type": 1,
+    "max_uses": 5
+  },
+  "MASS_POLYMORPH": {
+    "id": "MASS_POLYMORPH",
+    "icon": "data/ui_gfx/gun_actions/polymorph.png",
+    "name": "墨东姆托",
+    "en_name": "Muodonmuutos",
+    "pinyin": "modongmutuo",
+    "pinyin_initials": "mdmt",
+    "type": 1,
+    "max_uses": 3
+  },
+  "BURST_2": {
+    "id": "BURST_2",
+    "icon": "data/ui_gfx/gun_actions/burst_2.png",
+    "name": "二重法术",
+    "en_name": "Double spell",
+    "pinyin": "erchongfashu",
+    "pinyin_initials": "ecfs",
+    "type": 3,
+    "max_uses": null
+  },
+  "BURST_3": {
+    "id": "BURST_3",
+    "icon": "data/ui_gfx/gun_actions/burst_3.png",
+    "name": "三重法术",
+    "en_name": "Triple spell",
+    "pinyin": "sanchongfashu",
+    "pinyin_initials": "scfs",
+    "type": 3,
+    "max_uses": null
+  },
+  "BURST_4": {
+    "id": "BURST_4",
+    "icon": "data/ui_gfx/gun_actions/burst_4.png",
+    "name": "四重法术",
+    "en_name": "Quadruple spell",
+    "pinyin": "sizhongfashu",
+    "pinyin_initials": "szfs",
+    "type": 3,
+    "max_uses": null
+  },
+  "BURST_8": {
+    "id": "BURST_8",
+    "icon": "data/ui_gfx/gun_actions/burst_8.png",
+    "name": "八倍法术",
+    "en_name": "Octuple spell",
+    "pinyin": "babeifashu",
+    "pinyin_initials": "bbfs",
+    "type": 3,
+    "max_uses": null
+  },
+  "BURST_X": {
+    "id": "BURST_X",
+    "icon": "data/ui_gfx/gun_actions/burst_x.png",
+    "name": "无尽法术",
+    "en_name": "Myriad Spell",
+    "pinyin": "wujinfashu",
+    "pinyin_initials": "wjfs",
+    "type": 3,
+    "max_uses": 30
+  },
+  "SCATTER_2": {
+    "id": "SCATTER_2",
+    "icon": "data/ui_gfx/gun_actions/scatter_2.png",
+    "name": "二重散射法术",
+    "en_name": "Double scatter spell",
+    "pinyin": "erchongsanshefashu",
+    "pinyin_initials": "ecssfs",
+    "type": 3,
+    "max_uses": null
+  },
+  "SCATTER_3": {
+    "id": "SCATTER_3",
+    "icon": "data/ui_gfx/gun_actions/scatter_3.png",
+    "name": "三重散射法术",
+    "en_name": "Triple scatter spell",
+    "pinyin": "sanchongsanshefashu",
+    "pinyin_initials": "scssfs",
+    "type": 3,
+    "max_uses": null
+  },
+  "SCATTER_4": {
+    "id": "SCATTER_4",
+    "icon": "data/ui_gfx/gun_actions/scatter_4.png",
+    "name": "四重散射法术",
+    "en_name": "Quadruple scatter spell",
+    "pinyin": "sizhongsanshefashu",
+    "pinyin_initials": "szssfs",
+    "type": 3,
+    "max_uses": null
+  },
+  "I_SHAPE": {
+    "id": "I_SHAPE",
+    "icon": "data/ui_gfx/gun_actions/i_shape.png",
+    "name": "阵型 - 背后",
+    "en_name": "Formation - behind your back",
+    "pinyin": "zhenxing - beihou",
+    "pinyin_initials": "zx - bh",
+    "type": 3,
+    "max_uses": null
+  },
+  "Y_SHAPE": {
+    "id": "Y_SHAPE",
+    "icon": "data/ui_gfx/gun_actions/y_shape.png",
+    "name": "阵型 - 分叉",
+    "en_name": "Formation - bifurcated",
+    "pinyin": "zhenxing - fencha",
+    "pinyin_initials": "zx - fc",
+    "type": 3,
+    "max_uses": null
+  },
+  "T_SHAPE": {
+    "id": "T_SHAPE",
+    "icon": "data/ui_gfx/gun_actions/t_shape.png",
+    "name": "阵型 - 上下",
+    "en_name": "Formation - above and below",
+    "pinyin": "zhenxing - shangxia",
+    "pinyin_initials": "zx - sx",
+    "type": 3,
+    "max_uses": null
+  },
+  "W_SHAPE": {
+    "id": "W_SHAPE",
+    "icon": "data/ui_gfx/gun_actions/w_shape.png",
+    "name": "阵型 - 三叉",
+    "en_name": "Formation - trifurcated",
+    "pinyin": "zhenxing - sancha",
+    "pinyin_initials": "zx - sc",
+    "type": 3,
+    "max_uses": null
+  },
+  "CIRCLE_SHAPE": {
+    "id": "CIRCLE_SHAPE",
+    "icon": "data/ui_gfx/gun_actions/circle_shape.png",
+    "name": "阵型 - 六边形",
+    "en_name": "Formation - hexagon",
+    "pinyin": "zhenxing - liubianxing",
+    "pinyin_initials": "zx - lbx",
+    "type": 3,
+    "max_uses": null
+  },
+  "PENTAGRAM_SHAPE": {
+    "id": "PENTAGRAM_SHAPE",
+    "icon": "data/ui_gfx/gun_actions/pentagram_shape.png",
+    "name": "阵型 - 五边形",
+    "en_name": "Formation - pentagon",
+    "pinyin": "zhenxing - wubianxing",
+    "pinyin_initials": "zx - wbx",
+    "type": 3,
+    "max_uses": null
+  },
+  "I_SHOT": {
+    "id": "I_SHOT",
+    "icon": "data/ui_gfx/gun_actions/i_shot.png",
+    "name": "复制法术",
+    "en_name": "Iplicate Spell",
+    "pinyin": "fuzhifashu",
+    "pinyin_initials": "fzfs",
+    "type": 6,
+    "max_uses": 30
+  },
+  "Y_SHOT": {
+    "id": "Y_SHOT",
+    "icon": "data/ui_gfx/gun_actions/y_shot.png",
+    "name": "分叉法术",
+    "en_name": "Yplicate Spell",
+    "pinyin": "fenchafashu",
+    "pinyin_initials": "fcfs",
+    "type": 6,
+    "max_uses": 30
+  },
+  "T_SHOT": {
+    "id": "T_SHOT",
+    "icon": "data/ui_gfx/gun_actions/t_shot.png",
+    "name": "上下法术",
+    "en_name": "Tiplicate Spell",
+    "pinyin": "shangxiafashu",
+    "pinyin_initials": "sxfs",
+    "type": 6,
+    "max_uses": 25
+  },
+  "W_SHOT": {
+    "id": "W_SHOT",
+    "icon": "data/ui_gfx/gun_actions/w_shot.png",
+    "name": "三岔法术",
+    "en_name": "Wuplicate Spell",
+    "pinyin": "sanchafashu",
+    "pinyin_initials": "scfs",
+    "type": 6,
+    "max_uses": 20
+  },
+  "QUAD_SHOT": {
+    "id": "QUAD_SHOT",
+    "icon": "data/ui_gfx/gun_actions/quad_shot.png",
+    "name": "四重法术",
+    "en_name": "Quplicate Spell",
+    "pinyin": "sizhongfashu",
+    "pinyin_initials": "szfs",
+    "type": 6,
+    "max_uses": 20
+  },
+  "PENTA_SHOT": {
+    "id": "PENTA_SHOT",
+    "icon": "data/ui_gfx/gun_actions/penta_shot.png",
+    "name": "五角法术",
+    "en_name": "Peplicate Spell",
+    "pinyin": "wujiaofashu",
+    "pinyin_initials": "wjfs",
+    "type": 6,
+    "max_uses": 20
+  },
+  "HEXA_SHOT": {
+    "id": "HEXA_SHOT",
+    "icon": "data/ui_gfx/gun_actions/hexa_shot.png",
+    "name": "六角法术",
+    "en_name": "Heplicate Spell",
+    "pinyin": "liujiaofashu",
+    "pinyin_initials": "ljfs",
+    "type": 6,
+    "max_uses": 20
+  },
+  "SPREAD_REDUCE": {
+    "id": "SPREAD_REDUCE",
+    "icon": "data/ui_gfx/gun_actions/spread_reduce.png",
+    "name": "降低散射",
+    "en_name": "Reduce spread",
+    "pinyin": "jiangdisanshe",
+    "pinyin_initials": "jdss",
+    "type": 2,
+    "max_uses": null
+  },
+  "HEAVY_SPREAD": {
+    "id": "HEAVY_SPREAD",
+    "icon": "data/ui_gfx/gun_actions/heavy_spread.png",
+    "name": "沉重散射",
+    "en_name": "Heavy spread",
+    "pinyin": "chenzhongsanshe",
+    "pinyin_initials": "czss",
+    "type": 2,
+    "max_uses": null
+  },
+  "RECHARGE": {
+    "id": "RECHARGE",
+    "icon": "data/ui_gfx/gun_actions/recharge.png",
+    "name": "缩减充能时间",
+    "en_name": "Reduce recharge time",
+    "pinyin": "suojianchongnengshijian",
+    "pinyin_initials": "sjcnsj",
+    "type": 2,
+    "max_uses": null
+  },
+  "LIFETIME": {
+    "id": "LIFETIME",
+    "icon": "data/ui_gfx/gun_actions/lifetime.png",
+    "name": "延长存在时间",
+    "en_name": "Increase lifetime",
+    "pinyin": "yanchangcunzaishijian",
+    "pinyin_initials": "ycczsj",
+    "type": 2,
+    "max_uses": null
+  },
+  "LIFETIME_DOWN": {
+    "id": "LIFETIME_DOWN",
+    "icon": "data/ui_gfx/gun_actions/lifetime_down.png",
+    "name": "缩减存在时间",
+    "en_name": "Reduce lifetime",
+    "pinyin": "suojiancunzaishijian",
+    "pinyin_initials": "sjczsj",
+    "type": 2,
+    "max_uses": null
+  },
+  "NOLLA": {
+    "id": "NOLLA",
+    "icon": "data/ui_gfx/gun_actions/nolla.png",
+    "name": "零时",
+    "en_name": "Nolla",
+    "pinyin": "lingshi",
+    "pinyin_initials": "ls",
+    "type": 2,
+    "max_uses": null
+  },
+  "SLOW_BUT_STEADY": {
+    "id": "SLOW_BUT_STEADY",
+    "icon": "data/ui_gfx/gun_actions/slow_but_steady.png",
+    "name": "缓慢但坚定",
+    "en_name": "Slow But Steady",
+    "pinyin": "huanmandanjianding",
+    "pinyin_initials": "hmdjd",
+    "type": 2,
+    "max_uses": null
+  },
+  "EXPLOSION_REMOVE": {
+    "id": "EXPLOSION_REMOVE",
+    "icon": "data/ui_gfx/gun_actions/explosion_remove.png",
+    "name": "移除爆炸",
+    "en_name": "Remove Explosion",
+    "pinyin": "yichubaozha",
+    "pinyin_initials": "ycbz",
+    "type": 2,
+    "max_uses": null
+  },
+  "EXPLOSION_TINY": {
+    "id": "EXPLOSION_TINY",
+    "icon": "data/ui_gfx/gun_actions/explosion_tiny.png",
+    "name": "聚爆",
+    "en_name": "Concentrated Explosion",
+    "pinyin": "jubao",
+    "pinyin_initials": "jb",
+    "type": 2,
+    "max_uses": null
+  },
+  "LASER_EMITTER_WIDER": {
+    "id": "LASER_EMITTER_WIDER",
+    "icon": "data/ui_gfx/gun_actions/laser_emitter_wider.png",
+    "name": "电浆束增强器",
+    "en_name": "Plasma Beam Enhancer",
+    "pinyin": "dianjiangshuzengqiangqi",
+    "pinyin_initials": "djszqq",
+    "type": 2,
+    "max_uses": null
+  },
+  "MANA_REDUCE": {
+    "id": "MANA_REDUCE",
+    "icon": "data/ui_gfx/gun_actions/mana.png",
+    "name": "额外法力",
+    "en_name": "Add mana",
+    "pinyin": "ewaifali",
+    "pinyin_initials": "ewfl",
+    "type": 2,
+    "max_uses": null
+  },
+  "BLOOD_MAGIC": {
+    "id": "BLOOD_MAGIC",
+    "icon": "data/ui_gfx/gun_actions/blood_magic.png",
+    "name": "血液魔法",
+    "en_name": "Blood magic",
+    "pinyin": "xueyemofa",
+    "pinyin_initials": "xymf",
+    "type": 6,
+    "max_uses": null
+  },
+  "MONEY_MAGIC": {
+    "id": "MONEY_MAGIC",
+    "icon": "data/ui_gfx/gun_actions/golden_punch.png",
+    "name": "黄金变力量",
+    "en_name": "Gold to Power",
+    "pinyin": "huangjinbianliliang",
+    "pinyin_initials": "hjbll",
+    "type": 6,
+    "max_uses": null
+  },
+  "BLOOD_TO_POWER": {
+    "id": "BLOOD_TO_POWER",
+    "icon": "data/ui_gfx/gun_actions/blood_punch.png",
+    "name": "血液变力量",
+    "en_name": "Blood to Power",
+    "pinyin": "xueyebianliliang",
+    "pinyin_initials": "xybll",
+    "type": 6,
+    "max_uses": null
+  },
+  "DUPLICATE": {
+    "id": "DUPLICATE",
+    "icon": "data/ui_gfx/gun_actions/duplicate.png",
+    "name": "法术复制",
+    "en_name": "Spell duplication",
+    "pinyin": "fashufuzhi",
+    "pinyin_initials": "fsfz",
+    "type": 5,
+    "max_uses": null
+  },
+  "QUANTUM_SPLIT": {
+    "id": "QUANTUM_SPLIT",
+    "icon": "data/ui_gfx/gun_actions/quantum_split.png",
+    "name": "量子分割",
+    "en_name": "Quantum Split",
+    "pinyin": "liangzifenge",
+    "pinyin_initials": "lzfg",
+    "type": 2,
+    "max_uses": null
+  },
+  "GRAVITY": {
+    "id": "GRAVITY",
+    "icon": "data/ui_gfx/gun_actions/gravity.png",
+    "name": "重力",
+    "en_name": "Gravity",
+    "pinyin": "zhongli",
+    "pinyin_initials": "zl",
+    "type": 2,
+    "max_uses": null
+  },
+  "GRAVITY_ANTI": {
+    "id": "GRAVITY_ANTI",
+    "icon": "data/ui_gfx/gun_actions/gravity_anti.png",
+    "name": "反重力",
+    "en_name": "Anti-gravity",
+    "pinyin": "fanzhongli",
+    "pinyin_initials": "fzl",
+    "type": 2,
+    "max_uses": null
+  },
+  "SINEWAVE": {
+    "id": "SINEWAVE",
+    "icon": "data/ui_gfx/gun_actions/sinewave.png",
+    "name": "蛇行",
+    "en_name": "Slithering path",
+    "pinyin": "shexing",
+    "pinyin_initials": "sx",
+    "type": 2,
+    "max_uses": null
+  },
+  "CHAOTIC_ARC": {
+    "id": "CHAOTIC_ARC",
+    "icon": "data/ui_gfx/gun_actions/chaotic_arc.png",
+    "name": "混乱之路",
+    "en_name": "Chaotic path",
+    "pinyin": "hunluanzhilu",
+    "pinyin_initials": "hlzl",
+    "type": 2,
+    "max_uses": null
+  },
+  "PINGPONG_PATH": {
+    "id": "PINGPONG_PATH",
+    "icon": "data/ui_gfx/gun_actions/pingpong_path.png",
+    "name": "乒乓回弹",
+    "en_name": "Ping-pong path",
+    "pinyin": "pingpanghuitan",
+    "pinyin_initials": "ppht",
+    "type": 2,
+    "max_uses": null
+  },
+  "AVOIDING_ARC": {
+    "id": "AVOIDING_ARC",
+    "icon": "data/ui_gfx/gun_actions/avoiding_arc.png",
+    "name": "规避弧度",
+    "en_name": "Avoiding arc",
+    "pinyin": "guibihudu",
+    "pinyin_initials": "gbhd",
+    "type": 2,
+    "max_uses": null
+  },
+  "FLOATING_ARC": {
+    "id": "FLOATING_ARC",
+    "icon": "data/ui_gfx/gun_actions/floating_arc.png",
+    "name": "悬浮弧度",
+    "en_name": "Floating arc",
+    "pinyin": "xuanfuhudu",
+    "pinyin_initials": "xfhd",
+    "type": 2,
+    "max_uses": null
+  },
+  "FLY_DOWNWARDS": {
+    "id": "FLY_DOWNWARDS",
+    "icon": "data/ui_gfx/gun_actions/fly_downwards.png",
+    "name": "向下飞行",
+    "en_name": "Fly downwards",
+    "pinyin": "xiangxiafeixing",
+    "pinyin_initials": "xxfx",
+    "type": 2,
+    "max_uses": null
+  },
+  "FLY_UPWARDS": {
+    "id": "FLY_UPWARDS",
+    "icon": "data/ui_gfx/gun_actions/fly_upwards.png",
+    "name": "向上飞行",
+    "en_name": "Fly upwards",
+    "pinyin": "xiangshangfeixing",
+    "pinyin_initials": "xsfx",
+    "type": 2,
+    "max_uses": null
+  },
+  "HORIZONTAL_ARC": {
+    "id": "HORIZONTAL_ARC",
+    "icon": "data/ui_gfx/gun_actions/horizontal_arc.png",
+    "name": "水平路径",
+    "en_name": "Horizontal path",
+    "pinyin": "shuipinglujing",
+    "pinyin_initials": "splj",
+    "type": 2,
+    "max_uses": null
+  },
+  "LINE_ARC": {
+    "id": "LINE_ARC",
+    "icon": "data/ui_gfx/gun_actions/line_arc.png",
+    "name": "线性弧",
+    "en_name": "Linear arc",
+    "pinyin": "xianxinghu",
+    "pinyin_initials": "xxh",
+    "type": 2,
+    "max_uses": null
+  },
+  "ORBIT_SHOT": {
+    "id": "ORBIT_SHOT",
+    "icon": "data/ui_gfx/gun_actions/orbit_shot.png",
+    "name": "盘旋魔弹",
+    "en_name": "Orbiting Arc",
+    "pinyin": "panxuanmodan",
+    "pinyin_initials": "pxmd",
+    "type": 2,
+    "max_uses": null
+  },
+  "SPIRALING_SHOT": {
+    "id": "SPIRALING_SHOT",
+    "icon": "data/ui_gfx/gun_actions/spiraling_shot.png",
+    "name": "螺旋魔弹",
+    "en_name": "Spiral Arc",
+    "pinyin": "luoxuanmodan",
+    "pinyin_initials": "lxmd",
+    "type": 2,
+    "max_uses": null
+  },
+  "PHASING_ARC": {
+    "id": "PHASING_ARC",
+    "icon": "data/ui_gfx/gun_actions/phasing_arc.png",
+    "name": "相位弧度",
+    "en_name": "Phasing Arc",
+    "pinyin": "xiangweihudu",
+    "pinyin_initials": "xwhd",
+    "type": 2,
+    "max_uses": null
+  },
+  "TRUE_ORBIT": {
+    "id": "TRUE_ORBIT",
+    "icon": "data/ui_gfx/gun_actions/true_orbit.png",
+    "name": "真实环绕",
+    "en_name": "True Orbit",
+    "pinyin": "zhenshihuanrao",
+    "pinyin_initials": "zshr",
+    "type": 2,
+    "max_uses": null
+  },
+  "BOUNCE": {
+    "id": "BOUNCE",
+    "icon": "data/ui_gfx/gun_actions/bounce.png",
+    "name": "弹跳",
+    "en_name": "Bounce",
+    "pinyin": "dantiao",
+    "pinyin_initials": "dt",
+    "type": 2,
+    "max_uses": null
+  },
+  "REMOVE_BOUNCE": {
+    "id": "REMOVE_BOUNCE",
+    "icon": "data/ui_gfx/gun_actions/remove_bounce.png",
+    "name": "移除弹跳",
+    "en_name": "Remove Bounce",
+    "pinyin": "yichudantiao",
+    "pinyin_initials": "ycdt",
+    "type": 2,
+    "max_uses": null
+  },
+  "HOMING": {
+    "id": "HOMING",
+    "icon": "data/ui_gfx/gun_actions/homing.png",
+    "name": "追踪",
+    "en_name": "Homing",
+    "pinyin": "zhuizong",
+    "pinyin_initials": "zz",
+    "type": 2,
+    "max_uses": null
+  },
+  "ANTI_HOMING": {
+    "id": "ANTI_HOMING",
+    "icon": "data/ui_gfx/gun_actions/anti_homing.png",
+    "name": "反追踪",
+    "en_name": "Anti Homing",
+    "pinyin": "fanzhuizong",
+    "pinyin_initials": "fzz",
+    "type": 2,
+    "max_uses": null
+  },
+  "HOMING_WAND": {
+    "id": "HOMING_WAND",
+    "icon": "data/ui_gfx/gun_actions/homing_wand.png",
+    "name": "魔杖追踪",
+    "en_name": "Wand Homing",
+    "pinyin": "mozhangzhuizong",
+    "pinyin_initials": "mzzz",
+    "type": 2,
+    "max_uses": null
+  },
+  "HOMING_SHORT": {
+    "id": "HOMING_SHORT",
+    "icon": "data/ui_gfx/gun_actions/homing_short.png",
+    "name": "短距离追踪",
+    "en_name": "Short-range Homing",
+    "pinyin": "duanjulizhuizong",
+    "pinyin_initials": "djlzz",
+    "type": 2,
+    "max_uses": null
+  },
+  "HOMING_ROTATE": {
+    "id": "HOMING_ROTATE",
+    "icon": "data/ui_gfx/gun_actions/homing_rotate.png",
+    "name": "转向敌人",
+    "en_name": "Rotate towards foes",
+    "pinyin": "zhuanxiangdiren",
+    "pinyin_initials": "zxdr",
+    "type": 2,
+    "max_uses": null
+  },
+  "HOMING_SHOOTER": {
+    "id": "HOMING_SHOOTER",
+    "icon": "data/ui_gfx/gun_actions/homing_shooter.png",
+    "name": "回旋镖",
+    "en_name": "Boomerang",
+    "pinyin": "huixuanbiao",
+    "pinyin_initials": "hxb",
+    "type": 2,
+    "max_uses": null
+  },
+  "AUTOAIM": {
+    "id": "AUTOAIM",
+    "icon": "data/ui_gfx/gun_actions/autoaim.png",
+    "name": "自动瞄准",
+    "en_name": "Auto-Aim",
+    "pinyin": "zidongmiaozhun",
+    "pinyin_initials": "zdmz",
+    "type": 2,
+    "max_uses": null
+  },
+  "HOMING_ACCELERATING": {
+    "id": "HOMING_ACCELERATING",
+    "icon": "data/ui_gfx/gun_actions/homing_accelerating.png",
+    "name": "加速追踪",
+    "en_name": "Accelerative Homing",
+    "pinyin": "jiasuzhuizong",
+    "pinyin_initials": "jszz",
+    "type": 2,
+    "max_uses": null
+  },
+  "HOMING_CURSOR": {
+    "id": "HOMING_CURSOR",
+    "icon": "data/ui_gfx/gun_actions/homing_cursor.png",
+    "name": "瞄准弧度",
+    "en_name": "Aiming Arc",
+    "pinyin": "miaozhunhudu",
+    "pinyin_initials": "mzhd",
+    "type": 2,
+    "max_uses": null
+  },
+  "HOMING_AREA": {
+    "id": "HOMING_AREA",
+    "icon": "data/ui_gfx/gun_actions/homing_area.png",
+    "name": "投射物区域传送",
+    "en_name": "Projectile Area Teleport",
+    "pinyin": "toushewuquyuchuansong",
+    "pinyin_initials": "tswqycs",
+    "type": 2,
+    "max_uses": null
+  },
+  "PIERCING_SHOT": {
+    "id": "PIERCING_SHOT",
+    "icon": "data/ui_gfx/gun_actions/piercing_shot.png",
+    "name": "穿刺魔弹",
+    "en_name": "Piercing shot",
+    "pinyin": "chuancimodan",
+    "pinyin_initials": "ccmd",
+    "type": 2,
+    "max_uses": null
+  },
+  "CLIPPING_SHOT": {
+    "id": "CLIPPING_SHOT",
+    "icon": "data/ui_gfx/gun_actions/clipping_shot.png",
+    "name": "穿凿魔弹",
+    "en_name": "Drilling shot",
+    "pinyin": "chuanzaomodan",
+    "pinyin_initials": "czmd",
+    "type": 2,
+    "max_uses": null
+  },
+  "DAMAGE": {
+    "id": "DAMAGE",
+    "icon": "data/ui_gfx/gun_actions/damage.png",
+    "name": "伤害增强",
+    "en_name": "Damage Plus",
+    "pinyin": "shanghaizengqiang",
+    "pinyin_initials": "shzq",
+    "type": 2,
+    "max_uses": null
+  },
+  "DAMAGE_RANDOM": {
+    "id": "DAMAGE_RANDOM",
+    "icon": "data/ui_gfx/gun_actions/damage_random.png",
+    "name": "随机伤害",
+    "en_name": "Random damage",
+    "pinyin": "suijishanghai",
+    "pinyin_initials": "sjsh",
+    "type": 2,
+    "max_uses": null
+  },
+  "BLOODLUST": {
+    "id": "BLOODLUST",
+    "icon": "data/ui_gfx/gun_actions/bloodlust.png",
+    "name": "嗜血",
+    "en_name": "Bloodlust",
+    "pinyin": "shixue",
+    "pinyin_initials": "sx",
+    "type": 2,
+    "max_uses": null
+  },
+  "DAMAGE_FOREVER": {
+    "id": "DAMAGE_FOREVER",
+    "icon": "data/ui_gfx/gun_actions/damage_forever.png",
+    "name": "法力转伤害",
+    "en_name": "Mana To Damage",
+    "pinyin": "falizhuanshanghai",
+    "pinyin_initials": "flzsh",
+    "type": 2,
+    "max_uses": 20
+  },
+  "CRITICAL_HIT": {
+    "id": "CRITICAL_HIT",
+    "icon": "data/ui_gfx/gun_actions/critical_hit.png",
+    "name": "暴击增强",
+    "en_name": "Critical Plus",
+    "pinyin": "baojizengqiang",
+    "pinyin_initials": "bjzq",
+    "type": 2,
+    "max_uses": null
+  },
+  "AREA_DAMAGE": {
+    "id": "AREA_DAMAGE",
+    "icon": "data/ui_gfx/gun_actions/area_damage.png",
+    "name": "伤害领域",
+    "en_name": "Damage field",
+    "pinyin": "shanghailingyu",
+    "pinyin_initials": "shly",
+    "type": 2,
+    "max_uses": null
+  },
+  "SPELLS_TO_POWER": {
+    "id": "SPELLS_TO_POWER",
+    "icon": "data/ui_gfx/gun_actions/spells_to_power.png",
+    "name": "法术变力量",
+    "en_name": "Spells to Power",
+    "pinyin": "fashubianliliang",
+    "pinyin_initials": "fsbll",
+    "type": 2,
+    "max_uses": null
+  },
+  "ESSENCE_TO_POWER": {
+    "id": "ESSENCE_TO_POWER",
+    "icon": "data/ui_gfx/gun_actions/essence_to_power.png",
+    "name": "精华变力量",
+    "en_name": "Essence to Power",
+    "pinyin": "jinghuabianliliang",
+    "pinyin_initials": "jhbll",
+    "type": 2,
+    "max_uses": null
+  },
+  "ZERO_DAMAGE": {
+    "id": "ZERO_DAMAGE",
+    "icon": "data/ui_gfx/gun_actions/zero_damage.png",
+    "name": "归零魔弹",
+    "en_name": "Null shot",
+    "pinyin": "guilingmodan",
+    "pinyin_initials": "glmd",
+    "type": 2,
+    "max_uses": null
+  },
+  "HEAVY_SHOT": {
+    "id": "HEAVY_SHOT",
+    "icon": "data/ui_gfx/gun_actions/heavy_shot.png",
+    "name": "沉重一击",
+    "en_name": "Heavy Shot",
+    "pinyin": "chenzhongyiji",
+    "pinyin_initials": "czyj",
+    "type": 2,
+    "max_uses": null
+  },
+  "LIGHT_SHOT": {
+    "id": "LIGHT_SHOT",
+    "icon": "data/ui_gfx/gun_actions/light_shot.png",
+    "name": "轻巧魔弹",
+    "en_name": "Light shot",
+    "pinyin": "qingqiaomodan",
+    "pinyin_initials": "qqmd",
+    "type": 2,
+    "max_uses": null
+  },
+  "KNOCKBACK": {
+    "id": "KNOCKBACK",
+    "icon": "data/ui_gfx/gun_actions/knockback.png",
+    "name": "击退",
+    "en_name": "Knockback",
+    "pinyin": "jitui",
+    "pinyin_initials": "jt",
+    "type": 2,
+    "max_uses": null
+  },
+  "RECOIL": {
+    "id": "RECOIL",
+    "icon": "data/ui_gfx/gun_actions/recoil.png",
+    "name": "后座力",
+    "en_name": "Recoil",
+    "pinyin": "houzuoli",
+    "pinyin_initials": "hzl",
+    "type": 2,
+    "max_uses": null
+  },
+  "RECOIL_DAMPER": {
+    "id": "RECOIL_DAMPER",
+    "icon": "data/ui_gfx/gun_actions/recoil_damper.png",
+    "name": "后座阻尼器",
+    "en_name": "Recoil Damper",
+    "pinyin": "houzuozuniqi",
+    "pinyin_initials": "hzznq",
+    "type": 2,
+    "max_uses": null
+  },
+  "SPEED": {
+    "id": "SPEED",
+    "icon": "data/ui_gfx/gun_actions/speed.png",
+    "name": "加速",
+    "en_name": "Speed Up",
+    "pinyin": "jiasu",
+    "pinyin_initials": "js",
+    "type": 2,
+    "max_uses": null
+  },
+  "ACCELERATING_SHOT": {
+    "id": "ACCELERATING_SHOT",
+    "icon": "data/ui_gfx/gun_actions/accelerating_shot.png",
+    "name": "加速魔弹",
+    "en_name": "Accelerating shot",
+    "pinyin": "jiasumodan",
+    "pinyin_initials": "jsmd",
+    "type": 2,
+    "max_uses": null
+  },
+  "DECELERATING_SHOT": {
+    "id": "DECELERATING_SHOT",
+    "icon": "data/ui_gfx/gun_actions/decelerating_shot.png",
+    "name": "减速魔弹",
+    "en_name": "Decelerating shot",
+    "pinyin": "jiansumodan",
+    "pinyin_initials": "jsmd",
+    "type": 2,
+    "max_uses": null
+  },
+  "EXPLOSIVE_PROJECTILE": {
+    "id": "EXPLOSIVE_PROJECTILE",
+    "icon": "data/ui_gfx/gun_actions/explosive_projectile.png",
+    "name": "易爆的投射物",
+    "en_name": "Explosive projectile",
+    "pinyin": "yibaodetoushewu",
+    "pinyin_initials": "ybdtsw",
+    "type": 2,
+    "max_uses": null
+  },
+  "CLUSTERMOD": {
+    "id": "CLUSTERMOD",
+    "icon": "data/ui_gfx/gun_actions/clusterbomb.png",
+    "name": "霰爆弹",
+    "en_name": "Clusterbolt",
+    "pinyin": "xianbaodan",
+    "pinyin_initials": "xbd",
+    "type": 2,
+    "max_uses": null
+  },
+  "WATER_TO_POISON": {
+    "id": "WATER_TO_POISON",
+    "icon": "data/ui_gfx/gun_actions/water_to_poison.png",
+    "name": "化水为毒",
+    "en_name": "Water to poison",
+    "pinyin": "huashuiweidu",
+    "pinyin_initials": "hswd",
+    "type": 2,
+    "max_uses": null
+  },
+  "BLOOD_TO_ACID": {
+    "id": "BLOOD_TO_ACID",
+    "icon": "data/ui_gfx/gun_actions/blood_to_acid.png",
+    "name": "溶血为酸",
+    "en_name": "Blood to acid",
+    "pinyin": "rongxueweisuan",
+    "pinyin_initials": "rxws",
+    "type": 2,
+    "max_uses": null
+  },
+  "LAVA_TO_BLOOD": {
+    "id": "LAVA_TO_BLOOD",
+    "icon": "data/ui_gfx/gun_actions/lava_to_blood.png",
+    "name": "熔岩化血",
+    "en_name": "Lava to blood",
+    "pinyin": "rongyanhuaxue",
+    "pinyin_initials": "ryhx",
+    "type": 2,
+    "max_uses": null
+  },
+  "LIQUID_TO_EXPLOSION": {
+    "id": "LIQUID_TO_EXPLOSION",
+    "icon": "data/ui_gfx/gun_actions/liquid_to_explosion.png",
+    "name": "液体引爆",
+    "en_name": "Liquid Detonation",
+    "pinyin": "yetiyinbao",
+    "pinyin_initials": "ytyb",
+    "type": 2,
+    "max_uses": null
+  },
+  "TOXIC_TO_ACID": {
+    "id": "TOXIC_TO_ACID",
+    "icon": "data/ui_gfx/gun_actions/toxic_to_acid.png",
+    "name": "毒性淤泥酸液化",
+    "en_name": "Toxic sludge to acid",
+    "pinyin": "duxingyunisuanyehua",
+    "pinyin_initials": "dxynsyh",
+    "type": 2,
+    "max_uses": null
+  },
+  "STATIC_TO_SAND": {
+    "id": "STATIC_TO_SAND",
+    "icon": "data/ui_gfx/gun_actions/static_to_sand.png",
+    "name": "化地为砂",
+    "en_name": "Ground to sand",
+    "pinyin": "huadiweisha",
+    "pinyin_initials": "hdws",
+    "type": 2,
+    "max_uses": 8
+  },
+  "TRANSMUTATION": {
+    "id": "TRANSMUTATION",
+    "icon": "data/ui_gfx/gun_actions/transmutation.png",
+    "name": "混乱转化",
+    "en_name": "Chaotic transmutation",
+    "pinyin": "hunluanzhuanhua",
+    "pinyin_initials": "hlzh",
+    "type": 2,
+    "max_uses": 8
+  },
+  "RANDOM_EXPLOSION": {
+    "id": "RANDOM_EXPLOSION",
+    "icon": "data/ui_gfx/gun_actions/random_explosion.png",
+    "name": "混沌魔法",
+    "en_name": "Chaos magic",
+    "pinyin": "hundunmofa",
+    "pinyin_initials": "hdmf",
+    "type": 2,
+    "max_uses": 30
+  },
+  "NECROMANCY": {
+    "id": "NECROMANCY",
+    "icon": "data/ui_gfx/gun_actions/necromancy.png",
+    "name": "死灵之术",
+    "en_name": "Necromancy",
+    "pinyin": "silingzhishu",
+    "pinyin_initials": "slzs",
+    "type": 2,
+    "max_uses": null
+  },
+  "LIGHT": {
+    "id": "LIGHT",
+    "icon": "data/ui_gfx/gun_actions/light.png",
+    "name": "光",
+    "en_name": "Light",
+    "pinyin": "guang",
+    "pinyin_initials": "g",
+    "type": 2,
+    "max_uses": null
+  },
+  "EXPLOSION": {
+    "id": "EXPLOSION",
+    "icon": "data/ui_gfx/gun_actions/explosion.png",
+    "name": "爆炸",
+    "en_name": "Explosion",
+    "pinyin": "baozha",
+    "pinyin_initials": "bz",
+    "type": 1,
+    "max_uses": null
+  },
+  "EXPLOSION_LIGHT": {
+    "id": "EXPLOSION_LIGHT",
+    "icon": "data/ui_gfx/gun_actions/explosion_light.png",
+    "name": "魔法爆炸",
+    "en_name": "Magical Explosion",
+    "pinyin": "mofabaozha",
+    "pinyin_initials": "mfbz",
+    "type": 1,
+    "max_uses": null
+  },
+  "FIRE_BLAST": {
+    "id": "FIRE_BLAST",
+    "icon": "data/ui_gfx/gun_actions/fire_blast.png",
+    "name": "火焰爆炸",
+    "en_name": "Explosion of brimstone",
+    "pinyin": "huoyanbaozha",
+    "pinyin_initials": "hybz",
+    "type": 1,
+    "max_uses": null
+  },
+  "POISON_BLAST": {
+    "id": "POISON_BLAST",
+    "icon": "data/ui_gfx/gun_actions/poison_blast.png",
+    "name": "毒素爆炸",
+    "en_name": "Explosion of poison",
+    "pinyin": "dusubaozha",
+    "pinyin_initials": "dsbz",
+    "type": 1,
+    "max_uses": null
+  },
+  "ALCOHOL_BLAST": {
+    "id": "ALCOHOL_BLAST",
+    "icon": "data/ui_gfx/gun_actions/alcohol_blast.png",
+    "name": "烈酒爆炸",
+    "en_name": "Explosion of spirits",
+    "pinyin": "liejiubaozha",
+    "pinyin_initials": "ljbz",
+    "type": 1,
+    "max_uses": null
+  },
+  "THUNDER_BLAST": {
+    "id": "THUNDER_BLAST",
+    "icon": "data/ui_gfx/gun_actions/thunder_blast.png",
+    "name": "雷霆爆炸",
+    "en_name": "Explosion of thunder",
+    "pinyin": "leitingbaozha",
+    "pinyin_initials": "ltbz",
+    "type": 1,
+    "max_uses": null
+  },
+  "BERSERK_FIELD": {
+    "id": "BERSERK_FIELD",
+    "icon": "data/ui_gfx/gun_actions/berserk_field.png",
+    "name": "激情之环",
+    "en_name": "Circle of fervour",
+    "pinyin": "jiqingzhihuan",
+    "pinyin_initials": "jqzh",
+    "type": 1,
+    "max_uses": 15
+  },
+  "POLYMORPH_FIELD": {
+    "id": "POLYMORPH_FIELD",
+    "icon": "data/ui_gfx/gun_actions/polymorph_field.png",
+    "name": "变形之环",
+    "en_name": "Circle of transmogrification",
+    "pinyin": "bianxingzhihuan",
+    "pinyin_initials": "bxzh",
+    "type": 1,
+    "max_uses": 5
+  },
+  "CHAOS_POLYMORPH_FIELD": {
+    "id": "CHAOS_POLYMORPH_FIELD",
+    "icon": "data/ui_gfx/gun_actions/chaos_polymorph_field.png",
+    "name": "不稳变形之环",
+    "en_name": "Circle of unstable metamorphosis",
+    "pinyin": "buwenbianxingzhihuan",
+    "pinyin_initials": "bwbxzh",
+    "type": 1,
+    "max_uses": 10
+  },
+  "ELECTROCUTION_FIELD": {
+    "id": "ELECTROCUTION_FIELD",
+    "icon": "data/ui_gfx/gun_actions/electrocution_field.png",
+    "name": "雷霆之环",
+    "en_name": "Circle of thunder",
+    "pinyin": "leitingzhihuan",
+    "pinyin_initials": "ltzh",
+    "type": 1,
+    "max_uses": 15
+  },
+  "FREEZE_FIELD": {
+    "id": "FREEZE_FIELD",
+    "icon": "data/ui_gfx/gun_actions/freeze_field.png",
+    "name": "静止之环",
+    "en_name": "Circle of stillness",
+    "pinyin": "jingzhizhihuan",
+    "pinyin_initials": "jzzh",
+    "type": 1,
+    "max_uses": 15
+  },
+  "REGENERATION_FIELD": {
+    "id": "REGENERATION_FIELD",
+    "icon": "data/ui_gfx/gun_actions/regeneration_field.png",
+    "name": "活力之环",
+    "en_name": "Circle of vigour",
+    "pinyin": "huolizhihuan",
+    "pinyin_initials": "hlzh",
+    "type": 1,
+    "max_uses": 2
+  },
+  "TELEPORTATION_FIELD": {
+    "id": "TELEPORTATION_FIELD",
+    "icon": "data/ui_gfx/gun_actions/teleportation_field.png",
+    "name": "位移之环",
+    "en_name": "Circle of displacement",
+    "pinyin": "weiyizhihuan",
+    "pinyin_initials": "wyzh",
+    "type": 1,
+    "max_uses": 15
+  },
+  "LEVITATION_FIELD": {
+    "id": "LEVITATION_FIELD",
+    "icon": "data/ui_gfx/gun_actions/levitation_field.png",
+    "name": "浮力之环",
+    "en_name": "Circle of buoyancy",
+    "pinyin": "fulizhihuan",
+    "pinyin_initials": "flzh",
+    "type": 1,
+    "max_uses": 15
+  },
+  "SHIELD_FIELD": {
+    "id": "SHIELD_FIELD",
+    "icon": "data/ui_gfx/gun_actions/shield_field.png",
+    "name": "遮蔽之环",
+    "en_name": "Circle of shielding",
+    "pinyin": "zhebizhihuan",
+    "pinyin_initials": "zbzh",
+    "type": 1,
+    "max_uses": 10
+  },
+  "PROJECTILE_TRANSMUTATION_FIELD": {
+    "id": "PROJECTILE_TRANSMUTATION_FIELD",
+    "icon": "data/ui_gfx/gun_actions/projectile_transmutation_field.png",
+    "name": "投射物转化领域",
+    "en_name": "Projectile transmutation field",
+    "pinyin": "toushewuzhuanhualingyu",
+    "pinyin_initials": "tswzhly",
+    "type": 1,
+    "max_uses": 6
+  },
+  "PROJECTILE_THUNDER_FIELD": {
+    "id": "PROJECTILE_THUNDER_FIELD",
+    "icon": "data/ui_gfx/gun_actions/projectile_thunder_field.png",
+    "name": "投射物雷电领域",
+    "en_name": "Projectile thunder field",
+    "pinyin": "toushewuleidianlingyu",
+    "pinyin_initials": "tswldly",
+    "type": 1,
+    "max_uses": 6
+  },
+  "PROJECTILE_GRAVITY_FIELD": {
+    "id": "PROJECTILE_GRAVITY_FIELD",
+    "icon": "data/ui_gfx/gun_actions/projectile_gravity_field.png",
+    "name": "投射物重力领域",
+    "en_name": "Projectile gravity field",
+    "pinyin": "toushewuzhonglilingyu",
+    "pinyin_initials": "tswzlly",
+    "type": 1,
+    "max_uses": 6
+  },
+  "VACUUM_POWDER": {
+    "id": "VACUUM_POWDER",
+    "icon": "data/ui_gfx/gun_actions/vacuum_powder.png",
+    "name": "粉末真空场",
+    "en_name": "Powder Vacuum Field",
+    "pinyin": "fenmozhenkongchang",
+    "pinyin_initials": "fmzkc",
+    "type": 1,
+    "max_uses": 20
+  },
+  "VACUUM_LIQUID": {
+    "id": "VACUUM_LIQUID",
+    "icon": "data/ui_gfx/gun_actions/vacuum_liquid.png",
+    "name": "液体真空场",
+    "en_name": "Liquid Vacuum Field",
+    "pinyin": "yetizhenkongchang",
+    "pinyin_initials": "ytzkc",
+    "type": 1,
+    "max_uses": 20
+  },
+  "VACUUM_ENTITIES": {
+    "id": "VACUUM_ENTITIES",
+    "icon": "data/ui_gfx/gun_actions/vacuum_entities.png",
+    "name": "真空场",
+    "en_name": "Vacuum Field",
+    "pinyin": "zhenkongchang",
+    "pinyin_initials": "zkc",
+    "type": 1,
+    "max_uses": 20
+  },
+  "SEA_LAVA": {
+    "id": "SEA_LAVA",
+    "icon": "data/ui_gfx/gun_actions/sea_lava.png",
+    "name": "岩浆之海",
+    "en_name": "Sea of lava",
+    "pinyin": "yanjiangzhihai",
+    "pinyin_initials": "yjzh",
+    "type": 4,
+    "max_uses": 3
+  },
+  "SEA_ALCOHOL": {
+    "id": "SEA_ALCOHOL",
+    "icon": "data/ui_gfx/gun_actions/sea_alcohol.png",
+    "name": "酒精之海",
+    "en_name": "Sea of alcohol",
+    "pinyin": "jiujingzhihai",
+    "pinyin_initials": "jjzh",
+    "type": 4,
+    "max_uses": 3
+  },
+  "SEA_OIL": {
+    "id": "SEA_OIL",
+    "icon": "data/ui_gfx/gun_actions/sea_oil.png",
+    "name": "油脂之海",
+    "en_name": "Sea of oil",
+    "pinyin": "youzhizhihai",
+    "pinyin_initials": "yzzh",
+    "type": 4,
+    "max_uses": 3
+  },
+  "SEA_WATER": {
+    "id": "SEA_WATER",
+    "icon": "data/ui_gfx/gun_actions/sea_water.png",
+    "name": "水之海",
+    "en_name": "Sea of water",
+    "pinyin": "shuizhihai",
+    "pinyin_initials": "szh",
+    "type": 4,
+    "max_uses": 3
+  },
+  "SEA_SWAMP": {
+    "id": "SEA_SWAMP",
+    "icon": "data/ui_gfx/gun_actions/sea_swamp.png",
+    "name": "召唤沼泽",
+    "en_name": "Summon Swamp",
+    "pinyin": "zhaohuanzhaoze",
+    "pinyin_initials": "zhzz",
+    "type": 4,
+    "max_uses": 3
+  },
+  "SEA_ACID": {
+    "id": "SEA_ACID",
+    "icon": "data/ui_gfx/gun_actions/sea_acid.png",
+    "name": "酸液之海",
+    "en_name": "Sea of acid",
+    "pinyin": "suanyezhihai",
+    "pinyin_initials": "syzh",
+    "type": 4,
+    "max_uses": 3
+  },
+  "SEA_ACID_GAS": {
+    "id": "SEA_ACID_GAS",
+    "icon": "data/ui_gfx/gun_actions/sea_acid_gas.png",
+    "name": "可燃气体之海",
+    "en_name": "Sea of flammable gas",
+    "pinyin": "keranqitizhihai",
+    "pinyin_initials": "krqtzh",
+    "type": 4,
+    "max_uses": 3
+  },
+  "SEA_MIMIC": {
+    "id": "SEA_MIMIC",
+    "icon": "data/ui_gfx/gun_actions/sea_mimic.png",
+    "name": "拟态之海",
+    "en_name": "Sea of Mimicium",
+    "pinyin": "nitaizhihai",
+    "pinyin_initials": "ntzh",
+    "type": 4,
+    "max_uses": 2
+  },
+  "CLOUD_WATER": {
+    "id": "CLOUD_WATER",
+    "icon": "data/ui_gfx/gun_actions/cloud_water.png",
+    "name": "雨云",
+    "en_name": "Rain cloud",
+    "pinyin": "yuyun",
+    "pinyin_initials": "yy",
+    "type": 1,
+    "max_uses": 10
+  },
+  "CLOUD_OIL": {
+    "id": "CLOUD_OIL",
+    "icon": "data/ui_gfx/gun_actions/cloud_oil.png",
+    "name": "油脂之云",
+    "en_name": "Oil cloud",
+    "pinyin": "youzhizhiyun",
+    "pinyin_initials": "yzzy",
+    "type": 1,
+    "max_uses": 15
+  },
+  "CLOUD_BLOOD": {
+    "id": "CLOUD_BLOOD",
+    "icon": "data/ui_gfx/gun_actions/cloud_blood.png",
+    "name": "血云",
+    "en_name": "Blood cloud",
+    "pinyin": "xueyun",
+    "pinyin_initials": "xy",
+    "type": 1,
+    "max_uses": 3
+  },
+  "CLOUD_ACID": {
+    "id": "CLOUD_ACID",
+    "icon": "data/ui_gfx/gun_actions/cloud_acid.png",
+    "name": "酸云",
+    "en_name": "Acid cloud",
+    "pinyin": "suanyun",
+    "pinyin_initials": "sy",
+    "type": 1,
+    "max_uses": 8
+  },
+  "CLOUD_THUNDER": {
+    "id": "CLOUD_THUNDER",
+    "icon": "data/ui_gfx/gun_actions/cloud_thunder.png",
+    "name": "雷云",
+    "en_name": "Thundercloud",
+    "pinyin": "leiyun",
+    "pinyin_initials": "ly",
+    "type": 1,
+    "max_uses": 5
+  },
+  "ELECTRIC_CHARGE": {
+    "id": "ELECTRIC_CHARGE",
+    "icon": "data/ui_gfx/gun_actions/electric_charge.png",
+    "name": "电荷放射",
+    "en_name": "Electric charge",
+    "pinyin": "dianhefangshe",
+    "pinyin_initials": "dhfs",
+    "type": 2,
+    "max_uses": null
+  },
+  "MATTER_EATER": {
+    "id": "MATTER_EATER",
+    "icon": "data/ui_gfx/gun_actions/matter_eater.png",
+    "name": "物质吞噬者",
+    "en_name": "Matter eater",
+    "pinyin": "wuzhitunshizhe",
+    "pinyin_initials": "wztsz",
+    "type": 2,
+    "max_uses": 10
+  },
+  "FREEZE": {
+    "id": "FREEZE",
+    "icon": "data/ui_gfx/gun_actions/freeze.png",
+    "name": "冰冻放射",
+    "en_name": "Freeze charge",
+    "pinyin": "bingdongfangshe",
+    "pinyin_initials": "bdfs",
+    "type": 2,
+    "max_uses": null
+  },
+  "HITFX_BURNING_CRITICAL_HIT": {
+    "id": "HITFX_BURNING_CRITICAL_HIT",
+    "icon": "data/ui_gfx/gun_actions/burning_critical.png",
+    "name": "燃烧时暴击",
+    "en_name": "Critical on burning",
+    "pinyin": "ranshaoshibaoji",
+    "pinyin_initials": "rssbj",
+    "type": 2,
+    "max_uses": null
+  },
+  "HITFX_CRITICAL_WATER": {
+    "id": "HITFX_CRITICAL_WATER",
+    "icon": "data/ui_gfx/gun_actions/critical_water.png",
+    "name": "潮湿（浸水）敌人暴击",
+    "en_name": "Critical on wet (water) enemies",
+    "pinyin": "chaoshi（jinshui）direnbaoji",
+    "pinyin_initials": "cs（js）drbj",
+    "type": 2,
+    "max_uses": null
+  },
+  "HITFX_CRITICAL_OIL": {
+    "id": "HITFX_CRITICAL_OIL",
+    "icon": "data/ui_gfx/gun_actions/critical_oil.png",
+    "name": "油污敌人暴击",
+    "en_name": "Critical on oiled enemies",
+    "pinyin": "youwudirenbaoji",
+    "pinyin_initials": "ywdrbj",
+    "type": 2,
+    "max_uses": null
+  },
+  "HITFX_CRITICAL_BLOOD": {
+    "id": "HITFX_CRITICAL_BLOOD",
+    "icon": "data/ui_gfx/gun_actions/critical_blood.png",
+    "name": "染血敌人暴击",
+    "en_name": "Critical on bloody enemies",
+    "pinyin": "ranxuedirenbaoji",
+    "pinyin_initials": "rxdrbj",
+    "type": 2,
+    "max_uses": null
+  },
+  "HITFX_TOXIC_CHARM": {
+    "id": "HITFX_TOXIC_CHARM",
+    "icon": "data/ui_gfx/gun_actions/charm_on_toxic.png",
+    "name": "迷惑性毒性淤泥",
+    "en_name": "Charm on toxic sludge",
+    "pinyin": "mihuoxingduxingyuni",
+    "pinyin_initials": "mhxdxyn",
+    "type": 2,
+    "max_uses": null
+  },
+  "HITFX_EXPLOSION_SLIME": {
+    "id": "HITFX_EXPLOSION_SLIME",
+    "icon": "data/ui_gfx/gun_actions/explode_on_slime.png",
+    "name": "粘液敌人爆炸",
+    "en_name": "Explosion on slimy enemies",
+    "pinyin": "nianyedirenbaozha",
+    "pinyin_initials": "nydrbz",
+    "type": 2,
+    "max_uses": null
+  },
+  "HITFX_EXPLOSION_SLIME_GIGA": {
+    "id": "HITFX_EXPLOSION_SLIME_GIGA",
+    "icon": "data/ui_gfx/gun_actions/explode_on_slime_giga.png",
+    "name": "粘液敌人巨型爆炸",
+    "en_name": "Giant explosion on slimy enemies",
+    "pinyin": "nianyedirenjuxingbaozha",
+    "pinyin_initials": "nydrjxbz",
+    "type": 2,
+    "max_uses": 20
+  },
+  "HITFX_EXPLOSION_ALCOHOL": {
+    "id": "HITFX_EXPLOSION_ALCOHOL",
+    "icon": "data/ui_gfx/gun_actions/explode_on_alcohol.png",
+    "name": "醉酒敌人爆炸",
+    "en_name": "Explosion on drunk enemies",
+    "pinyin": "zuijiudirenbaozha",
+    "pinyin_initials": "zjdrbz",
+    "type": 2,
+    "max_uses": null
+  },
+  "HITFX_EXPLOSION_ALCOHOL_GIGA": {
+    "id": "HITFX_EXPLOSION_ALCOHOL_GIGA",
+    "icon": "data/ui_gfx/gun_actions/explode_on_alcohol_giga.png",
+    "name": "醉酒敌人巨型爆炸",
+    "en_name": "Giant explosion on drunk enemies",
+    "pinyin": "zuijiudirenjuxingbaozha",
+    "pinyin_initials": "zjdrjxbz",
+    "type": 2,
+    "max_uses": 20
+  },
+  "HITFX_PETRIFY": {
+    "id": "HITFX_PETRIFY",
+    "icon": "data/ui_gfx/gun_actions/petrify.png",
+    "name": "石化",
+    "en_name": "Petrify",
+    "pinyin": "shihua",
+    "pinyin_initials": "sh",
+    "type": 2,
+    "max_uses": null
+  },
+  "ROCKET_DOWNWARDS": {
+    "id": "ROCKET_DOWNWARDS",
+    "icon": "data/ui_gfx/gun_actions/rocket_downwards.png",
+    "name": "下方向集束魔弹",
+    "en_name": "Downwards bolt bundle",
+    "pinyin": "xiafangxiangjishumodan",
+    "pinyin_initials": "xfxjsmd",
+    "type": 2,
+    "max_uses": null
+  },
+  "ROCKET_OCTAGON": {
+    "id": "ROCKET_OCTAGON",
+    "icon": "data/ui_gfx/gun_actions/rocket_octagon.png",
+    "name": "八角形集束魔弹",
+    "en_name": "Octagonal bolt bundle",
+    "pinyin": "bajiaoxingjishumodan",
+    "pinyin_initials": "bjxjsmd",
+    "type": 2,
+    "max_uses": null
+  },
+  "FIZZLE": {
+    "id": "FIZZLE",
+    "icon": "data/ui_gfx/gun_actions/fizzle.png",
+    "name": "闪灭",
+    "en_name": "Fizzle",
+    "pinyin": "shanmie",
+    "pinyin_initials": "sm",
+    "type": 2,
+    "max_uses": null
+  },
+  "BOUNCE_EXPLOSION": {
+    "id": "BOUNCE_EXPLOSION",
+    "icon": "data/ui_gfx/gun_actions/bounce_explosion.png",
+    "name": "易爆的弹跳",
+    "en_name": "Explosive bounce",
+    "pinyin": "yibaodedantiao",
+    "pinyin_initials": "ybddt",
+    "type": 2,
+    "max_uses": null
+  },
+  "BOUNCE_SPARK": {
+    "id": "BOUNCE_SPARK",
+    "icon": "data/ui_gfx/gun_actions/bounce_spark.png",
+    "name": "泡泡弹跳",
+    "en_name": "Bubbly bounce",
+    "pinyin": "paopaodantiao",
+    "pinyin_initials": "ppdt",
+    "type": 2,
+    "max_uses": null
+  },
+  "BOUNCE_LASER": {
+    "id": "BOUNCE_LASER",
+    "icon": "data/ui_gfx/gun_actions/bounce_laser.png",
+    "name": "汇聚之光弹跳",
+    "en_name": "Concentrated light bounce",
+    "pinyin": "huijuzhiguangdantiao",
+    "pinyin_initials": "hjzgdt",
+    "type": 2,
+    "max_uses": null
+  },
+  "BOUNCE_LASER_EMITTER": {
+    "id": "BOUNCE_LASER_EMITTER",
+    "icon": "data/ui_gfx/gun_actions/bounce_laser_emitter.png",
+    "name": "电浆束弹跳",
+    "en_name": "Plasma Beam Bounce",
+    "pinyin": "dianjiangshudantiao",
+    "pinyin_initials": "djsdt",
+    "type": 2,
+    "max_uses": null
+  },
+  "BOUNCE_LARPA": {
+    "id": "BOUNCE_LARPA",
+    "icon": "data/ui_gfx/gun_actions/bounce_larpa.png",
+    "name": "拉帕弹跳",
+    "en_name": "Larpa Bounce",
+    "pinyin": "lapadantiao",
+    "pinyin_initials": "lpdt",
+    "type": 2,
+    "max_uses": null
+  },
+  "BOUNCE_SMALL_EXPLOSION": {
+    "id": "BOUNCE_SMALL_EXPLOSION",
+    "icon": "data/ui_gfx/gun_actions/bounce_small_explosion.png",
+    "name": "火花弹跳",
+    "en_name": "Sparkly bounce",
+    "pinyin": "huohuadantiao",
+    "pinyin_initials": "hhdt",
+    "type": 2,
+    "max_uses": null
+  },
+  "BOUNCE_LIGHTNING": {
+    "id": "BOUNCE_LIGHTNING",
+    "icon": "data/ui_gfx/gun_actions/bounce_lightning.png",
+    "name": "闪电弹跳",
+    "en_name": "Lightning bounce",
+    "pinyin": "shandiandantiao",
+    "pinyin_initials": "sddt",
+    "type": 2,
+    "max_uses": null
+  },
+  "BOUNCE_HOLE": {
+    "id": "BOUNCE_HOLE",
+    "icon": "data/ui_gfx/gun_actions/bounce_hole.png",
+    "name": "吸尘弹跳",
+    "en_name": "Vacuum bounce",
+    "pinyin": "xichendantiao",
+    "pinyin_initials": "xcdt",
+    "type": 2,
+    "max_uses": 20
+  },
+  "FIREBALL_RAY": {
+    "id": "FIREBALL_RAY",
+    "icon": "data/ui_gfx/gun_actions/fireball_ray.png",
+    "name": "火球发射器",
+    "en_name": "Fireball thrower",
+    "pinyin": "huoqiufasheqi",
+    "pinyin_initials": "hqfsq",
+    "type": 2,
+    "max_uses": 16
+  },
+  "LIGHTNING_RAY": {
+    "id": "LIGHTNING_RAY",
+    "icon": "data/ui_gfx/gun_actions/lightning_ray.png",
+    "name": "闪电发射器",
+    "en_name": "Lightning thrower",
+    "pinyin": "shandianfasheqi",
+    "pinyin_initials": "sdfsq",
+    "type": 2,
+    "max_uses": 16
+  },
+  "TENTACLE_RAY": {
+    "id": "TENTACLE_RAY",
+    "icon": "data/ui_gfx/gun_actions/tentacle_ray.png",
+    "name": "触手怪",
+    "en_name": "Tentacler",
+    "pinyin": "chushouguai",
+    "pinyin_initials": "csg",
+    "type": 2,
+    "max_uses": 16
+  },
+  "LASER_EMITTER_RAY": {
+    "id": "LASER_EMITTER_RAY",
+    "icon": "data/ui_gfx/gun_actions/laser_emitter_ray.png",
+    "name": "电浆束发射器",
+    "en_name": "Plasma Beam Thrower",
+    "pinyin": "dianjiangshufasheqi",
+    "pinyin_initials": "djsfsq",
+    "type": 2,
+    "max_uses": 16
+  },
+  "FIREBALL_RAY_LINE": {
+    "id": "FIREBALL_RAY_LINE",
+    "icon": "data/ui_gfx/gun_actions/fireball_ray_line.png",
+    "name": "双向火球发射器",
+    "en_name": "Two-way fireball thrower",
+    "pinyin": "shuangxianghuoqiufasheqi",
+    "pinyin_initials": "sxhqfsq",
+    "type": 2,
+    "max_uses": 20
+  },
+  "FIREBALL_RAY_ENEMY": {
+    "id": "FIREBALL_RAY_ENEMY",
+    "icon": "data/ui_gfx/gun_actions/fireball_ray_enemy.png",
+    "name": "专属火球发射器",
+    "en_name": "Personal fireball thrower",
+    "pinyin": "zhuanshuhuoqiufasheqi",
+    "pinyin_initials": "zshqfsq",
+    "type": 2,
+    "max_uses": 20
+  },
+  "LIGHTNING_RAY_ENEMY": {
+    "id": "LIGHTNING_RAY_ENEMY",
+    "icon": "data/ui_gfx/gun_actions/lightning_ray_enemy.png",
+    "name": "专属闪电投射器",
+    "en_name": "Personal lightning caster",
+    "pinyin": "zhuanshushandiantousheqi",
+    "pinyin_initials": "zssdtsq",
+    "type": 2,
+    "max_uses": 20
+  },
+  "TENTACLE_RAY_ENEMY": {
+    "id": "TENTACLE_RAY_ENEMY",
+    "icon": "data/ui_gfx/gun_actions/tentacle_ray_enemy.png",
+    "name": "专属触手怪",
+    "en_name": "Personal tentacler",
+    "pinyin": "zhuanshuchushouguai",
+    "pinyin_initials": "zscsg",
+    "type": 2,
+    "max_uses": 20
+  },
+  "GRAVITY_FIELD_ENEMY": {
+    "id": "GRAVITY_FIELD_ENEMY",
+    "icon": "data/ui_gfx/gun_actions/gravity_field_enemy.png",
+    "name": "专属重力领域",
+    "en_name": "Personal gravity field",
+    "pinyin": "zhuanshuzhonglilingyu",
+    "pinyin_initials": "zszlly",
+    "type": 2,
+    "max_uses": 20
+  },
+  "CURSE": {
+    "id": "CURSE",
+    "icon": "data/ui_gfx/gun_actions/curse.png",
+    "name": "猛毒诅咒",
+    "en_name": "Venomous Curse",
+    "pinyin": "mengduzuzhou",
+    "pinyin_initials": "mdzz",
+    "type": 2,
+    "max_uses": null
+  },
+  "CURSE_WITHER_PROJECTILE": {
+    "id": "CURSE_WITHER_PROJECTILE",
+    "icon": "data/ui_gfx/gun_actions/curse_wither_projectile.png",
+    "name": "虚弱诅咒 - 投射物",
+    "en_name": "Weakening Curse - Projectiles",
+    "pinyin": "xuruozuzhou - toushewu",
+    "pinyin_initials": "xrzz - tsw",
+    "type": 2,
+    "max_uses": null
+  },
+  "CURSE_WITHER_EXPLOSION": {
+    "id": "CURSE_WITHER_EXPLOSION",
+    "icon": "data/ui_gfx/gun_actions/curse_wither_explosion.png",
+    "name": "虚弱诅咒 - 爆炸",
+    "en_name": "Weakening Curse - Explosives",
+    "pinyin": "xuruozuzhou - baozha",
+    "pinyin_initials": "xrzz - bz",
+    "type": 2,
+    "max_uses": null
+  },
+  "CURSE_WITHER_MELEE": {
+    "id": "CURSE_WITHER_MELEE",
+    "icon": "data/ui_gfx/gun_actions/curse_wither_melee.png",
+    "name": "虚弱诅咒 - 近战",
+    "en_name": "Weakening Curse - Melee",
+    "pinyin": "xuruozuzhou - jinzhan",
+    "pinyin_initials": "xrzz - jz",
+    "type": 2,
+    "max_uses": null
+  },
+  "CURSE_WITHER_ELECTRICITY": {
+    "id": "CURSE_WITHER_ELECTRICITY",
+    "icon": "data/ui_gfx/gun_actions/curse_wither_electricity.png",
+    "name": "虚弱诅咒 - 雷电",
+    "en_name": "Weakening Curse - Electricity",
+    "pinyin": "xuruozuzhou - leidian",
+    "pinyin_initials": "xrzz - ld",
+    "type": 2,
+    "max_uses": null
+  },
+  "ORBIT_DISCS": {
+    "id": "ORBIT_DISCS",
+    "icon": "data/ui_gfx/gun_actions/orbit_discs.png",
+    "name": "锯刃环绕",
+    "en_name": "Sawblade Orbit",
+    "pinyin": "jurenhuanrao",
+    "pinyin_initials": "jrhr",
+    "type": 2,
+    "max_uses": null
+  },
+  "ORBIT_FIREBALLS": {
+    "id": "ORBIT_FIREBALLS",
+    "icon": "data/ui_gfx/gun_actions/orbit_fireballs.png",
+    "name": "火球环绕",
+    "en_name": "Fireball Orbit",
+    "pinyin": "huoqiuhuanrao",
+    "pinyin_initials": "hqhr",
+    "type": 2,
+    "max_uses": null
+  },
+  "ORBIT_NUKES": {
+    "id": "ORBIT_NUKES",
+    "icon": "data/ui_gfx/gun_actions/orbit_nukes.png",
+    "name": "核弹环绕",
+    "en_name": "Nuke Orbit",
+    "pinyin": "hedanhuanrao",
+    "pinyin_initials": "hdhr",
+    "type": 2,
+    "max_uses": 3
+  },
+  "ORBIT_LASERS": {
+    "id": "ORBIT_LASERS",
+    "icon": "data/ui_gfx/gun_actions/orbit_lasers.png",
+    "name": "电浆束环绕",
+    "en_name": "Plasma Beam Orbit",
+    "pinyin": "dianjiangshuhuanrao",
+    "pinyin_initials": "djshr",
+    "type": 2,
+    "max_uses": null
+  },
+  "ORBIT_LARPA": {
+    "id": "ORBIT_LARPA",
+    "icon": "data/ui_gfx/gun_actions/orbit_larpa.png",
+    "name": "环绕拉帕",
+    "en_name": "Orbit Larpa",
+    "pinyin": "huanraolapa",
+    "pinyin_initials": "hrlp",
+    "type": 2,
+    "max_uses": null
+  },
+  "CHAIN_SHOT": {
+    "id": "CHAIN_SHOT",
+    "icon": "data/ui_gfx/gun_actions/chain_shot.png",
+    "name": "连锁法术",
+    "en_name": "Chain Spell",
+    "pinyin": "liansuofashu",
+    "pinyin_initials": "lsfs",
+    "type": 2,
+    "max_uses": null
+  },
+  "ARC_ELECTRIC": {
+    "id": "ARC_ELECTRIC",
+    "icon": "data/ui_gfx/gun_actions/arc_electric.png",
+    "name": "电弧",
+    "en_name": "Electric Arc",
+    "pinyin": "dianhu",
+    "pinyin_initials": "dh",
+    "type": 2,
+    "max_uses": null
+  },
+  "ARC_FIRE": {
+    "id": "ARC_FIRE",
+    "icon": "data/ui_gfx/gun_actions/arc_fire.png",
+    "name": "火焰弧",
+    "en_name": "Fire Arc",
+    "pinyin": "huoyanhu",
+    "pinyin_initials": "hyh",
+    "type": 2,
+    "max_uses": null
+  },
+  "ARC_GUNPOWDER": {
+    "id": "ARC_GUNPOWDER",
+    "icon": "data/ui_gfx/gun_actions/arc_gunpowder.png",
+    "name": "火药弧",
+    "en_name": "Gunpowder Arc",
+    "pinyin": "huoyaohu",
+    "pinyin_initials": "hyh",
+    "type": 2,
+    "max_uses": null
+  },
+  "ARC_POISON": {
+    "id": "ARC_POISON",
+    "icon": "data/ui_gfx/gun_actions/arc_poison.png",
+    "name": "毒液弧",
+    "en_name": "Poison Arc",
+    "pinyin": "duyehu",
+    "pinyin_initials": "dyh",
+    "type": 2,
+    "max_uses": null
+  },
+  "CRUMBLING_EARTH_PROJECTILE": {
+    "id": "CRUMBLING_EARTH_PROJECTILE",
+    "icon": "data/ui_gfx/gun_actions/crumbling_earth_projectile.png",
+    "name": "地震魔弹",
+    "en_name": "Earthquake shot",
+    "pinyin": "dizhenmodan",
+    "pinyin_initials": "dzmd",
+    "type": 2,
+    "max_uses": 15
+  },
+  "X_RAY": {
+    "id": "X_RAY",
+    "icon": "data/ui_gfx/gun_actions/x_ray.png",
+    "name": "全知之眼",
+    "en_name": "All-seeing eye",
+    "pinyin": "quanzhizhiyan",
+    "pinyin_initials": "qzzy",
+    "type": 6,
+    "max_uses": 10
+  },
+  "UNSTABLE_GUNPOWDER": {
+    "id": "UNSTABLE_GUNPOWDER",
+    "icon": "data/ui_gfx/gun_actions/unstable_gunpowder.png",
+    "name": "爆竹",
+    "en_name": "Firecrackers",
+    "pinyin": "baozhu",
+    "pinyin_initials": "bz",
+    "type": 2,
+    "max_uses": null
+  },
+  "ACID_TRAIL": {
+    "id": "ACID_TRAIL",
+    "icon": "data/ui_gfx/gun_actions/acid_trail.png",
+    "name": "酸液轨迹",
+    "en_name": "Acid trail",
+    "pinyin": "suanyeguiji",
+    "pinyin_initials": "sygj",
+    "type": 2,
+    "max_uses": null
+  },
+  "POISON_TRAIL": {
+    "id": "POISON_TRAIL",
+    "icon": "data/ui_gfx/gun_actions/poison_trail.png",
+    "name": "毒素轨迹",
+    "en_name": "Poison trail",
+    "pinyin": "dusuguiji",
+    "pinyin_initials": "dsgj",
+    "type": 2,
+    "max_uses": null
+  },
+  "OIL_TRAIL": {
+    "id": "OIL_TRAIL",
+    "icon": "data/ui_gfx/gun_actions/oil_trail.png",
+    "name": "油液轨迹",
+    "en_name": "Oil trail",
+    "pinyin": "youyeguiji",
+    "pinyin_initials": "yygj",
+    "type": 2,
+    "max_uses": null
+  },
+  "WATER_TRAIL": {
+    "id": "WATER_TRAIL",
+    "icon": "data/ui_gfx/gun_actions/water_trail.png",
+    "name": "清水轨迹",
+    "en_name": "Water trail",
+    "pinyin": "qingshuiguiji",
+    "pinyin_initials": "qsgj",
+    "type": 2,
+    "max_uses": null
+  },
+  "GUNPOWDER_TRAIL": {
+    "id": "GUNPOWDER_TRAIL",
+    "icon": "data/ui_gfx/gun_actions/gunpowder_trail.png",
+    "name": "火药轨迹",
+    "en_name": "Gunpowder trail",
+    "pinyin": "huoyaoguiji",
+    "pinyin_initials": "hygj",
+    "type": 2,
+    "max_uses": null
+  },
+  "FIRE_TRAIL": {
+    "id": "FIRE_TRAIL",
+    "icon": "data/ui_gfx/gun_actions/fire_trail.png",
+    "name": "火焰轨迹",
+    "en_name": "Fire trail",
+    "pinyin": "huoyanguiji",
+    "pinyin_initials": "hygj",
+    "type": 2,
+    "max_uses": null
+  },
+  "BURN_TRAIL": {
+    "id": "BURN_TRAIL",
+    "icon": "data/ui_gfx/gun_actions/burn_trail.png",
+    "name": "燃烧轨迹",
+    "en_name": "Burning trail",
+    "pinyin": "ranshaoguiji",
+    "pinyin_initials": "rsgj",
+    "type": 2,
+    "max_uses": null
+  },
+  "TORCH": {
+    "id": "TORCH",
+    "icon": "data/ui_gfx/gun_actions/torch.png",
+    "name": "火把",
+    "en_name": "Torch",
+    "pinyin": "huoba",
+    "pinyin_initials": "hb",
+    "type": 7,
+    "max_uses": null
+  },
+  "TORCH_ELECTRIC": {
+    "id": "TORCH_ELECTRIC",
+    "icon": "data/ui_gfx/gun_actions/torch_electric.png",
+    "name": "电子火把",
+    "en_name": "Electric Torch",
+    "pinyin": "dianzihuoba",
+    "pinyin_initials": "dzhb",
+    "type": 7,
+    "max_uses": null
+  },
+  "ENERGY_SHIELD": {
+    "id": "ENERGY_SHIELD",
+    "icon": "data/ui_gfx/gun_actions/energy_shield.png",
+    "name": "能量盾",
+    "en_name": "Energy shield",
+    "pinyin": "nengliangdun",
+    "pinyin_initials": "nld",
+    "type": 7,
+    "max_uses": null
+  },
+  "ENERGY_SHIELD_SECTOR": {
+    "id": "ENERGY_SHIELD_SECTOR",
+    "icon": "data/ui_gfx/gun_actions/energy_shield_sector.png",
+    "name": "能量盾部分",
+    "en_name": "Energy shield sector",
+    "pinyin": "nengliangdunbufen",
+    "pinyin_initials": "nldbf",
+    "type": 7,
+    "max_uses": null
+  },
+  "ENERGY_SHIELD_SHOT": {
+    "id": "ENERGY_SHIELD_SHOT",
+    "icon": "data/ui_gfx/gun_actions/energy_shield_shot.png",
+    "name": "投射物能量盾",
+    "en_name": "Projectile energy shield",
+    "pinyin": "toushewunengliangdun",
+    "pinyin_initials": "tswnld",
+    "type": 2,
+    "max_uses": null
+  },
+  "TINY_GHOST": {
+    "id": "TINY_GHOST",
+    "icon": "data/ui_gfx/gun_actions/tiny_ghost.png",
+    "name": "召唤迷你幽灵",
+    "en_name": "Summon Tiny Ghost",
+    "pinyin": "zhaohuanminiyouling",
+    "pinyin_initials": "zhmnyl",
+    "type": 7,
+    "max_uses": null
+  },
+  "OCARINA_A": {
+    "id": "OCARINA_A",
+    "icon": "data/ui_gfx/gun_actions/ocarina_a.png",
+    "name": "陶笛 - 音符 A",
+    "en_name": "Ocarina - note A",
+    "pinyin": "taodi - yinfu a",
+    "pinyin_initials": "td - yf a",
+    "type": 5,
+    "max_uses": null
+  },
+  "OCARINA_B": {
+    "id": "OCARINA_B",
+    "icon": "data/ui_gfx/gun_actions/ocarina_b.png",
+    "name": "陶笛 - 音符 B",
+    "en_name": "Ocarina - note B",
+    "pinyin": "taodi - yinfu b",
+    "pinyin_initials": "td - yf b",
+    "type": 5,
+    "max_uses": null
+  },
+  "OCARINA_C": {
+    "id": "OCARINA_C",
+    "icon": "data/ui_gfx/gun_actions/ocarina_c.png",
+    "name": "陶笛 - 音符 C",
+    "en_name": "Ocarina - note C",
+    "pinyin": "taodi - yinfu c",
+    "pinyin_initials": "td - yf c",
+    "type": 5,
+    "max_uses": null
+  },
+  "OCARINA_D": {
+    "id": "OCARINA_D",
+    "icon": "data/ui_gfx/gun_actions/ocarina_d.png",
+    "name": "陶笛 - 音符 D",
+    "en_name": "Ocarina - note D",
+    "pinyin": "taodi - yinfu d",
+    "pinyin_initials": "td - yf d",
+    "type": 5,
+    "max_uses": null
+  },
+  "OCARINA_E": {
+    "id": "OCARINA_E",
+    "icon": "data/ui_gfx/gun_actions/ocarina_e.png",
+    "name": "陶笛 - 音符 E",
+    "en_name": "Ocarina - note E",
+    "pinyin": "taodi - yinfu e",
+    "pinyin_initials": "td - yf e",
+    "type": 5,
+    "max_uses": null
+  },
+  "OCARINA_F": {
+    "id": "OCARINA_F",
+    "icon": "data/ui_gfx/gun_actions/ocarina_f.png",
+    "name": "陶笛 - 音符 F",
+    "en_name": "Ocarina - note F",
+    "pinyin": "taodi - yinfu f",
+    "pinyin_initials": "td - yf f",
+    "type": 5,
+    "max_uses": null
+  },
+  "OCARINA_GSHARP": {
+    "id": "OCARINA_GSHARP",
+    "icon": "data/ui_gfx/gun_actions/ocarina_gsharp.png",
+    "name": "陶笛 - 音符 G#",
+    "en_name": "Ocarina - note G#",
+    "pinyin": "taodi - yinfu g#",
+    "pinyin_initials": "td - yf g#",
+    "type": 5,
+    "max_uses": null
+  },
+  "OCARINA_A2": {
+    "id": "OCARINA_A2",
+    "icon": "data/ui_gfx/gun_actions/ocarina_a2.png",
+    "name": "陶笛 - 音符 A2",
+    "en_name": "Ocarina - note A2",
+    "pinyin": "taodi - yinfu a2",
+    "pinyin_initials": "td - yf a2",
+    "type": 5,
+    "max_uses": null
+  },
+  "KANTELE_A": {
+    "id": "KANTELE_A",
+    "icon": "data/ui_gfx/gun_actions/kantele_a.png",
+    "name": "齐特琴 - 音符 A",
+    "en_name": "Kantele - note A",
+    "pinyin": "qiteqin - yinfu a",
+    "pinyin_initials": "qtq - yf a",
+    "type": 5,
+    "max_uses": null
+  },
+  "KANTELE_D": {
+    "id": "KANTELE_D",
+    "icon": "data/ui_gfx/gun_actions/kantele_d.png",
+    "name": "齐特琴 - 音符 D",
+    "en_name": "Kantele - note D",
+    "pinyin": "qiteqin - yinfu d",
+    "pinyin_initials": "qtq - yf d",
+    "type": 5,
+    "max_uses": null
+  },
+  "KANTELE_DIS": {
+    "id": "KANTELE_DIS",
+    "icon": "data/ui_gfx/gun_actions/kantele_dis.png",
+    "name": "齐特琴 - 音符 D#",
+    "en_name": "Kantele - note D#",
+    "pinyin": "qiteqin - yinfu d#",
+    "pinyin_initials": "qtq - yf d#",
+    "type": 5,
+    "max_uses": null
+  },
+  "KANTELE_E": {
+    "id": "KANTELE_E",
+    "icon": "data/ui_gfx/gun_actions/kantele_e.png",
+    "name": "齐特琴 - 音符 E",
+    "en_name": "Kantele - note E",
+    "pinyin": "qiteqin - yinfu e",
+    "pinyin_initials": "qtq - yf e",
+    "type": 5,
+    "max_uses": null
+  },
+  "KANTELE_G": {
+    "id": "KANTELE_G",
+    "icon": "data/ui_gfx/gun_actions/kantele_g.png",
+    "name": "齐特琴 - 音符 G",
+    "en_name": "Kantele - note G",
+    "pinyin": "qiteqin - yinfu g",
+    "pinyin_initials": "qtq - yf g",
+    "type": 5,
+    "max_uses": null
+  },
+  "RANDOM_SPELL": {
+    "id": "RANDOM_SPELL",
+    "icon": "data/ui_gfx/gun_actions/random_spell.png",
+    "name": "随机法术",
+    "en_name": "Random spell",
+    "pinyin": "suijifashu",
+    "pinyin_initials": "sjfs",
+    "type": 5,
+    "max_uses": null
+  },
+  "RANDOM_PROJECTILE": {
+    "id": "RANDOM_PROJECTILE",
+    "icon": "data/ui_gfx/gun_actions/random_projectile.png",
+    "name": "随机投射物法术",
+    "en_name": "Random projectile spell",
+    "pinyin": "suijitoushewufashu",
+    "pinyin_initials": "sjtswfs",
+    "type": 0,
+    "max_uses": null
+  },
+  "RANDOM_MODIFIER": {
+    "id": "RANDOM_MODIFIER",
+    "icon": "data/ui_gfx/gun_actions/random_modifier.png",
+    "name": "随机修正法术",
+    "en_name": "Random modifier spell",
+    "pinyin": "suijixiuzhengfashu",
+    "pinyin_initials": "sjxzfs",
+    "type": 2,
+    "max_uses": null
+  },
+  "RANDOM_STATIC_PROJECTILE": {
+    "id": "RANDOM_STATIC_PROJECTILE",
+    "icon": "data/ui_gfx/gun_actions/random_static_projectile.png",
+    "name": "随机静态投射物法术",
+    "en_name": "Random static projectile spell",
+    "pinyin": "suijijingtaitoushewufashu",
+    "pinyin_initials": "sjjttswfs",
+    "type": 1,
+    "max_uses": null
+  },
+  "DRAW_RANDOM": {
+    "id": "DRAW_RANDOM",
+    "icon": "data/ui_gfx/gun_actions/draw_random.png",
+    "name": "复制随机法术",
+    "en_name": "Copy random spell",
+    "pinyin": "fuzhisuijifashu",
+    "pinyin_initials": "fzsjfs",
+    "type": 5,
+    "max_uses": null
+  },
+  "DRAW_RANDOM_X3": {
+    "id": "DRAW_RANDOM_X3",
+    "icon": "data/ui_gfx/gun_actions/draw_random_x3.png",
+    "name": "三次复制随机法术",
+    "en_name": "Copy random spell thrice",
+    "pinyin": "sancifuzhisuijifashu",
+    "pinyin_initials": "scfzsjfs",
+    "type": 5,
+    "max_uses": null
+  },
+  "DRAW_3_RANDOM": {
+    "id": "DRAW_3_RANDOM",
+    "icon": "data/ui_gfx/gun_actions/draw_3_random.png",
+    "name": "复制三个随机法术",
+    "en_name": "Copy three random spells",
+    "pinyin": "fuzhisangesuijifashu",
+    "pinyin_initials": "fzsgsjfs",
+    "type": 5,
+    "max_uses": null
+  },
+  "ALL_NUKES": {
+    "id": "ALL_NUKES",
+    "icon": "data/ui_gfx/gun_actions/all_nukes.png",
+    "name": "核弹置换术",
+    "en_name": "Spells to nukes",
+    "pinyin": "hedanzhihuanshu",
+    "pinyin_initials": "hdzhs",
+    "type": 6,
+    "max_uses": 2
+  },
+  "ALL_DISCS": {
+    "id": "ALL_DISCS",
+    "icon": "data/ui_gfx/gun_actions/all_discs.png",
+    "name": "巨型锯刃置换术",
+    "en_name": "Spells to giga sawblades",
+    "pinyin": "juxingjurenzhihuanshu",
+    "pinyin_initials": "jxjrzhs",
+    "type": 6,
+    "max_uses": null
+  },
+  "ALL_ROCKETS": {
+    "id": "ALL_ROCKETS",
+    "icon": "data/ui_gfx/gun_actions/all_rockets.png",
+    "name": "魔法飞弹置换术",
+    "en_name": "Spells to magic missiles",
+    "pinyin": "mofafeidanzhihuanshu",
+    "pinyin_initials": "mffdzhs",
+    "type": 6,
+    "max_uses": 10
+  },
+  "ALL_DEATHCROSSES": {
+    "id": "ALL_DEATHCROSSES",
+    "icon": "data/ui_gfx/gun_actions/all_deathcrosses.png",
+    "name": "死亡十字置换术",
+    "en_name": "Spells to death crosses",
+    "pinyin": "siwangshizizhihuanshu",
+    "pinyin_initials": "swszzhs",
+    "type": 6,
+    "max_uses": 15
+  },
+  "ALL_BLACKHOLES": {
+    "id": "ALL_BLACKHOLES",
+    "icon": "data/ui_gfx/gun_actions/all_blackholes.png",
+    "name": "黑洞置换术",
+    "en_name": "Spells to black holes",
+    "pinyin": "heidongzhihuanshu",
+    "pinyin_initials": "hdzhs",
+    "type": 6,
+    "max_uses": 10
+  },
+  "ALL_ACID": {
+    "id": "ALL_ACID",
+    "icon": "data/ui_gfx/gun_actions/all_acid.png",
+    "name": "酸液置换术",
+    "en_name": "Spells to acid",
+    "pinyin": "suanyezhihuanshu",
+    "pinyin_initials": "syzhs",
+    "type": 6,
+    "max_uses": null
+  },
+  "ALL_SPELLS": {
+    "id": "ALL_SPELLS",
+    "icon": "data/ui_gfx/gun_actions/all_spells.png",
+    "name": "万物之终结",
+    "en_name": "The end of everything",
+    "pinyin": "wanwuzhizhongjie",
+    "pinyin_initials": "wwzzj",
+    "type": 5,
+    "max_uses": 1
+  },
+  "SUMMON_PORTAL": {
+    "id": "SUMMON_PORTAL",
+    "icon": "data/ui_gfx/gun_actions/summon_portal.png",
+    "name": "召唤传送门",
+    "en_name": "Summon portal",
+    "pinyin": "zhaohuanchuansongmen",
+    "pinyin_initials": "zhcsm",
+    "type": 5,
+    "max_uses": 7
+  },
+  "ADD_TRIGGER": {
+    "id": "ADD_TRIGGER",
+    "icon": "data/ui_gfx/gun_actions/trigger.png",
+    "name": "追加触发",
+    "en_name": "Add trigger",
+    "pinyin": "zhuijiachufa",
+    "pinyin_initials": "zjcf",
+    "type": 5,
+    "max_uses": null
+  },
+  "ADD_TIMER": {
+    "id": "ADD_TIMER",
+    "icon": "data/ui_gfx/gun_actions/timer.png",
+    "name": "追加计时",
+    "en_name": "Add timer",
+    "pinyin": "zhuijiajishi",
+    "pinyin_initials": "zjjs",
+    "type": 5,
+    "max_uses": null
+  },
+  "ADD_DEATH_TRIGGER": {
+    "id": "ADD_DEATH_TRIGGER",
+    "icon": "data/ui_gfx/gun_actions/death_trigger.png",
+    "name": "追加失效触发",
+    "en_name": "Add expiration trigger",
+    "pinyin": "zhuijiashixiaochufa",
+    "pinyin_initials": "zjsxcf",
+    "type": 5,
+    "max_uses": null
+  },
+  "LARPA_CHAOS": {
+    "id": "LARPA_CHAOS",
+    "icon": "data/ui_gfx/gun_actions/larpa_chaos.png",
+    "name": "混沌拉帕",
+    "en_name": "Chaos larpa",
+    "pinyin": "hundunlapa",
+    "pinyin_initials": "hdlp",
+    "type": 2,
+    "max_uses": null
+  },
+  "LARPA_DOWNWARDS": {
+    "id": "LARPA_DOWNWARDS",
+    "icon": "data/ui_gfx/gun_actions/larpa_downwards.png",
+    "name": "下方向拉帕",
+    "en_name": "Downwards larpa",
+    "pinyin": "xiafangxianglapa",
+    "pinyin_initials": "xfxlp",
+    "type": 2,
+    "max_uses": null
+  },
+  "LARPA_UPWARDS": {
+    "id": "LARPA_UPWARDS",
+    "icon": "data/ui_gfx/gun_actions/larpa_upwards.png",
+    "name": "上方向拉帕",
+    "en_name": "Upwards larpa",
+    "pinyin": "shangfangxianglapa",
+    "pinyin_initials": "sfxlp",
+    "type": 2,
+    "max_uses": null
+  },
+  "LARPA_CHAOS_2": {
+    "id": "LARPA_CHAOS_2",
+    "icon": "data/ui_gfx/gun_actions/larpa_chaos_2.png",
+    "name": "复制轨迹",
+    "en_name": "Copy trail",
+    "pinyin": "fuzhiguiji",
+    "pinyin_initials": "fzgj",
+    "type": 2,
+    "max_uses": null
+  },
+  "LARPA_DEATH": {
+    "id": "LARPA_DEATH",
+    "icon": "data/ui_gfx/gun_actions/larpa_death.png",
+    "name": "拉帕爆炸",
+    "en_name": "Larpa Explosion",
+    "pinyin": "lapabaozha",
+    "pinyin_initials": "lpbz",
+    "type": 2,
+    "max_uses": 30
+  },
+  "ALPHA": {
+    "id": "ALPHA",
+    "icon": "data/ui_gfx/gun_actions/alpha.png",
+    "name": "初始",
+    "en_name": "Alpha",
+    "pinyin": "chushi",
+    "pinyin_initials": "cs",
+    "type": 5,
+    "max_uses": null
+  },
+  "GAMMA": {
+    "id": "GAMMA",
+    "icon": "data/ui_gfx/gun_actions/gamma.png",
+    "name": "伽马校正",
+    "en_name": "Gamma",
+    "pinyin": "gamajiaozheng",
+    "pinyin_initials": "gmjz",
+    "type": 5,
+    "max_uses": null
+  },
+  "TAU": {
+    "id": "TAU",
+    "icon": "data/ui_gfx/gun_actions/tau.png",
+    "name": "陶",
+    "en_name": "Tau",
+    "pinyin": "tao",
+    "pinyin_initials": "t",
+    "type": 5,
+    "max_uses": null
+  },
+  "OMEGA": {
+    "id": "OMEGA",
+    "icon": "data/ui_gfx/gun_actions/omega.png",
+    "name": "终结",
+    "en_name": "Omega",
+    "pinyin": "zhongjie",
+    "pinyin_initials": "zj",
+    "type": 5,
+    "max_uses": null
+  },
+  "MU": {
+    "id": "MU",
+    "icon": "data/ui_gfx/gun_actions/mu.png",
+    "name": "谬",
+    "en_name": "Mu",
+    "pinyin": "miu",
+    "pinyin_initials": "m",
+    "type": 5,
+    "max_uses": null
+  },
+  "PHI": {
+    "id": "PHI",
+    "icon": "data/ui_gfx/gun_actions/phi.png",
+    "name": "斐",
+    "en_name": "Phi",
+    "pinyin": "fei",
+    "pinyin_initials": "f",
+    "type": 5,
+    "max_uses": null
+  },
+  "SIGMA": {
+    "id": "SIGMA",
+    "icon": "data/ui_gfx/gun_actions/sigma.png",
+    "name": "西格玛",
+    "en_name": "Sigma",
+    "pinyin": "xigema",
+    "pinyin_initials": "xgm",
+    "type": 5,
+    "max_uses": null
+  },
+  "ZETA": {
+    "id": "ZETA",
+    "icon": "data/ui_gfx/gun_actions/zeta.png",
+    "name": "泽塔",
+    "en_name": "Zeta",
+    "pinyin": "zeta",
+    "pinyin_initials": "zt",
+    "type": 5,
+    "max_uses": null
+  },
+  "DIVIDE_2": {
+    "id": "DIVIDE_2",
+    "icon": "data/ui_gfx/gun_actions/divide_2.png",
+    "name": "一分为二",
+    "en_name": "Divide by 2",
+    "pinyin": "yifenweier",
+    "pinyin_initials": "yfwe",
+    "type": 5,
+    "max_uses": null
+  },
+  "DIVIDE_3": {
+    "id": "DIVIDE_3",
+    "icon": "data/ui_gfx/gun_actions/divide_3.png",
+    "name": "一分为三",
+    "en_name": "Divide by 3",
+    "pinyin": "yifenweisan",
+    "pinyin_initials": "yfws",
+    "type": 5,
+    "max_uses": null
+  },
+  "DIVIDE_4": {
+    "id": "DIVIDE_4",
+    "icon": "data/ui_gfx/gun_actions/divide_4.png",
+    "name": "一分为四",
+    "en_name": "Divide by 4",
+    "pinyin": "yifenweisi",
+    "pinyin_initials": "yfws",
+    "type": 5,
+    "max_uses": null
+  },
+  "DIVIDE_10": {
+    "id": "DIVIDE_10",
+    "icon": "data/ui_gfx/gun_actions/divide_10.png",
+    "name": "一分为十",
+    "en_name": "Divide by 10",
+    "pinyin": "yifenweishi",
+    "pinyin_initials": "yfws",
+    "type": 5,
+    "max_uses": 5
+  },
+  "METEOR_RAIN": {
+    "id": "METEOR_RAIN",
+    "icon": "data/ui_gfx/gun_actions/meteor_rain.png",
+    "name": "$action_meteor_rain",
+    "en_name": "Meteorisade",
+    "pinyin": "$action_meteor_rain",
+    "pinyin_initials": "$action_meteor_rain",
+    "type": 1,
+    "max_uses": 2
+  },
+  "WORM_RAIN": {
+    "id": "WORM_RAIN",
+    "icon": "data/ui_gfx/gun_actions/worm_rain.png",
+    "name": "$action_worm_rain",
+    "en_name": "Matosade",
+    "pinyin": "$action_worm_rain",
+    "pinyin_initials": "$action_worm_rain",
+    "type": 1,
+    "max_uses": 2
+  },
+  "RESET": {
+    "id": "RESET",
+    "icon": "data/ui_gfx/gun_actions/reset.png",
+    "name": "魔杖刷新",
+    "en_name": "Wand Refresh",
+    "pinyin": "mozhangshuaxin",
+    "pinyin_initials": "mzsx",
+    "type": 6,
+    "max_uses": null
+  },
+  "IF_ENEMY": {
+    "id": "IF_ENEMY",
+    "icon": "data/ui_gfx/gun_actions/if_enemy.png",
+    "name": "要求 - 敌人数量",
+    "en_name": "Requirement - Enemies",
+    "pinyin": "yaoqiu - direnshuliang",
+    "pinyin_initials": "yq - drsl",
+    "type": 5,
+    "max_uses": null
+  },
+  "IF_PROJECTILE": {
+    "id": "IF_PROJECTILE",
+    "icon": "data/ui_gfx/gun_actions/if_projectile.png",
+    "name": "要求 - 投射物法术数量",
+    "en_name": "Requirement - Projectile Spells",
+    "pinyin": "yaoqiu - toushewufashushuliang",
+    "pinyin_initials": "yq - tswfssl",
+    "type": 5,
+    "max_uses": null
+  },
+  "IF_HP": {
+    "id": "IF_HP",
+    "icon": "data/ui_gfx/gun_actions/if_hp.png",
+    "name": "要求 - 生命值低下",
+    "en_name": "Requirement - Low Health",
+    "pinyin": "yaoqiu - shengmingzhidixia",
+    "pinyin_initials": "yq - smzdx",
+    "type": 5,
+    "max_uses": null
+  },
+  "IF_HALF": {
+    "id": "IF_HALF",
+    "icon": "data/ui_gfx/gun_actions/if_half.png",
+    "name": "要求 - 每次",
+    "en_name": "Requirement - Every Other",
+    "pinyin": "yaoqiu - meici",
+    "pinyin_initials": "yq - mc",
+    "type": 5,
+    "max_uses": null
+  },
+  "IF_END": {
+    "id": "IF_END",
+    "icon": "data/ui_gfx/gun_actions/if_end.png",
+    "name": "要求 - 终点",
+    "en_name": "Requirement - Endpoint",
+    "pinyin": "yaoqiu - zhongdian",
+    "pinyin_initials": "yq - zd",
+    "type": 5,
+    "max_uses": null
+  },
+  "IF_ELSE": {
+    "id": "IF_ELSE",
+    "icon": "data/ui_gfx/gun_actions/if_else.png",
+    "name": "要求 - 否则",
+    "en_name": "Requirement - Otherwise",
+    "pinyin": "yaoqiu - fouze",
+    "pinyin_initials": "yq - fz",
+    "type": 5,
+    "max_uses": null
+  },
+  "COLOUR_RED": {
+    "id": "COLOUR_RED",
+    "icon": "data/ui_gfx/gun_actions/colour_red.png",
+    "name": "红色闪光",
+    "en_name": "Red Glimmer",
+    "pinyin": "hongseshanguang",
+    "pinyin_initials": "hssg",
+    "type": 2,
+    "max_uses": null
+  },
+  "COLOUR_ORANGE": {
+    "id": "COLOUR_ORANGE",
+    "icon": "data/ui_gfx/gun_actions/colour_orange.png",
+    "name": "橙色闪光",
+    "en_name": "Orange Glimmer",
+    "pinyin": "chengseshanguang",
+    "pinyin_initials": "cssg",
+    "type": 2,
+    "max_uses": null
+  },
+  "COLOUR_GREEN": {
+    "id": "COLOUR_GREEN",
+    "icon": "data/ui_gfx/gun_actions/colour_green.png",
+    "name": "绿色闪光",
+    "en_name": "Green Glimmer",
+    "pinyin": "lvseshanguang",
+    "pinyin_initials": "lssg",
+    "type": 2,
+    "max_uses": null
+  },
+  "COLOUR_YELLOW": {
+    "id": "COLOUR_YELLOW",
+    "icon": "data/ui_gfx/gun_actions/colour_yellow.png",
+    "name": "黄色闪光",
+    "en_name": "Yellow Glimmer",
+    "pinyin": "huangseshanguang",
+    "pinyin_initials": "hssg",
+    "type": 2,
+    "max_uses": null
+  },
+  "COLOUR_PURPLE": {
+    "id": "COLOUR_PURPLE",
+    "icon": "data/ui_gfx/gun_actions/colour_purple.png",
+    "name": "紫色闪光",
+    "en_name": "Purple Glimmer",
+    "pinyin": "ziseshanguang",
+    "pinyin_initials": "zssg",
+    "type": 2,
+    "max_uses": null
+  },
+  "COLOUR_BLUE": {
+    "id": "COLOUR_BLUE",
+    "icon": "data/ui_gfx/gun_actions/colour_blue.png",
+    "name": "蓝色闪光",
+    "en_name": "Blue Glimmer",
+    "pinyin": "lanseshanguang",
+    "pinyin_initials": "lssg",
+    "type": 2,
+    "max_uses": null
+  },
+  "COLOUR_RAINBOW": {
+    "id": "COLOUR_RAINBOW",
+    "icon": "data/ui_gfx/gun_actions/colour_rainbow.png",
+    "name": "彩虹闪光",
+    "en_name": "Rainbow Glimmer",
+    "pinyin": "caihongshanguang",
+    "pinyin_initials": "chsg",
+    "type": 2,
+    "max_uses": null
+  },
+  "COLOUR_INVIS": {
+    "id": "COLOUR_INVIS",
+    "icon": "data/ui_gfx/gun_actions/colour_invis.png",
+    "name": "隐形法术",
+    "en_name": "Invisible Spell",
+    "pinyin": "yinxingfashu",
+    "pinyin_initials": "yxfs",
+    "type": 2,
+    "max_uses": null
+  },
+  "RAINBOW_TRAIL": {
+    "id": "RAINBOW_TRAIL",
+    "icon": "data/ui_gfx/gun_actions/rainbow_trail.png",
+    "name": "彩虹轨迹",
+    "en_name": "Rainbow trail",
+    "pinyin": "caihongguiji",
+    "pinyin_initials": "chgj",
+    "type": 2,
+    "max_uses": null
+  },
+  "CESSATION": {
+    "id": "CESSATION",
+    "icon": "data/ui_gfx/gun_actions/cessation.png",
+    "name": "不复存在",
+    "en_name": "Cessation",
+    "pinyin": "bufucunzai",
+    "pinyin_initials": "bfcz",
+    "type": 5,
+    "max_uses": 25
+  }
+}

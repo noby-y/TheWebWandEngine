@@ -2,6 +2,7 @@ import React from 'react';
 import { Monitor, X } from 'lucide-react';
 import { WandData, SpellInfo, AppSettings } from '../types';
 import { PropInput } from './Common';
+import { getIconUrl } from '../lib/evaluatorAdapter';
 
 interface WandEditorProps {
   slot: string;
@@ -19,6 +20,7 @@ interface WandEditorProps {
   setSelection: (s: any) => void;
   setSettings: React.Dispatch<React.SetStateAction<AppSettings>>;
   settings: AppSettings;
+  isConnected: boolean;
 }
 
 export function WandEditor({
@@ -36,7 +38,8 @@ export function WandEditor({
   openPicker,
   setSelection,
   setSettings,
-  settings
+  settings,
+  isConnected
 }: WandEditorProps) {
   const renderTimeInput = (label: string, frames: number, updateKey: keyof WandData) => {
     const primaryValue = settings.showStatsInFrames ? frames : parseFloat((frames / 60).toFixed(3));
@@ -110,7 +113,7 @@ export function WandEditor({
                   <div className="w-12 h-12 rounded-lg border border-amber-500/30 bg-amber-500/5 flex items-center justify-center relative shadow-[0_0_15px_rgba(245,158,11,0.1)] transition-transform hover:scale-105">
                     {spell ? (
                       <img 
-                        src={`/api/icon/${spell.icon}`} 
+                        src={getIconUrl(spell.icon, isConnected)} 
                         className="w-10 h-10 image-pixelated" 
                         alt="" 
                         title={`Always Cast: ${spell.name}`}
@@ -229,7 +232,7 @@ export function WandEditor({
                         
                         return (
                           <>
-                            <img src={`/api/icon/${spell.icon}`} className={`w-11 h-11 image-pixelated transition-transform group-hover/cell:scale-110 ${isGrayscale ? 'grayscale opacity-50' : ''}`} alt="" draggable="false" />
+                            <img src={getIconUrl(spell.icon, isConnected)} className={`w-11 h-11 image-pixelated transition-transform group-hover/cell:scale-110 ${isGrayscale ? 'grayscale opacity-50' : ''}`} alt="" draggable="false" />
                             
                             {isTriggered && (
                               <div className="absolute bottom-0 left-0">

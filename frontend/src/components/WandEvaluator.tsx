@@ -1,6 +1,7 @@
 import React, { useState, useMemo, useEffect } from 'react';
 import { EvalNode, ShotState, SpellInfo, AppSettings } from '../types';
 import { ChevronRight, ChevronDown } from 'lucide-react';
+import { getIconUrl } from '../lib/evaluatorAdapter';
 
 interface Props {
   data: {
@@ -151,7 +152,7 @@ const WandEvaluator: React.FC<Props> = ({ data, spellDb, onHoverSlots, settings 
               return (
                 <div key={id} className="flex items-center gap-2 bg-zinc-900/40 border border-white/5 pl-1 pr-3 py-0.5 rounded-md transition-all group/count">
                   {spell ? (
-                    <img src={`/api/icon/${spell.icon}`} alt={id} className="w-5 h-5 image-pixelated" />
+                    <img src={getIconUrl(spell.icon, false)} alt={id} className="w-5 h-5 image-pixelated" />
                   ) : (
                     <div className="w-5 h-5 bg-zinc-800 rounded flex items-center justify-center text-[8px] text-zinc-500 font-mono">?</div>
                   )}
@@ -355,7 +356,7 @@ const WandEvaluator: React.FC<Props> = ({ data, spellDb, onHoverSlots, settings 
 };
 
 // 抽离出的子组件，保持主组件整洁
-const CastStatsPanel: React.FC<{ group: any, spellDb: Record<string, SpellInfo> }> = ({ group, spellDb }) => {
+const CastStatsPanel: React.FC<{ group: any, spellDb: Record<string, SpellInfo> }> = React.memo(({ group, spellDb }) => {
   const sortedCastCounts = Object.entries(group.counts || {}).sort(([, a], [, b]) => (b as number) - (a as number));
   if (sortedCastCounts.length === 0) return null;
   return (
@@ -370,7 +371,7 @@ const CastStatsPanel: React.FC<{ group: any, spellDb: Record<string, SpellInfo> 
           return (
             <div key={id} className="flex items-center gap-2 bg-zinc-900/60 border border-white/5 pl-1 pr-2 py-1 rounded transition-all">
               {spell ? (
-                <img src={`/api/icon/${spell.icon}`} alt={id} className="w-6 h-6 image-pixelated" />
+                <img src={getIconUrl(spell.icon, false)} alt={id} className="w-6 h-6 image-pixelated" />
               ) : (
                 <div className="w-6 h-6 bg-zinc-800 rounded flex items-center justify-center text-[8px] text-zinc-500 font-mono">?</div>
               )}
@@ -388,9 +389,9 @@ const CastStatsPanel: React.FC<{ group: any, spellDb: Record<string, SpellInfo> 
       </div>
     </div>
   );
-};
+});
 
-const ShotStateCard: React.FC<{ state: ShotState }> = ({ state }) => (
+const ShotStateCard: React.FC<{ state: ShotState }> = React.memo(({ state }) => (
   <div className="flex-shrink-0 w-56 p-3 bg-zinc-900/50 border border-white/5 rounded-md hover:border-blue-500/30 transition-colors group/state">
     <div className="text-[10px] font-mono font-bold text-blue-400 mb-3 border-b border-white/5 pb-1.5 flex justify-between items-center uppercase tracking-tighter">
       <span>第 {state.id} 阶</span>
@@ -405,18 +406,18 @@ const ShotStateCard: React.FC<{ state: ShotState }> = ({ state }) => (
       ))}
     </div>
   </div>
-);
+));
 
 const TreeNode: React.FC<{ 
   node: EvalNode; 
   spellDb: Record<string, SpellInfo>; 
   isRoot?: boolean;
   onHover?: (indices: number[] | null) => void;
-}> = ({ node, spellDb, isRoot, onHover }) => {
+}> = React.memo(({ node, spellDb, isRoot, onHover }) => {
   const isCast = node.name.startsWith('Cast #') || node.name === 'Wand';
   const spell = spellDb[node.name];
   
-  const iconUrl = spell ? `/api/icon/${spell.icon}` : null;
+  const iconUrl = spell ? getIconUrl(spell.icon, false) : null;
 
   return (
     <div className={`flex items-center shrink-0`}>
@@ -479,6 +480,6 @@ const TreeNode: React.FC<{
       </div>
     </div>
   );
-};
+});
 
 export default WandEvaluator;

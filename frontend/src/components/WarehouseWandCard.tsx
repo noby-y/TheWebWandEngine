@@ -10,6 +10,7 @@ import {
   Zap
 } from 'lucide-react';
 import { WarehouseWand, SpellInfo, SmartTag } from '../types';
+import { getIconUrl } from '../lib/evaluatorAdapter';
 import { clsx, type ClassValue } from 'clsx';
 import { twMerge } from 'tailwind-merge';
 
@@ -35,6 +36,7 @@ interface WarehouseWandCardProps {
   onDragOver: (e: React.DragEvent, id: string) => void;
   onDragLeave: () => void;
   onDrop: (e: React.DragEvent, id: string) => void;
+  isConnected: boolean;
 }
 
 export const WarehouseWandCard = React.memo(({
@@ -54,7 +56,8 @@ export const WarehouseWandCard = React.memo(({
   onDragStart,
   onDragOver,
   onDragLeave,
-  onDrop
+  onDrop,
+  isConnected
 }: WarehouseWandCardProps) => {
   
   const spellsList = useMemo(() => {
@@ -102,7 +105,7 @@ export const WarehouseWandCard = React.memo(({
           {spellsList.map((spell, i) => (
             <div key={i} className="w-5 h-5 shrink-0 flex items-center justify-center relative">
                {spell ? (
-                 <img src={`/api/icon/${spell.icon}`} className="w-full h-full object-contain image-pixelated" alt="" />
+                 <img src={getIconUrl(spell.icon, isConnected)} className="w-full h-full object-contain image-pixelated" alt="" />
                ) : (
                  <div className="w-full h-full bg-white/5 rounded-sm" />
                )}
@@ -148,7 +151,7 @@ export const WarehouseWandCard = React.memo(({
                      <div className="flex gap-0.5">
                         {wand.always_cast.map((sid, i) => {
                            const s = spellDb[sid];
-                           return s ? <img key={i} src={`/api/icon/${s.icon}`} className="w-4 h-4" /> : null;
+                           return s ? <img key={i} src={getIconUrl(s.icon, isConnected)} className="w-4 h-4" /> : null;
                         })}
                      </div>
                   </div>

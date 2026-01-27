@@ -2,6 +2,7 @@ import React from 'react';
 import { Search, Star, Minimize2, Plus } from 'lucide-react';
 import { SpellInfo, AppSettings, SpellTypeConfig } from '../types';
 import { SPELL_GROUPS } from '../constants';
+import { getIconUrl } from '../lib/evaluatorAdapter';
 
 interface SpellPickerProps {
   pickerConfig: { x: number; y: number; wandSlot: string; spellIdx: string; isAlwaysCast?: boolean } | null;
@@ -14,6 +15,7 @@ interface SpellPickerProps {
   settings: AppSettings;
   pickerExpandedGroups: Set<number>;
   setPickerExpandedGroups: React.Dispatch<React.SetStateAction<Set<number>>>;
+  isConnected: boolean;
 }
 
 export function SpellPicker({
@@ -26,7 +28,8 @@ export function SpellPicker({
   spellStats,
   settings,
   pickerExpandedGroups,
-  setPickerExpandedGroups
+  setPickerExpandedGroups,
+  isConnected
 }: SpellPickerProps) {
   if (!pickerConfig) return null;
 
@@ -84,7 +87,7 @@ export function SpellPicker({
                         className="aspect-square hover:bg-white/10 border border-white/5 rounded flex items-center justify-center transition-all group overflow-hidden"
                         title={`${s.name} (${s.en_name})\nID: ${s.id}`}
                       >
-                        <img src={`/api/icon/${s.icon}`} className="w-7 h-7 image-pixelated group-hover:scale-110" alt="" />
+                        <img src={getIconUrl(s.icon, isConnected)} className="w-7 h-7 image-pixelated group-hover:scale-110" alt="" />
                       </button>
                     );
                   })}
@@ -134,7 +137,7 @@ export function SpellPicker({
                             className="aspect-square hover:bg-black/40 border border-white/5 rounded flex items-center justify-center transition-all group overflow-hidden"
                             title={s.name}
                           >
-                            <img src={`/api/icon/${s.icon}`} className="w-7 h-7 image-pixelated group-hover:scale-110" alt="" />
+                            <img src={getIconUrl(s.icon, isConnected)} className="w-7 h-7 image-pixelated group-hover:scale-110" alt="" />
                           </button>
                         );
                       })}
@@ -184,7 +187,7 @@ export function SpellPicker({
                             className="aspect-square hover:bg-black/40 border border-white/5 rounded flex items-center justify-center transition-all group overflow-hidden"
                             title={s.name}
                           >
-                            <img src={`/api/icon/${s.icon}`} className="w-7 h-7 image-pixelated group-hover:scale-110" alt="" />
+                            <img src={getIconUrl(s.icon, isConnected)} className="w-7 h-7 image-pixelated group-hover:scale-110" alt="" />
                           </button>
                         );
                       })}

@@ -1,6 +1,7 @@
 import React from 'react';
 import { History, X, Undo2, Redo2, Clock } from 'lucide-react';
 import { Tab, SpellInfo } from '../types';
+import { getIconUrl } from '../lib/evaluatorAdapter';
 
 interface HistoryPanelProps {
   isOpen: boolean;
@@ -11,6 +12,7 @@ interface HistoryPanelProps {
   onJumpFuture: (idx: number) => void;
   onUndo: () => void;
   onRedo: () => void;
+  isConnected: boolean;
 }
 
 export function HistoryPanel({
@@ -21,7 +23,8 @@ export function HistoryPanel({
   onJumpPast,
   onJumpFuture,
   onUndo,
-  onRedo
+  onRedo,
+  isConnected
 }: HistoryPanelProps) {
   if (!isOpen) return null;
 
@@ -72,7 +75,7 @@ export function HistoryPanel({
                     {item.icons.slice(0, 15).map((sid, i) => {
                       const spell = spellDb[sid];
                       return spell ? (
-                        <img key={i} src={`/api/icon/${spell.icon}`} className="w-5 h-5 image-pixelated border border-white/5 rounded-sm bg-black/40 shadow-sm" alt="" />
+                        <img key={i} src={getIconUrl(spell.icon, isConnected)} className="w-5 h-5 image-pixelated border border-white/5 rounded-sm bg-black/40 shadow-sm" alt="" />
                       ) : null;
                     })}
                     {item.icons.length > 15 && (
@@ -117,7 +120,7 @@ export function HistoryPanel({
                     {item.icons.slice(0, 15).map((sid, i) => {
                       const spell = spellDb[sid];
                       return spell ? (
-                        <img key={i} src={`/api/icon/${spell.icon}`} className="w-4 h-4 image-pixelated border border-white/5 rounded-sm bg-black/40 grayscale group-hover/fitem:grayscale-0" alt="" />
+                        <img key={i} src={getIconUrl(spell.icon, isConnected)} className="w-4 h-4 image-pixelated border border-white/5 rounded-sm bg-black/40 grayscale group-hover/fitem:grayscale-0" alt="" />
                       ) : null;
                     })}
                   </div>
