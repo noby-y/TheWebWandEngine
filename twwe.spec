@@ -19,7 +19,7 @@ a = Analysis(
         ('2026-01-24 01-51-03.txt', '.'),
         # 嵌入 Lua 引擎和评估脚本
         ('bin', 'bin'),
-        ('wand_eval_tree-master', 'wand_eval_tree-master')
+        ('wand_eval_tree', 'wand_eval_tree')
     ],
     hiddenimports=['flask', 'flask_cors', 'engineio.async_drivers.threading', 'pypinyin'],
     hookspath=[],

@@ -15,7 +15,7 @@ A Web-based Noita wand evaluation and synchronization tool. This project aims to
 This project integrates the following open-source component:
 - **[wand_eval_tree](https://github.com/NathanSnail/wand_eval_tree)** (by NathanSnail): Core Lua simulation engine.
   - **Modifications**: This repository includes a modified version that fixes negative value parsing under specific attributes and adds support for standard JSON data export.
-  - **License**: [GPL-3.0](./wand_eval_tree-master/LICENSE.txt)
+  - **License**: [GPL-3.0](./wand_eval_tree/LICENSE.txt)
 
 ### Acknowledgments
 The development of this project was inspired and assisted by the following projects/resources:

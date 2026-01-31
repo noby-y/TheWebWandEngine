@@ -52,7 +52,10 @@
     "expand_all_trees": "展开全部 {{count}} 个树形图",
     "collapse_preview": "收起为预览模式",
     "cast_stats": "本轮放出统计",
-    "stage": "第 {{id}} 阶"
+    "stage": "第 {{id}} 阶",
+    "force_analyze": "强制重新分析",
+    "force_analyze_desc": "重新启动评估引擎并分析当前法杖 (解决卡顿或同步错位)",
+    "analyzing": "正在分析法杖..."
   },
   "settings": {
     "title": "Settings",
@@ -120,7 +123,23 @@
     "new_group_default_name": "新分组",
     "contains_types": "包含类型",
     "search_placeholder": "搜索设置项...",
-    "no_results": "未找到匹配的设置"
+    "no_results": "未找到匹配的设置",
+    "spell_types_list": {
+      "projectile": "投射物",
+      "static_projectile": "静态投射物",
+      "modifier": "修正",
+      "multicast": "多重",
+      "material": "材料",
+      "other": "其他",
+      "utility": "实用",
+      "passive": "被动"
+    },
+    "spell_groups_list": {
+      "projectile": "投射物",
+      "modifier": "修正",
+      "utility_multicast_other": "实用+多重+其他",
+      "static_material_passive": "静态+材料+被动"
+    }
   },
   "warehouse": {
     "title": "魔杖仓库",

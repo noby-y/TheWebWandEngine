@@ -87,8 +87,10 @@ function App() {
   const [activeTabId, setActiveTabId] = useState('1');
   const [spellDb, setSpellDb] = useState<Record<string, SpellInfo>>({});
   const [isConnected, setIsConnected] = useState(false);
-  const [evalResults, setEvalResults] = useState<Record<string, EvalResponse>>({});
+  const [evalResults, setEvalResults] = useState<Record<string, { data: EvalResponse, id: number, loading?: boolean }>>({});
   const evalTimersRef = useRef<Record<string, any>>({});
+  const latestRequestIdsRef = useRef<Record<string, number>>({});
+  const lastEvaluatedWandsRef = useRef<Record<string, string>>({});
 
   // Settings with Persistence
   const [settings, setSettings] = useState<AppSettings>(() => {
@@ -441,14 +443,31 @@ function App() {
 
   const activeTab = useMemo(() => tabs.find(t => t.id === activeTabId) || tabs[0], [tabs, activeTabId]);
 
-  const requestEvaluation = useCallback(async (tabId: string, slot: string, wand: WandData) => {
+  const requestEvaluation = useCallback(async (tabId: string, slot: string, wand: WandData, force: boolean = false) => {
+    const key = `${tabId}-${slot}`;
     try {
-      const data = await evaluateWand(wand, settings, isConnected);
-      if (data) {
-        setEvalResults(prev => ({ ...prev, [`${tabId}-${slot}`]: data }));
+      setEvalResults(prev => ({
+        ...prev,
+        [key]: { ...(prev[key] || { data: null, id: 0 }), loading: true }
+      }));
+
+      const res = await evaluateWand(wand, settings, isConnected, force);
+      if (res) {
+        // Only update if this is still the latest request for this slot
+        if (res.id >= (latestRequestIdsRef.current[key] || 0)) {
+          latestRequestIdsRef.current[key] = res.id;
+          setEvalResults(prev => ({ 
+            ...prev, 
+            [key]: { data: res.data, id: res.id, loading: false } 
+          }));
+        }
       }
     } catch (e) {
       console.error("Evaluation failed:", e);
+      setEvalResults(prev => ({
+        ...prev,
+        [key]: { ...(prev[key] || { data: null, id: 0 }), loading: false }
+      }));
     }
   }, [
     settings.numCasts, 
@@ -468,13 +487,27 @@ function App() {
       if (!wand) return;
 
       const key = `${activeTab.id}-${slot}`;
+      // Serialize relevant settings into the key to detect changes in settings too
+      const wandStateString = JSON.stringify({
+        wand,
+        numCasts: settings.numCasts,
+        unlimited: settings.unlimitedSpells,
+        ifHalf: settings.initialIfHalf,
+        lowHp: settings.simulateLowHp,
+        manyEnemies: settings.simulateManyEnemies,
+        manyProjectiles: settings.simulateManyProjectiles
+      });
+
+      if (lastEvaluatedWandsRef.current[key] === wandStateString) return;
+
       if (evalTimersRef.current[key]) clearTimeout(evalTimersRef.current[key]);
 
       evalTimersRef.current[key] = setTimeout(() => {
+        lastEvaluatedWandsRef.current[key] = wandStateString;
         requestEvaluation(activeTab.id, slot, wand);
       }, 500);
     });
-  }, [activeTab.wands, activeTab.expandedWands, activeTab.id, requestEvaluation, settings.numCasts, settings.unlimitedSpells]);
+  }, [activeTab.wands, activeTab.expandedWands, activeTab.id, requestEvaluation, settings]);
 
   // --- Frequency Analysis (Common Spells) ---
   const spellStats = useMemo(() => {
@@ -1760,6 +1793,7 @@ function App() {
               copyLegacyWand={copyLegacyWand}
               pasteWand={pasteWand}
               updateWand={updateWand}
+              requestEvaluation={requestEvaluation}
               handleSlotMouseDown={handleSlotMouseDown}
               handleSlotMouseUp={handleSlotMouseUp}
               handleSlotMouseEnter={handleSlotMouseEnter}

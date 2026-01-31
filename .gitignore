@@ -26,7 +26,7 @@
 /frontend/.DS_Store
 
 # 核心算法引擎 (GPL-3.0)
-!/wand_eval_tree-master/
+!/wand_eval_tree/
 
 # Noita 插件代码
 !/wand_sync/

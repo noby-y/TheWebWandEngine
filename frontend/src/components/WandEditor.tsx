@@ -1,5 +1,5 @@
 import React from 'react';
-import { Monitor, X } from 'lucide-react';
+import { Monitor, X, RefreshCw } from 'lucide-react';
 import { WandData, SpellInfo, AppSettings } from '../types';
 import { PropInput } from './Common';
 import { getIconUrl } from '../lib/evaluatorAdapter';
@@ -20,6 +20,7 @@ interface WandEditorProps {
   openPicker: (slot: string, idx: string, e: React.MouseEvent) => void;
   setSelection: (s: any) => void;
   setSettings: React.Dispatch<React.SetStateAction<AppSettings>>;
+  requestEvaluation: (wand: WandData, force?: boolean) => void;
   settings: AppSettings;
   isConnected: boolean;
 }
@@ -39,6 +40,7 @@ export function WandEditor({
   openPicker,
   setSelection,
   setSettings,
+  requestEvaluation,
   settings,
   isConnected
 }: WandEditorProps) {
@@ -126,8 +128,18 @@ export function WandEditor({
           </div>
         </div>
 
-        <div className="text-[10px] font-black text-zinc-600 bg-white/[0.02] border border-white/5 px-3 py-2 rounded-lg tracking-[0.2em] flex items-center gap-2 shrink-0 h-fit">
-          <Monitor size={14} className="opacity-50" /> EDITOR VIEW
+        <div className="flex items-center gap-3 shrink-0 h-fit">
+          <button 
+            onClick={() => requestEvaluation(data, true)}
+            className="flex items-center gap-2 px-3 py-2 bg-indigo-500/10 hover:bg-indigo-500/20 text-indigo-400 border border-indigo-500/30 rounded-lg text-[10px] font-black uppercase tracking-widest transition-all"
+            title={t('evaluator.force_analyze_desc')}
+          >
+            <RefreshCw size={12} className="opacity-70" />
+            {t('evaluator.force_analyze')}
+          </button>
+          <div className="text-[10px] font-black text-zinc-600 bg-white/[0.02] border border-white/5 px-3 py-2 rounded-lg tracking-[0.2em] flex items-center gap-2">
+            <Monitor size={14} className="opacity-50" /> EDITOR VIEW
+          </div>
         </div>
       </div>
 

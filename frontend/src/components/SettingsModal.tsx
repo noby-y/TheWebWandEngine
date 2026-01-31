@@ -111,6 +111,30 @@ export function SettingsModal({
     }));
   };
 
+  const translateSpellType = (name: string) => {
+    const mapping: Record<string, string> = {
+      '投射物': t('settings.spell_types_list.projectile'),
+      '静态投射物': t('settings.spell_types_list.static_projectile'),
+      '修正': t('settings.spell_types_list.modifier'),
+      '多重': t('settings.spell_types_list.multicast'),
+      '材料': t('settings.spell_types_list.material'),
+      '其他': t('settings.spell_types_list.other'),
+      '实用': t('settings.spell_types_list.utility'),
+      '被动': t('settings.spell_types_list.passive'),
+    };
+    return mapping[name] || name;
+  };
+
+  const translateSpellGroup = (name: string) => {
+    const mapping: Record<string, string> = {
+      '投射物': t('settings.spell_groups_list.projectile'),
+      '修正': t('settings.spell_groups_list.modifier'),
+      '实用+多重+其他': t('settings.spell_groups_list.utility_multicast_other'),
+      '静态+材料+被动': t('settings.spell_groups_list.static_material_passive'),
+    };
+    return mapping[name] || name;
+  };
+
   const categories = [
     { id: 'general', name: t('settings.categories.general'), icon: <Settings size={16} /> },
     { id: 'appearance', name: t('settings.categories.appearance'), icon: <Layers size={16} /> },
@@ -581,7 +605,7 @@ export function SettingsModal({
                           className="w-8 h-8 rounded border-0 bg-transparent cursor-pointer overflow-hidden p-0"
                         />
                         <div className="flex flex-col">
-                          <span className="text-[10px] font-bold text-zinc-300">{type.name}</span>
+                          <span className="text-[10px] font-bold text-zinc-300">{translateSpellType(type.name)}</span>
                           <span className="text-[8px] font-mono text-zinc-500 uppercase">{type.color}</span>
                         </div>
                       </div>
@@ -609,7 +633,7 @@ export function SettingsModal({
                       <div key={gIdx} className="bg-white/5 border border-white/5 rounded-lg overflow-hidden">
                         <div className="p-3 border-b border-white/5 bg-black/20 flex items-center gap-3">
                           <input 
-                            value={group.name} 
+                            value={translateSpellGroup(group.name)} 
                             onChange={e => updateGroupName(gIdx, e.target.value)}
                             className="bg-transparent text-xs font-bold text-zinc-200 outline-none focus:text-white flex-1"
                           />
@@ -643,7 +667,7 @@ export function SettingsModal({
                                     : 'bg-black/20 border-white/5 text-zinc-600 hover:text-zinc-400'}
                                 `}
                               >
-                                {type.name}
+                                {translateSpellType(type.name)}
                               </button>
                             ))}
                           </div>

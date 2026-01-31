@@ -15,7 +15,7 @@
 本项目集成了以下开源组件：
 - **[wand_eval_tree](https://github.com/NathanSnail/wand_eval_tree)** (by NathanSnail): 核心 Lua 模拟引擎。
   - **修改说明**: 本仓库包含该引擎的修改版本，修复了特定属性下的负数解析问题，并增加了对标准 JSON 数据导出的支持。
-  - **协议**: [GPL-3.0](./wand_eval_tree-master/LICENSE.txt)
+  - **协议**: [GPL-3.0](./wand_eval_tree/LICENSE.txt)
 
 ### 致谢 (Acknowledgments)
 在开发过程中，以下项目的代码逻辑、数据结构或设计思路为本项目提供了巨大的灵感和参考，特此致谢：

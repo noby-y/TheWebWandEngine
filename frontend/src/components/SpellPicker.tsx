@@ -33,6 +33,31 @@ export function SpellPicker({
   isConnected
 }: SpellPickerProps) {
   const { t, i18n } = useTranslation();
+
+  const translateSpellType = (name: string) => {
+    const mapping: Record<string, string> = {
+      '投射物': t('settings.spell_types_list.projectile'),
+      '静态投射物': t('settings.spell_types_list.static_projectile'),
+      '修正': t('settings.spell_types_list.modifier'),
+      '多重': t('settings.spell_types_list.multicast'),
+      '材料': t('settings.spell_types_list.material'),
+      '其他': t('settings.spell_types_list.other'),
+      '实用': t('settings.spell_types_list.utility'),
+      '被动': t('settings.spell_types_list.passive'),
+    };
+    return mapping[name] || name;
+  };
+
+  const translateSpellGroup = (name: string) => {
+    const mapping: Record<string, string> = {
+      '投射物': t('settings.spell_groups_list.projectile'),
+      '修正': t('settings.spell_groups_list.modifier'),
+      '实用+多重+其他': t('settings.spell_groups_list.utility_multicast_other'),
+      '静态+材料+被动': t('settings.spell_groups_list.static_material_passive'),
+    };
+    return mapping[name] || name;
+  };
+
   if (!pickerConfig) return null;
 
   return (
@@ -159,7 +184,7 @@ export function SpellPicker({
                       {!settings.hideLabels && (
                         <div className="flex items-center gap-2">
                           <div className="w-1 h-3 rounded-full bg-white/20" />
-                          <span className="text-[9px] font-black text-white/70 uppercase tracking-widest">{group.name} {!pickerExpandedGroups.has(gIdx) && `(Top ${settings.categoryLimit})`}</span>
+                          <span className="text-[9px] font-black text-white/70 uppercase tracking-widest">{translateSpellGroup(group.name)} {!pickerExpandedGroups.has(gIdx) && `(Top ${settings.categoryLimit})`}</span>
                         </div>
                       )}
                       <button

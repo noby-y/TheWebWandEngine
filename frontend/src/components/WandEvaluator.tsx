@@ -102,6 +102,30 @@ const areStatesEqual = (a: Record<string, any>[], b: Record<string, any>[]): boo
   return true;
 };
 
+const computeStateDeltas = (states: ShotState[]): ShotState[] => {
+  const sorted = [...states].sort((a, b) => a.id - b.id);
+  return sorted.map((state, i) => {
+    const prevState = i > 0 ? sorted[i - 1] : null;
+    const diffStats: Record<string, number | string> = {};
+    
+    Object.entries(state.stats).forEach(([key, value]) => {
+      if (typeof value === 'number') {
+        const prevValue = prevState ? (prevState.stats[key] as number || 0) : 0;
+        const delta = value - prevValue;
+        // Only show if it's the first shot (initial state) or if it actually changed
+        if (i === 0 || delta !== 0) {
+          diffStats[key] = delta;
+        }
+      } else {
+        if (!prevState || prevState.stats[key] !== value) {
+          diffStats[key] = value;
+        }
+      }
+    });
+    return { ...state, stats: diffStats };
+  });
+};
+
 // 递归渲染射击树
 const ShotTree: React.FC<{ 
   nodes: ShotNode[], 
@@ -224,7 +248,7 @@ const WandEvaluator: React.FC<Props> = ({ data, spellDb, onHoverSlots, settings,
           start: castNum,
           end: castNum,
           node,
-          states: data.states.filter(s => s.cast === castNum),
+          states: computeStateDeltas(data.states.filter(s => s.cast === castNum)),
           counts: data.cast_counts?.[castNum.toString()] || {}
         });
       });
@@ -242,7 +266,9 @@ const WandEvaluator: React.FC<Props> = ({ data, spellDb, onHoverSlots, settings,
         const lastGroup = groups[groups.length - 1];
         // 检查当前轮是否与上一组完全一致
         const isNodeMatch = areNodesEqual(lastGroup.node, currentNode);
-        const isStateMatch = areStatesEqual(lastGroup.states, currentStates);
+        // Note: comparison should be against RAW states, but for grouping it usually works either way
+        // since if raw states are equal, computed deltas will also be equal.
+        const isStateMatch = areStatesEqual(data.states.filter(s => s.cast === lastGroup.start), currentStates);
         const isCountMatch = JSON.stringify(lastGroup.counts) === JSON.stringify(currentCounts);
 
         if (isNodeMatch && isStateMatch && isCountMatch) {
@@ -255,7 +281,7 @@ const WandEvaluator: React.FC<Props> = ({ data, spellDb, onHoverSlots, settings,
         start: castNum,
         end: castNum,
         node: currentNode,
-        states: currentStates,
+        states: computeStateDeltas(currentStates),
         counts: currentCounts
       });
     }
@@ -365,7 +391,7 @@ const WandEvaluator: React.FC<Props> = ({ data, spellDb, onHoverSlots, settings,
                       Array.from({ length: group.end - group.start + 1 }).map((_, i) => {
                         const cNum = group.start + i;
                         const cNode = data.tree.children?.[cNum - 1];
-                        const cStates = data.states.filter(s => s.cast === cNum);
+                        const cStates = computeStateDeltas(data.states.filter(s => s.cast === cNum));
                         const cCounts = data.cast_counts?.[cNum.toString()] || {};
                         
                         if (!cNode) return null;
@@ -560,12 +586,24 @@ const ShotStateCard: React.FC<{ state: ShotState, isHighlighted?: boolean }> = R
         <span className={`${isHighlighted ? 'opacity-100' : 'opacity-0'} group-hover/state:opacity-100 text-[8px] text-zinc-600 transition-opacity`}>SHOT STATE</span>
       </div>
       <div className="space-y-1.5">
-        {Object.entries(state.stats).map(([key, value]) => (
-          <div key={key} className="flex justify-between text-[10px] font-mono leading-none">
-            <span className="text-zinc-500 uppercase text-[9px]">{key.replace(/_/g, ' ')}</span>
-            <span className="text-zinc-300">{value}</span>
-          </div>
-        ))}
+        {Object.entries(state.stats).map(([key, value]) => {
+          let color = "text-zinc-300";
+          if (typeof value === 'number') {
+            if (['reload_time', 'fire_rate_wait', 'spread_degrees', 'recoil', 'delay'].includes(key)) {
+              color = value > 0 ? "text-red-400" : value < 0 ? "text-emerald-400" : "text-zinc-300";
+            } else if (key.includes('damage') || key === 'speed_multiplier') {
+              color = value > 0 ? "text-emerald-400" : value < 0 ? "text-red-400" : "text-zinc-300";
+            }
+          }
+          return (
+            <div key={key} className="flex justify-between text-[10px] font-mono leading-none">
+              <span className="text-zinc-500 uppercase text-[9px]">{key.replace(/_/g, ' ')}</span>
+              <span className={color}>
+                {typeof value === 'number' && value > 0 ? `+${value}` : value}
+              </span>
+            </div>
+          );
+        })}
       </div>
     </div>
   );

@@ -1,6 +1,7 @@
 import { WandData, EvalResponse } from '../types';
 
 let worker: Worker | null = null;
+let lastRequestId = 0;
 
 /**
  * 获取图标路径
@@ -22,14 +23,17 @@ export function getIconUrl(iconPath: string, isConnected: boolean): string {
 export async function evaluateWand(
   wand: WandData, 
   settings: any, 
-  isConnected: boolean
-): Promise<EvalResponse | null> {
+  isConnected: boolean,
+  force: boolean = false
+): Promise<{ data: EvalResponse, id: number } | null> {
   
   // 模式 A: 只有在非静态模式时尝试使用 API
-  // 不再依赖 isConnected (那是游戏连接状态)，只要后端 alive 就能用 API 评估
   const isStaticMode = (import.meta as any).env?.VITE_STATIC_MODE === 'true';
   
   if (!isStaticMode) {
+    // API mode doesn't really support 'force' cancellation in the same way,
+    // but we can still use IDs to ignore stale responses.
+    const requestId = ++lastRequestId;
     try {
       const spells: string[] = [];
       for (let i = 1; i <= wand.deck_capacity; i++) {
@@ -40,7 +44,7 @@ export async function evaluateWand(
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          // 显式列出所有字段，确保 spells 始终是数组且不会被 ...wand 覆盖
+          // ... (same as before)
           mana_max: wand.mana_max,
           mana_charge_speed: wand.mana_charge_speed,
           reload_time: wand.reload_time,
@@ -50,7 +54,7 @@ export async function evaluateWand(
           spread_degrees: wand.spread_degrees,
           speed_multiplier: wand.speed_multiplier,
           actions_per_round: wand.actions_per_round,
-          spells: spells, // 这里是 array
+          spells: spells,
           spell_uses: wand.spell_uses || {},
           always_cast: wand.always_cast || [],
           number_of_casts: settings.numCasts || 3,
@@ -65,15 +69,19 @@ export async function evaluateWand(
       
       if (res.ok) {
         const data = await res.json();
-        if (data.success) return data.data;
+        if (data.success) return { data: data.data, id: requestId };
       }
-      console.warn("API Evaluation returned error, falling back to local...");
-    } catch (e) {
-      console.error("API Evaluation failed, falling back to local...", e);
-    }
+    } catch (e) {}
   }
 
-  // 模式 B: 使用 Web Worker + Lua WASM (GitHub Pages 或 后端未开启)
+  // 模式 B: 使用 Web Worker + Lua WASM
+  if (force && worker) {
+    worker.terminate();
+    worker = null;
+  }
+
+  const requestId = ++lastRequestId;
+
   return new Promise((resolve, reject) => {
     if (!worker) {
       worker = new Worker(new URL('./evaluator.worker.ts', import.meta.url), {
@@ -82,21 +90,18 @@ export async function evaluateWand(
     }
 
     const handler = (e: MessageEvent) => {
+      if (e.data.id !== requestId) return; // Ignore stale results
+
       if (e.data.type === 'RESULT') {
         worker?.removeEventListener('message', handler);
-        resolve(e.data.data);
+        resolve({ data: e.data.data, id: requestId });
       } else if (e.data.type === 'ERROR') {
         worker?.removeEventListener('message', handler);
-        console.error("Worker Error:", e.data.error);
-        // 如果是静态模式且报错，可能需要提示用户
-        if (isStaticMode) {
-          alert("本地评估引擎报错: " + e.data.error);
-        }
         reject(e.data.error);
       }
     };
 
     worker.addEventListener('message', handler);
-    worker.postMessage({ type: 'EVALUATE', data: wand, options: settings });
+    worker.postMessage({ type: 'EVALUATE', data: wand, options: settings, id: requestId });
   });
 }

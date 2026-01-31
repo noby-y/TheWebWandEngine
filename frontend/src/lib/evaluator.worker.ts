@@ -161,24 +161,34 @@ async function getNewLuaEngine() {
     return engine;
 }
 
-self.onmessage = async (e) => {
-    const { type, data, options } = e.data;
+self.onmessage = async (e: MessageEvent) => {
+    const { type, data, options, id } = e.data;
     
     if (type === 'EVALUATE') {
         try {
             lua = await getNewLuaEngine();
             
+            const formatLuaArg = (val: any) => {
+                try {
+                    const fVal = parseFloat(val);
+                    if (fVal < 0) return `.${fVal}`;
+                    return String(val);
+                } catch (e) {
+                    return String(val);
+                }
+            };
+
             const luaArgs = [
                 '-dp', './',
                 '-mp', './',
                 '-j', 'true',
-                '-sc', String(data.actions_per_round || 1),
-                '-ma', String(data.mana_max || 100),
-                '-mx', String(data.mana_max || 100),
-                '-mc', String(data.mana_charge_speed || 10),
-                '-rt', String(data.reload_time || 0),
-                '-cd', String(data.fire_rate_wait || 0),
-                '-nc', String(options.numCasts || 3),
+                '-sc', formatLuaArg(data.actions_per_round || 1),
+                '-ma', formatLuaArg(data.mana_max || 100),
+                '-mx', formatLuaArg(data.mana_max || 100),
+                '-mc', formatLuaArg(data.mana_charge_speed || 10),
+                '-rt', formatLuaArg(data.reload_time || 0),
+                '-cd', formatLuaArg(data.fire_rate_wait || 0),
+                '-nc', formatLuaArg(options.numCasts || 3),
                 '-u', options.unlimitedSpells ? 'true' : 'false',
                 '-e', options.initialIfHalf ? 'true' : 'false',
             ];
@@ -249,11 +259,11 @@ self.onmessage = async (e) => {
             }
             
             const result = JSON.parse(lastOutput);
-            self.postMessage({ type: 'RESULT', data: result });
+            self.postMessage({ type: 'RESULT', data: result, id });
             
         } catch (err: any) {
             console.error('[Worker Error]', err);
-            self.postMessage({ type: 'ERROR', error: err.message });
+            self.postMessage({ type: 'ERROR', error: err.message, id });
         }
     }
 };

@@ -52,7 +52,10 @@
     "expand_all_trees": "Expand all {{count}} trees",
     "collapse_preview": "Collapse to preview",
     "cast_stats": "Cast Stats",
-    "stage": "Stage {{id}}"
+    "stage": "Stage {{id}}",
+    "force_analyze": "Force Analyze",
+    "force_analyze_desc": "Restart engine and re-evaluate current wand (Fixes lag or sync issues)",
+    "analyzing": "Analyzing Wand..."
   },
   "settings": {
     "title": "Settings",
@@ -120,7 +123,23 @@
     "new_group_default_name": "New Group",
     "contains_types": "Contains Types",
     "search_placeholder": "Search settings...",
-    "no_results": "No results found"
+    "no_results": "No results found",
+    "spell_types_list": {
+      "projectile": "Projectile",
+      "static_projectile": "Static Projectile",
+      "modifier": "Modifier",
+      "multicast": "Multicast",
+      "material": "Material",
+      "other": "Other",
+      "utility": "Utility",
+      "passive": "Passive"
+    },
+    "spell_groups_list": {
+      "projectile": "Projectile",
+      "modifier": "Modifier",
+      "utility_multicast_other": "Utility + Multicast + Other",
+      "static_material_passive": "Static + Material + Passive"
+    }
   },
   "warehouse": {
     "title": "Wand Warehouse",

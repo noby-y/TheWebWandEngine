@@ -13,15 +13,46 @@ export function CompactStat({ icon, value, label }: { icon: React.ReactNode, val
 }
 
 export function PropInput({ label, value, onChange, colorClass, secondaryValue }: { label: string, value: number | string, onChange: (v: number) => void, colorClass?: string, secondaryValue?: string }) {
+  const [inputValue, setInputValue] = React.useState(value.toString());
+
+  React.useEffect(() => {
+    if (value.toString() !== inputValue) {
+      setInputValue(value.toString());
+    }
+  }, [value]);
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    let val = e.target.value;
+    // Allow only numbers, minus sign and decimal point
+    val = val.replace(/[^0-9.-]/g, '');
+    
+    // Ensure only one minus sign at the start
+    if (val.indexOf('-') > 0) val = val.replace('-', '');
+    const minusCount = (val.match(/-/g) || []).length;
+    if (minusCount > 1) val = '-' + val.replace(/-/g, '');
+
+    setInputValue(val);
+
+    if (val === "" || val === "-" || val === "." || val === "-.") {
+      return;
+    }
+
+    const parsed = parseFloat(val);
+    if (!isNaN(parsed)) {
+      onChange(parsed);
+    }
+  };
+
   return (
     <div className="flex flex-col group/prop">
       <label className="text-[10px] font-black text-zinc-500 mb-1 uppercase tracking-wider transition-colors group-hover/prop:text-zinc-400">{label}</label>
       <div className="flex items-baseline gap-2">
         <input
-          type="number"
-          value={value}
-          onChange={e => onChange(parseFloat(e.target.value) || 0)}
-          className={`bg-transparent font-mono text-xl font-bold w-24 focus:outline-none [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none ${colorClass || 'text-white'}`}
+          type="text"
+          value={inputValue}
+          onChange={handleChange}
+          onBlur={() => setInputValue(value.toString())}
+          className={`bg-transparent font-mono text-xl font-bold w-24 focus:outline-none ${colorClass || 'text-white'}`}
         />
         {secondaryValue && (
           <span className="text-xs font-mono text-zinc-600 italic whitespace-nowrap">{secondaryValue}</span>

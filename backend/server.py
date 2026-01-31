@@ -31,7 +31,7 @@ if getattr(sys, 'frozen', False):
     BASE_DIR = sys._MEIPASS
     EXTRACTED_DATA_ROOT = os.path.join(BASE_DIR, "noitadata_internal")
     FRONTEND_DIST = os.path.join(BASE_DIR, "frontend", "dist")
-    WAND_EVAL_DIR = os.path.join(BASE_DIR, "wand_eval_tree-master")
+    WAND_EVAL_DIR = os.path.join(BASE_DIR, "wand_eval_tree")
     LUAJIT_PATH = os.path.join(BASE_DIR, "bin", "luajit.exe")
 else:
     # 开发模式
@@ -41,7 +41,7 @@ else:
         EXTRACTED_DATA_ROOT = r"E:\download\TheWebWandEngine\noitadata"
     
     FRONTEND_DIST = os.path.join(os.path.dirname(__file__), "../frontend/dist")
-    WAND_EVAL_DIR = os.path.join(BASE_DIR, "wand_eval_tree-master")
+    WAND_EVAL_DIR = os.path.join(BASE_DIR, "wand_eval_tree")
     # 开发模式优先尝试 bin 目录下的 luajit，否则用系统的
     local_luajit = os.path.join(BASE_DIR, "bin/luajit.exe")
     LUAJIT_PATH = local_luajit if os.path.exists(local_luajit) else "luajit"
@@ -650,7 +650,7 @@ def sync_wiki():
     return jsonify({"success": True, "parsed_wand": wand})
 
 # 已经由前面的逻辑定义，不要在这里重新定义
-# WAND_EVAL_DIR = os.path.join(os.getcwd(), "wand_eval_tree-master")
+# WAND_EVAL_DIR = os.path.join(os.getcwd(), "wand_eval_tree")
 
 @app.route("/api/evaluate", methods=["POST"])
 def evaluate_wand():

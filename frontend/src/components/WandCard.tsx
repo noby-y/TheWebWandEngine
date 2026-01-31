@@ -1,5 +1,5 @@
 import React from 'react';
-import { Wand2, Scissors, Clipboard, Trash2, ChevronUp, ChevronDown, Battery, Zap, Timer, RefreshCw } from 'lucide-react';
+import { Wand2, Scissors, Clipboard, Trash2, ChevronUp, ChevronDown, Battery, Zap, Timer, RefreshCw, Activity, Monitor } from 'lucide-react';
 import { WandData, Tab, SpellInfo, EvalResponse, AppSettings, WarehouseWand } from '../types';
 import { CompactStat } from './Common';
 import { WandEditor } from './WandEditor';
@@ -31,7 +31,8 @@ interface WandCardProps {
   openPicker: (slot: string, idx: string, e: React.MouseEvent) => void;
   setSelection: (s: any) => void;
   setSettings: React.Dispatch<React.SetStateAction<AppSettings>>;
-  evalData?: EvalResponse;
+  evalData?: { data: EvalResponse; id: number; loading?: boolean };
+  requestEvaluation: (tabId: string, slot: string, wand: WandData, force?: boolean) => void;
   settings: any;
   onSaveToWarehouse: (wand: WandData) => void;
 }
@@ -60,6 +61,7 @@ export function WandCard({
   setSelection,
   setSettings,
   evalData,
+  requestEvaluation,
   settings,
   onSaveToWarehouse,
 }: WandCardProps) {
@@ -238,11 +240,18 @@ export function WandCard({
             setSettings={setSettings}
             settings={settings}
             isConnected={isConnected}
+            requestEvaluation={(wand, force) => requestEvaluation(activeTab.id, slot, wand, force)}
           />
-          {evalData && (
-            <div className="px-4 pb-4">
+          {evalData && evalData.data && (
+            <div className={`px-4 pb-4 transition-opacity duration-300 ${evalData.loading ? 'opacity-50 pointer-events-none' : 'opacity-100'}`}>
+               {evalData.loading && (
+                 <div className="flex items-center gap-2 mb-2 text-amber-500 animate-pulse">
+                   <Activity size={12} />
+                   <span className="text-[10px] font-black uppercase tracking-widest italic">{t('evaluator.analyzing')}</span>
+                 </div>
+               )}
                <WandEvaluator 
-                 data={evalData} 
+                 data={evalData.data} 
                  spellDb={spellDb} 
                  settings={settings} 
                  markedSlots={data.marked_slots} 
