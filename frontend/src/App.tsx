@@ -513,7 +513,9 @@ function App() {
   const spellStats = useMemo(() => {
     const counts: Record<string, number> = {};
     tabs.forEach(tab => {
+      if (!tab.wands) return;
       Object.values(tab.wands).forEach(wand => {
+        if (!wand || !wand.spells) return;
         Object.values(wand.spells).forEach(sid => {
           counts[sid] = (counts[sid] || 0) + 1;
         });
@@ -1293,10 +1295,12 @@ function App() {
     if (isConnected && !wasConnectedRef.current) {
       console.log('[Sync] Game connected/restarted. Clearing session cache and forcing pull...');
       lastKnownGameWandsRef.current = {};
-      pullData(true);
+      if (activeTab.isRealtime) {
+        pullData(true);
+      }
     }
     wasConnectedRef.current = isConnected;
-  }, [isConnected]);
+  }, [isConnected, activeTab.isRealtime]);
 
   // --- Actions ---
   const fetchSpellDb = async () => {
@@ -1309,7 +1313,7 @@ function App() {
           enriched[id] = { ...info, id }; // 保持 icon 为原始路径
         });
         setSpellDb(enriched);
-        return;
+        return true;
       }
     } catch (e) {
       console.log("API fetch-spells failed, trying static...");
@@ -1319,8 +1323,27 @@ function App() {
       const res = await fetch('./static_data/spells.json');
       const data = await res.json();
       setSpellDb(data); // static_data/spells.json 里已经是原始路径
+      return true;
     } catch (e) {
       console.error("Failed to fetch spells from anywhere:", e);
+      return false;
+    }
+  };
+
+  const syncGameSpells = async () => {
+    if (!isConnected) return;
+    setNotification({ msg: '正在从游戏同步模组法术...', type: 'info' });
+    try {
+      const res = await fetch('/api/sync-game-spells');
+      const data = await res.json();
+      if (data.success) {
+        await fetchSpellDb();
+        setNotification({ msg: `同步成功：已加载 ${data.count} 个模组法术`, type: 'success' });
+      } else {
+        setNotification({ msg: `同步失败: ${data.error}`, type: 'info' });
+      }
+    } catch (e) {
+      setNotification({ msg: '同步失败', type: 'info' });
     }
   };
 
@@ -1340,7 +1363,7 @@ function App() {
       const res = await fetch('/api/pull');
       const data = await res.json();
       if (data.success) {
-        const gameWands = data.wands;
+        const gameWands = data.wands || {};
         const lastKnown = lastKnownGameWandsRef.current[activeTabId];
         const currentWeb = activeTab.wands;
 
@@ -1356,6 +1379,12 @@ function App() {
         if (inSync) {
           // Both sides are identical, just update the reference point
           lastKnownGameWandsRef.current[activeTabId] = JSON.parse(JSON.stringify(gameWands));
+          return;
+        }
+
+        // If forced (manual click), skip the "recently updated" check and apply directly
+        if (force) {
+          applyGameWands(activeTabId, gameWands, '强制拉取游戏数据');
           return;
         }
 
@@ -1394,7 +1423,7 @@ function App() {
         } else if (gameChanged && !webChanged) {
           // Only game changed -> Pull normally
           // Optimization: If we recently updated locally, ignore game "changes" that might be stale data
-          if (Date.now() - lastLocalUpdateRef.current < 5000) return;
+          if (!force && Date.now() - lastLocalUpdateRef.current < 5000) return;
           applyGameWands(activeTabId, gameWands, '从游戏同步数据');
         } else if (!lastKnown) {
           // First time seeing the game
@@ -1772,11 +1801,12 @@ function App() {
         setIsSettingsOpen={setIsSettingsOpen}
         isConnected={isConnected}
         setIsWarehouseOpen={setIsWarehouseOpen}
+        syncGameSpells={syncGameSpells}
       />
 
       <main className="flex-1 flex overflow-hidden relative">
         <div className="flex-1 overflow-y-auto p-4 space-y-2 custom-scrollbar bg-black/40">
-          {Object.entries(activeTab.wands).map(([slot, data]) => (
+          {activeTab.wands && Object.entries(activeTab.wands).map(([slot, data]) => (
             <WandCard
               key={slot}
               slot={slot}
@@ -1808,7 +1838,7 @@ function App() {
             />
           ))}
 
-          {Object.keys(activeTab.wands).length === 0 && (
+          {(!activeTab.wands || Object.keys(activeTab.wands).length === 0) && (
             <div className="h-64 flex flex-col items-center justify-center text-zinc-700 gap-4">
               <Activity size={32} className="opacity-20 animate-pulse" />
               <p className="font-black text-[10px] uppercase tracking-widest">{t('tabs.waiting_data')}</p>

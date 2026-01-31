@@ -23,6 +23,7 @@ interface HeaderProps {
   setIsSettingsOpen: (open: boolean) => void;
   isConnected: boolean;
   setIsWarehouseOpen: (open: boolean | ((prev: boolean) => boolean)) => void;
+  syncGameSpells: () => Promise<void>;
 }
 
 export function Header({
@@ -44,7 +45,8 @@ export function Header({
   exportWorkflow,
   setIsSettingsOpen,
   isConnected,
-  setIsWarehouseOpen
+  setIsWarehouseOpen,
+  syncGameSpells
 }: HeaderProps) {
   const { t } = useTranslation();
   return (
@@ -152,6 +154,15 @@ export function Header({
         <button onClick={() => setIsSettingsOpen(true)} className="p-2 text-zinc-500 hover:text-white transition-colors">
           <Settings size={18} />
         </button>
+        {isConnected && (
+          <button 
+            onClick={syncGameSpells} 
+            className="p-2 text-indigo-400 hover:text-indigo-300 transition-colors"
+            title="同步模组法术数据"
+          >
+            <Cpu size={18} />
+          </button>
+        )}
       </div>
     </header>
   );

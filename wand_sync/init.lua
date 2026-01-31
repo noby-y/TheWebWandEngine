@@ -19,7 +19,9 @@ local response_channel = effil.channel()
 local function table_to_json(t)
     if t == nil then return "null" end
     if type(t) == "number" or type(t) == "boolean" then return tostring(t) end
-    if type(t) == "string" then return '"' .. t:gsub('\\', '\\\\'):gsub('"', '\\"'):gsub("\n", "\\n") .. '"' end
+    if type(t) == "string" then 
+        return '"' .. t:gsub('\\', '\\\\'):gsub('"', '\\"'):gsub("\n", "\\n"):gsub("\r", "\\r"):gsub("\t", "\\t") .. '"' 
+    end
     local parts = {}
     local is_arr = false
     if t[1] ~= nil then is_arr = true end
@@ -27,7 +29,9 @@ local function table_to_json(t)
         for i=1, #t do table.insert(parts, table_to_json(t[i])) end
         return "[" .. table.concat(parts, ",") .. "]"
     else
-        for k, v in pairs(t) do table.insert(parts, '"' .. tostring(k) .. '":' .. table_to_json(v)) end
+        for k, v in pairs(t) do 
+            table.insert(parts, '"' .. tostring(k) .. '":' .. table_to_json(v)) 
+        end
         return "{" .. table.concat(parts, ",") .. "}"
     end
 end
@@ -50,25 +54,50 @@ local function server_thread_func(chan, resp_chan, pkg_path, pkg_cpath, root_pat
     server:setoption("reuseaddr", true)
     if not server:bind("127.0.0.1", 12345) then return end
     server:listen(5); server:settimeout(0)
+    local function safe_send(client, data)
+        local total = #data
+        local sent = 0
+        while sent < total do
+            local s, err, last = client:send(data, sent + 1)
+            if s then
+                sent = s
+            elseif err == "timeout" then
+                sent = last
+            else
+                return false, err
+            end
+        end
+        return true
+    end
+
     while true do
         local client = server:accept()
         if client then
-            client:settimeout(1)
+            client:settimeout(5) -- 增加超时时间到 5s
             local line = client:receive("*l")
             if line == "GET_ALL_WANDS" then
                 chan:push("REQUEST_FETCH")
-                client:send((resp_chan:pop(2) or "{}") .. "\n")
+                safe_send(client, (resp_chan:pop(2) or "{}") .. "\n")
             elseif line == "GET_WAND_EDITOR_DATA" then
                 chan:push("REQUEST_WAND_EDITOR")
-                client:send((resp_chan:pop(2) or "{}") .. "\n")
+                safe_send(client, (resp_chan:pop(2) or "{}") .. "\n")
             elseif line == "GET_SPELL_LAB_DATA" then
                 chan:push("REQUEST_SPELL_LAB")
-                client:send((resp_chan:pop(2) or "{}") .. "\n")
+                safe_send(client, (resp_chan:pop(2) or "{}") .. "\n")
+            elseif line == "GET_ALL_SPELLS" then
+                chan:push("REQUEST_ALL_SPELLS")
+                safe_send(client, (resp_chan:pop(15) or "[]") .. "\n")
+            elseif line == "GET_MOD_APPENDS" then
+                chan:push("REQUEST_MOD_APPENDS")
+                safe_send(client, (resp_chan:pop(15) or "{}") .. "\n")
+            elseif line == "GET_ACTIVE_MODS" then
+                chan:push("REQUEST_ACTIVE_MODS")
+                safe_send(client, (resp_chan:pop(2) or "[]") .. "\n")
             elseif line == "GET_GAME_INFO" then
-                client:send('{"root":"' .. root_path:gsub("\\", "/") .. '"}\n')
+                safe_send(client, '{"root":"' .. root_path:gsub("\\", "/") .. '"}\n')
             elseif line then
                 chan:push("DATA:" .. line)
-                client:send("OK\n")
+                safe_send(client, "OK\n")
             end
             client:close()
         end
@@ -194,6 +223,183 @@ function OnWorldPostUpdate()
         if orig then data.original = orig end
         
         response_channel:push(table_to_json(data))
+    elseif msg == "REQUEST_ALL_SPELLS" then
+        ws_log("Processing REQUEST_ALL_SPELLS with deep analysis...")
+        if not actions then
+            dofile("data/scripts/gun/gun_enums.lua")
+            dofile("data/scripts/gun/gun_actions.lua")
+        end
+
+        -- 模拟 wand_editor 的环境抓取法术属性
+        local dummy_c = {}
+        local function reset_c()
+            dummy_c = {
+                fire_rate_wait = 0,
+                reload_time = 0,
+                spread_degrees = 0,
+                speed_multiplier = 1,
+                mana_max = 0,
+                mana_charge_speed = 0,
+                extra_entities = "",
+            }
+        end
+        
+        -- 临时替换全局变量和危险函数以防同步时触发法术效果
+        local old_c = c
+        local old_shot_effects = shot_effects
+        local old_GlobalsSetValue = GlobalsSetValue
+        local old_StartReload = StartReload
+        local old_GamePrint = GamePrint
+        local old_GamePrintImportant = GamePrintImportant
+        local old_GameScreenshake = GameScreenshake
+        local old_PlaySound = PlaySound
+        local old_reflecting = reflecting
+        
+        -- 劫持所有可能产生实体的底层 API
+        local old_EntityLoad = EntityLoad
+        local old_EntityLoadCameraBound = EntityLoadCameraBound
+        local old_EntityLoadToEntity = EntityLoadToEntity
+        local old_EntityLoadEndGameItem = EntityLoadEndGameItem
+        local old_EntityCreateNew = EntityCreateNew
+        local old_EntityAddChild = EntityAddChild
+        local old_EntityAddComponent = EntityAddChild
+        local old_EntityInflictDamage = EntityInflictDamage
+        local old_add_projectile = add_projectile
+        local old_add_projectile_trigger_timer = add_projectile_trigger_timer
+        local old_add_projectile_trigger_hit_world = add_projectile_trigger_hit_world
+        local old_add_projectile_trigger_death = add_projectile_trigger_death
+        local old_GameShootProjectile = GameShootProjectile
+        local old_CreateItemActionEntity = CreateItemActionEntity
+
+        -- 定义更聪明的 Stub 函数
+        local function dummy_id() return 12345678 end
+        local function dummy_table() return {12345678} end
+        local dummy_fn = function() end
+        
+        -- 核心环境隔离
+        c = dummy_c
+        shot_effects = {}
+        reflecting = true 
+        WAND_EDITOR_RELEFCTING = true -- 很多 Mod 识别这个
+        
+        -- 全局屏蔽
+        GlobalsSetValue = dummy_fn
+        GamePrint = dummy_fn
+        GamePrintImportant = dummy_fn
+        GameScreenshake = dummy_fn
+        PlaySound = dummy_fn
+        
+        -- 实体操作屏蔽（返回假 ID 避免脚本报错）
+        EntityLoad = dummy_id
+        EntityLoadCameraBound = dummy_id
+        EntityLoadToEntity = dummy_id
+        EntityLoadEndGameItem = dummy_id
+        EntityCreateNew = dummy_id
+        EntityAddChild = dummy_id
+        EntityAddComponent = dummy_id
+        EntityInflictDamage = dummy_fn
+        add_projectile = dummy_fn
+        add_projectile_trigger_timer = dummy_fn
+        add_projectile_trigger_hit_world = dummy_fn
+        add_projectile_trigger_death = dummy_fn
+        GameShootProjectile = dummy_fn
+        CreateItemActionEntity = dummy_id
+        
+        -- 抓取 StartReload
+        local temp_reload = 0
+        StartReload = function(reload_time)
+            temp_reload = reload_time
+        end
+
+        local old_draw_actions = draw_actions
+        draw_actions = dummy_fn
+        
+        local all_actions = {}
+        for _, a in ipairs(actions or {}) do
+            if a and a.id then
+                reset_c()
+                temp_reload = 0
+                -- 执行 action
+                if a.action and type(a.action) == "function" then
+                    -- 给 action 传入一个假的卡牌对象，模仿游戏内的调用
+                    local dummy_card = { 
+                        id = a.id, 
+                        custom_xml_file = a.custom_xml_file,
+                        mana = a.mana,
+                        action = a.action
+                    }
+                    pcall(a.action, dummy_card)
+                end
+
+                table.insert(all_actions, {
+                    id = a.id,
+                    name = GameTextGetTranslatedOrNot(a.name or ""),
+                    sprite = a.sprite or "",
+                    type = a.type or 0,
+                    max_uses = a.max_uses or -1,
+                    mana = a.mana or 0,
+                    fire_rate_wait = dummy_c.fire_rate_wait,
+                    reload_time = dummy_c.reload_time ~= 0 and dummy_c.reload_time or temp_reload,
+                    spread_degrees = dummy_c.spread_degrees,
+                    speed_multiplier = dummy_c.speed_multiplier,
+                    custom_xml_file = a.custom_xml_file,
+                    never_unlimited = a.never_unlimited or false
+                })
+            end
+        end
+        
+        -- 彻底还原
+        c = old_c
+        shot_effects = old_shot_effects
+        reflecting = old_reflecting
+        WAND_EDITOR_RELEFCTING = nil
+        GlobalsSetValue = old_GlobalsSetValue
+        StartReload = old_StartReload
+        GamePrint = old_GamePrint
+        GamePrintImportant = old_GamePrintImportant
+        GameScreenshake = old_GameScreenshake
+        PlaySound = old_PlaySound
+        
+        EntityLoad = old_EntityLoad
+        EntityLoadCameraBound = old_EntityLoadCameraBound
+        EntityLoadToEntity = old_EntityLoadToEntity
+        EntityLoadEndGameItem = old_EntityLoadEndGameItem
+        EntityCreateNew = old_EntityCreateNew
+        EntityAddChild = old_EntityAddChild
+        EntityAddComponent = old_EntityAddComponent
+        EntityInflictDamage = old_EntityInflictDamage
+        add_projectile = old_add_projectile
+        add_projectile_trigger_timer = old_add_projectile_trigger_timer
+        add_projectile_trigger_hit_world = old_add_projectile_trigger_hit_world
+        add_projectile_trigger_death = old_add_projectile_trigger_death
+        GameShootProjectile = old_GameShootProjectile
+        CreateItemActionEntity = old_CreateItemActionEntity
+        draw_actions = old_draw_actions
+        
+        -- 获取当前的 Mod 追加信息
+        local appends = ModLuaFileGetAppends("data/scripts/gun/gun_actions.lua") or {}
+        local append_data = {}
+        for _, path in ipairs(appends) do
+            append_data[path] = ModTextFileGetContent(path) or ""
+        end
+
+        local response = {
+            spells = all_actions,
+            appends = append_data,
+            active_mods = ModGetActiveModIDs() or {}
+        }
+        
+        ws_log("Encoding " .. #all_actions .. " spells and " .. #appends .. " appends...")
+        response_channel:push(table_to_json(response))
+    elseif msg == "REQUEST_MOD_APPENDS" then
+        local appends = ModLuaFileGetAppends("data/scripts/gun/gun_actions.lua") or {}
+        local data = {}
+        for _, path in ipairs(appends) do
+            data[path] = ModTextFileGetContent(path)
+        end
+        response_channel:push(table_to_json(data))
+    elseif msg == "REQUEST_ACTIVE_MODS" then
+        response_channel:push(table_to_json(ModGetActiveModIDs() or {}))
     elseif msg and msg:sub(1,5) == "DATA:" then
         local data = parse_json(msg:sub(6))
         if data and not data.ping then

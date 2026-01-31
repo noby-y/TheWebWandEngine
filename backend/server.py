@@ -48,6 +48,9 @@ else:
 
 # 预加载数据
 _SPELL_CACHE = {}
+_MOD_SPELL_CACHE = {}
+_MOD_APPENDS_CACHE = {}
+_ACTIVE_MODS_CACHE = []
 _TRANSLATIONS = {}
 
 def get_pinyin_data(text):
@@ -257,18 +260,19 @@ def get_game_root():
 def talk_to_game(cmd):
     try:
         with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as sock:
-            sock.settimeout(10) # 增加超时时间，法术列表可能很大
+            sock.settimeout(15) # 进一步增加超时时间
             sock.connect((GAME_HOST, GAME_PORT))
             sock.sendall(cmd if isinstance(cmd, bytes) else (cmd + "\n").encode("utf-8"))
             
             chunks = []
             while True:
-                chunk = sock.recv(16384)
+                chunk = sock.recv(65536) # 增加缓冲区大小
                 if not chunk: break
                 chunks.append(chunk)
                 if b"\n" in chunk: break
             
-            resp = b"".join(chunks).decode("utf-8")
+            # 使用 ignore 模式避免非法字符导致崩溃
+            resp = b"".join(chunks).decode("utf-8", "ignore")
             return resp.strip()
     except Exception as e:
         print(f"Error talking to game: {e}")
@@ -542,10 +546,78 @@ def import_spell_lab():
 
 @app.route("/api/fetch-spells")
 def fetch_spells():
-    db = load_spell_database()
+    db = load_spell_database().copy()
+    if _MOD_SPELL_CACHE:
+        db.update(_MOD_SPELL_CACHE)
     if db:
         return jsonify({"success": True, "spells": db})
     return jsonify({"success": False, "error": "Local data not found"}), 404
+
+@app.route("/api/sync-game-spells")
+def sync_game_spells():
+    global _MOD_SPELL_CACHE, _MOD_APPENDS_CACHE, _ACTIVE_MODS_CACHE
+    res = talk_to_game("GET_ALL_SPELLS")
+    if not res:
+        return jsonify({"success": False, "error": "Could not connect to game"}), 503
+    
+    try:
+        if not res:
+            return jsonify({"success": False, "error": "Game returned empty response"}), 500
+        
+        data = json.loads(res)
+        spells = data.get("spells", [])
+        _MOD_APPENDS_CACHE = data.get("appends", {})
+        _ACTIVE_MODS_CACHE = data.get("active_mods", [])
+        
+        static_db = load_spell_database() 
+        mod_db = {}
+        for s in spells:
+            spell_id = s.get("id")
+            if not spell_id: continue
+            
+            name = s.get("name", spell_id)
+            py_full, py_init = get_pinyin_data(name)
+            
+            aliases = ""
+            alias_py = ""
+            alias_init = ""
+            if spell_id in static_db:
+                aliases = static_db[spell_id].get("aliases", "")
+                alias_py = static_db[spell_id].get("alias_pinyin", "")
+                alias_init = static_db[spell_id].get("alias_initials", "")
+            
+            mod_db[spell_id] = {
+                "icon": s.get("sprite", "").lstrip("/"),
+                "name": name,
+                "en_name": spell_id, 
+                "pinyin": py_full,
+                "pinyin_initials": py_init,
+                "aliases": aliases,
+                "alias_pinyin": alias_py,
+                "alias_initials": alias_init,
+                "type": s.get("type", 0),
+                "max_uses": s.get("max_uses", -1),
+                "mana": s.get("mana", 0),
+                "fire_rate_wait": s.get("fire_rate_wait", 0),
+                "reload_time": s.get("reload_time", 0),
+                "is_mod": True
+            }
+        _MOD_SPELL_CACHE = mod_db
+        return jsonify({"success": True, "count": len(mod_db)})
+    except Exception as e:
+        import traceback
+        traceback.print_exc()
+        return jsonify({"success": False, "error": str(e)}), 500
+
+@app.route("/api/pull")
+def pull_game_wands():
+    res = talk_to_game("GET_ALL_WANDS")
+    if not res:
+        return jsonify({"success": False, "error": "Could not connect to game"}), 503
+    try:
+        return jsonify({"success": True, "wands": json.loads(res)})
+    except Exception as e:
+        return jsonify({"success": False, "error": str(e)}), 500
 
 @app.route("/api/sync", methods=["POST"])
 def sync_wand():
@@ -555,22 +627,29 @@ def sync_wand():
 
 @app.route("/api/icon/<path:icon_path>")
 def get_icon(icon_path):
-    # 移除可能的开头斜杠，防止 os.path.join 在 Windows 上产生错误
     icon_path = icon_path.lstrip("/")
     
-    # 优先从你提供的解压目录中查找
+    # 1. 优先从 vanilla 解压目录查找
     local_path = os.path.join(EXTRACTED_DATA_ROOT, icon_path).replace("\\", "/")
     if os.path.exists(local_path):
         return send_file(local_path, max_age=31536000)
     
-    # 备选：从游戏安装目录查找
+    # 2. 从游戏安装目录查找 (针对安装了某些覆盖型 Mod 的情况)
     root = get_game_root()
     if root:
+        # 直接路径查找
         path = os.path.join(root, icon_path).replace("\\", "/")
         if os.path.exists(path):
             return send_file(path, max_age=31536000)
             
-    print(f"Icon not found: {icon_path}")
+        # 3. 模拟 Noita VFS：在所有活动 Mod 的文件夹下查找该路径
+        # 例如 data/ui_gfx/... 实际上可能在 mods/deep_end/data/ui_gfx/...
+        for mod_id in _ACTIVE_MODS_CACHE:
+            mod_path = os.path.join(root, "mods", mod_id, icon_path).replace("\\", "/")
+            if os.path.exists(mod_path):
+                return send_file(mod_path, max_age=31536000)
+
+    print(f"Icon not found in vanilla or any active mods: {icon_path}")
     return "Not Found", 404
 
 def parse_wiki_wand(text):
@@ -676,12 +755,17 @@ def evaluate_wand():
 
     # 使用绝对路径并统一斜杠方向，避免 Lua 字符串转义问题
     abs_data_path = EXTRACTED_DATA_ROOT.replace("\\", "/") + "/"
+    game_root = get_game_root()
+    if game_root:
+        game_root = game_root.replace("\\", "/") + "/"
+    else:
+        game_root = abs_data_path
 
     cmd = [
         LUAJIT_PATH, 
         "main.lua",
         "-dp", abs_data_path, 
-        "-mp", abs_data_path,
+        "-mp", game_root,
         "-j",                    # 开启 JSON 输出
         "-sc", format_lua_arg(data.get("actions_per_round", 1)),
         "-ma", format_lua_arg(data.get("mana_max", 100)),
@@ -700,77 +784,80 @@ def evaluate_wand():
         cmd.append("-f")
 
     # 环境模拟 (IF_HP, IF_ENEMY, IF_PROJECTILE)
-    mock_lua = []
+    mock_lua = [
+        "-- 覆盖环境检测函数以支持 IF_HP, IF_ENEMY, IF_PROJECTILE",
+        "local _old_EntityGetWithTag = EntityGetWithTag",
+        "function EntityGetWithTag(tag)",
+        "    if tag == 'player_unit' and _TWWE_LOW_HP then return { 12345 } end",
+        "    return _old_EntityGetWithTag(tag)",
+        "end",
+        "local _old_GetUpdatedEntityID = GetUpdatedEntityID",
+        "function GetUpdatedEntityID()",
+        "    if _TWWE_LOW_HP or _TWWE_MANY_ENEMIES or _TWWE_MANY_PROJECTILES then return 12345 end",
+        "    return _old_GetUpdatedEntityID()",
+        "end",
+        "function EntityGetFirstComponent(ent, type, tag)",
+        "    if ent == 12345 and type == 'DamageModelComponent' and _TWWE_LOW_HP then return 67890 end",
+        "    return nil",
+        "end",
+        "function ComponentGetValue2(comp, field)",
+        "    if comp == 67890 then",
+        "        if field == 'hp' then return 0.1 end",
+        "        if field == 'max_hp' then return 1.0 end",
+        "    end",
+        "    return 0",
+        "end"
+    ]
+
     if data.get("simulate_low_hp"):
-        mock_lua.append("_TWWE_LOW_HP = true")
+        mock_lua.insert(0, "_TWWE_LOW_HP = true")
     if data.get("simulate_many_enemies"):
-        mock_lua.append("_TWWE_MANY_ENEMIES = true")
+        mock_lua.insert(0, "_TWWE_MANY_ENEMIES = true")
     if data.get("simulate_many_projectiles"):
-        mock_lua.append("_TWWE_MANY_PROJECTILES = true")
+        mock_lua.insert(0, "_TWWE_MANY_PROJECTILES = true")
     
+    # 获取活动模组列表
+    active_mods = []
+    live_active_mods_res = talk_to_game("GET_ACTIVE_MODS")
+    if live_active_mods_res:
+        try:
+            active_mods = json.loads(live_active_mods_res)
+        except: pass
+    if not active_mods and _ACTIVE_MODS_CACHE:
+        active_mods = _ACTIVE_MODS_CACHE
+
+    # 注入游戏内的法术追加逻辑
+    # 我们使用 ModLuaFileAppend 注册追加，这样模拟器在 dofile("gun_actions.lua") 时会自动执行它们
+    if _MOD_APPENDS_CACHE:
+        # 补丁 Mod 应该放在模拟器目录下
+        mock_mod_dir = os.path.join(WAND_EVAL_DIR, "mods", "twwe_mock")
+        os.makedirs(mock_mod_dir, exist_ok=True)
+        
+        for i, (path, content) in enumerate(_MOD_APPENDS_CACHE.items()):
+            # 为每个追加内容创建一个虚拟文件
+            file_name = f"gen_{i}.lua"
+            with open(os.path.join(mock_mod_dir, file_name), "w", encoding="utf-8", errors="replace") as f:
+                f.write(content)
+            mock_lua.append(f'ModLuaFileAppend("data/scripts/gun/gun_actions.lua", "mods/twwe_mock/{file_name}")')
+
     if mock_lua:
-        # 创建临时 Mod 来注入模拟逻辑
-        # 必须写在 EXTRACTED_DATA_ROOT 目录下，因为 -mp 指向那里
-        mod_base = os.path.join(EXTRACTED_DATA_ROOT, "mods", "twwe_mock")
-        os.makedirs(mod_base, exist_ok=True)
-        with open(os.path.join(mod_base, "init.lua"), "w", encoding="utf-8") as f:
+        # 写入 init.lua
+        mock_mod_dir = os.path.join(WAND_EVAL_DIR, "mods", "twwe_mock")
+        os.makedirs(mock_mod_dir, exist_ok=True)
+        with open(os.path.join(mock_mod_dir, "init.lua"), "w", encoding="utf-8") as f:
             f.write("\n".join(mock_lua) + "\n")
-            f.write("""
--- 覆盖环境检测函数以支持 IF_HP, IF_ENEMY, IF_PROJECTILE
-local _old_EntityGetWithTag = EntityGetWithTag
-function EntityGetWithTag(tag)
-    if tag == "player_unit" and _TWWE_LOW_HP then return { 12345 } end
-    return _old_EntityGetWithTag(tag)
-end
+        
+        # 核心改动：我们需要把所有 mod 传给模拟器，以便它能找到文件（VFS）
+        # 但是我们会在模拟器内部控制只运行 twwe_mock 的代码
+        if "twwe_mock" not in cmd:
+            cmd.append("-md")
+            cmd.append("twwe_mock")
+            
+        # 即使 twwe_mock 已经存在，也要补全其他 mod 以支持 VFS 搜索
+        for m in active_mods:
+            if m not in cmd and m != "wand_sync":
+                cmd.append(m)
 
-local _old_GetUpdatedEntityID = GetUpdatedEntityID
-function GetUpdatedEntityID()
-    if _TWWE_LOW_HP or _TWWE_MANY_ENEMIES or _TWWE_MANY_PROJECTILES then return 12345 end
-    return _old_GetUpdatedEntityID()
-end
-
-local _old_EntityGetFirstComponent = EntityGetFirstComponent
-function EntityGetFirstComponent(ent, type, tag)
-    if ent == 12345 and type == "DamageModelComponent" and _TWWE_LOW_HP then return 67890 end
-    return _old_EntityGetFirstComponent(ent, type, tag)
-end
-
-local _old_ComponentGetValue2 = ComponentGetValue2
-function ComponentGetValue2(comp, field)
-    if comp == 67890 then
-        if field == "hp" then return 0.1 end     -- 10% 血量
-        if field == "max_hp" then return 1.0 end
-    end
-    return _old_ComponentGetValue2(comp, field)
-end
-
-local _old_EntityGetInRadiusWithTag = EntityGetInRadiusWithTag
-function EntityGetInRadiusWithTag(x, y, radius, tag)
-    if tag == "homing_target" and _TWWE_MANY_ENEMIES then
-        -- 返回超过 15 个假实体以触发 IF_ENEMY
-        local res = {}
-        for i=1,20 do table.insert(res, i) end
-        return res
-    end
-    if tag == "projectile" and _TWWE_MANY_PROJECTILES then
-        -- 返回超过 20 个假实体以触发 IF_PROJECTILE
-        local res = {}
-        for i=1,30 do table.insert(res, i) end
-        return res
-    end
-    return _old_EntityGetInRadiusWithTag(x, y, radius, tag)
-end
-            """)
-        cmd.append("-md")
-        cmd.append("twwe_mock")
-
-    # 添加始终施法
-    always_casts = data.get("always_cast", [])
-    if always_casts:
-        cmd.append("-ac")
-        for ac in always_casts:
-            if ac: cmd.append(str(ac))
-    
     # 乱序设置
     if data.get("shuffle_deck_when_empty"):
         # wand_eval_tree 默认是非乱序，如果需要乱序，通常需要特定参数或者它目前可能不支持完美模拟乱序

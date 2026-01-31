@@ -101,7 +101,7 @@ export function WandCard({
         </div>
 
         <div className="flex-1 flex items-center gap-1 overflow-x-auto no-scrollbar py-1">
-          {Object.entries(data.spells)
+          {Object.entries(data.spells || {})
             .sort(([a], [b]) => parseInt(a) - parseInt(b))
             .map(([idx, sid]) => {
               const spell = spellDb[sid];
@@ -139,7 +139,7 @@ export function WandCard({
                 </div>
               );
             })}
-          {Object.keys(data.spells).length === 0 && (
+          {Object.keys(data.spells || {}).length === 0 && (
             <span className="text-[10px] text-zinc-700 italic font-medium ml-2">{t('tabs.empty_wand')}</span>
           )}
         </div>

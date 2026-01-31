@@ -51,7 +51,7 @@ export function WandEditor({
     const map: Record<number, number> = {};
     let ordinal = 1;
     for (let i = 1; i <= data.deck_capacity; i++) {
-      if (data.spells[i.toString()]) {
+      if (data.spells && data.spells[i.toString()]) {
         map[i] = ordinal++;
       }
     }
@@ -143,7 +143,7 @@ export function WandEditor({
         </div>
       </div>
 
-      {data.always_cast && data.always_cast.length > 0 && (
+      {Array.isArray(data.always_cast) && data.always_cast.length > 0 && (
         <div className="space-y-3">
           <div className="flex items-center gap-3">
             <div className="h-px flex-1 bg-gradient-to-r from-amber-500/30 to-transparent" />
@@ -223,7 +223,7 @@ export function WandEditor({
         >
           {Array.from({ length: Math.max(data.deck_capacity, 24) }).map((_, i) => {
             const idx = (i + 1).toString();
-            const sid = data.spells[idx];
+            const sid = data.spells ? data.spells[idx] : null;
             const spell = sid ? spellDb[sid] : null;
             const uses = (data.spell_uses || {})[idx] ?? spell?.max_uses;
             const isLocked = i >= data.deck_capacity;
@@ -245,7 +245,7 @@ export function WandEditor({
                       if (e.button === 1 && spell) {
                         e.preventDefault();
                         e.stopPropagation();
-                        const marked = data.marked_slots || [];
+                        const marked = Array.isArray(data.marked_slots) ? data.marked_slots : [];
                         const slotIdx = i + 1; // Align with 1-based index used by simulator
                         const newMarked = marked.includes(slotIdx)
                           ? marked.filter(m => m !== slotIdx)
@@ -316,7 +316,7 @@ export function WandEditor({
                                            (sid === 'IF_PROJECTILE' && settings.simulateManyProjectiles) ||
                                            (sid === 'IF_ENEMY' && settings.simulateManyEnemies);
                         const isGrayscale = (uses === 0) || isTriggered;
-                        const isMarked = (data.marked_slots || []).includes(i + 1);
+                        const isMarked = Array.isArray(data.marked_slots) && data.marked_slots.includes(i + 1);
                         
                         return (
                           <>
@@ -355,7 +355,7 @@ export function WandEditor({
                       <button
                         onClick={(e) => {
                           e.stopPropagation();
-                          const newSpells = { ...data.spells };
+                          const newSpells = { ...(data.spells || {}) };
                           const newSpellUses = { ...(data.spell_uses || {}) };
                           delete newSpells[idx];
                           delete newSpellUses[idx];
