@@ -1,0 +1,3 @@
+[submodule "wand_eval_tree"]
+	path = wand_eval_tree
+	url = https://github.com/Asmallhamis/wand_eval_tree.git
