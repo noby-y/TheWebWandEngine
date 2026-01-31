@@ -7,6 +7,13 @@ import re
 import io
 import subprocess
 import webbrowser
+import mimetypes
+
+# 强制注册 JS 为正确类型，防止 Windows 注册表错误导致浏览器拒绝执行脚本 (黑屏问题)
+mimetypes.add_type('application/javascript', '.js')
+mimetypes.add_type('text/css', '.css')
+mimetypes.add_type('application/wasm', '.wasm')
+
 try:
     from pypinyin import pinyin, Style
     HAS_PYPINYIN = True
@@ -46,6 +53,9 @@ else:
     local_luajit = os.path.join(BASE_DIR, "bin/luajit.exe")
     LUAJIT_PATH = local_luajit if os.path.exists(local_luajit) else "luajit"
 
+# 配置 Flask 静态资源目录 (用于打包 EXE 后能找到网页)
+app.static_folder = FRONTEND_DIST
+
 # 预加载数据
 _SPELL_CACHE = {}
 _MOD_SPELL_CACHE = {}
@@ -80,7 +90,7 @@ def load_translations():
         if not os.path.exists(file_path):
             continue
         try:
-            with open(file_path, "r", encoding="utf-8") as f:
+            with open(file_path, "r", encoding="utf-8", errors="ignore") as f:
                 import csv
                 # Noita CSVs often have junk or extra commas, we use a simple reader
                 reader = csv.reader(f)
@@ -155,7 +165,7 @@ def load_spell_database():
         return {}
 
     try:
-        with open(actions_file, "r", encoding="utf-8") as f:
+        with open(actions_file, "r", encoding="utf-8", errors="ignore") as f:
             content = f.read()
         
         # 1. 剥离 Lua 注释
@@ -260,7 +270,7 @@ def get_game_root():
 def talk_to_game(cmd):
     try:
         with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as sock:
-            sock.settimeout(15) # 进一步增加超时时间
+            sock.settimeout(2) # 降低超时时间，避免未连接时阻塞前端
             sock.connect((GAME_HOST, GAME_PORT))
             sock.sendall(cmd if isinstance(cmd, bytes) else (cmd + "\n").encode("utf-8"))
             
@@ -926,19 +936,22 @@ def evaluate_wand():
 
 @app.route("/")
 def index():
-    return send_file(os.path.join(FRONTEND_DIST, "index.html"))
+    return send_from_directory(app.static_folder, "index.html")
 
 @app.route("/assets/<path:path>")
 def send_assets(path):
-    dist_path = os.path.join(FRONTEND_DIST, "assets")
-    return send_from_directory(dist_path, path)
+    return send_from_directory(os.path.join(app.static_folder, "assets"), path)
 
 if __name__ == "__main__":
+    is_frozen = getattr(sys, 'frozen', False)
+    
     def open_browser():
         webbrowser.open_new("http://127.0.0.1:17471")
 
-    # Only auto-open if frozen (packaged) or explicitly requested
-    if getattr(sys, 'frozen', False):
+    # Only auto-open if frozen (packaged)
+    if is_frozen and not os.environ.get("WERKZEUG_RUN_MAIN"):
         Timer(1.5, open_browser).start()
 
-    app.run(host="0.0.0.0", port=17471, debug=True)
+    # 打包模式下必须关闭 debug，否则 reloader 会导致打包后的 EXE 运行异常（循环启动）
+    # 开发模式下保持 debug=True
+    app.run(host="0.0.0.0", port=17471, debug=not is_frozen)
