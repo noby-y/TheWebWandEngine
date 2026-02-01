@@ -48,6 +48,57 @@ import { SpellPicker } from './components/SpellPicker';
 import { CompactStat } from './components/Common';
 import WandEvaluator from './components/WandEvaluator';
 import { WandWarehouse } from './components/WandWarehouse';
+
+const readMetadataFromPng = async (file: File): Promise<string | null> => {
+  return new Promise((resolve) => {
+    const reader = new FileReader();
+    reader.onload = async (e) => {
+      const buffer = e.target?.result as ArrayBuffer;
+      if (!buffer) return resolve(null);
+      const view = new DataView(buffer);
+      
+      // Check PNG signature
+      if (view.byteLength < 8 || view.getUint32(0) !== 0x89504E47 || view.getUint32(4) !== 0x0D0A1A0A) {
+        return resolve(null);
+      }
+
+      let pos = 8;
+      while (pos < view.byteLength) {
+        if (pos + 8 > view.byteLength) break;
+        const length = view.getUint32(pos);
+        const type = String.fromCharCode(
+          view.getUint8(pos + 4),
+          view.getUint8(pos + 5),
+          view.getUint8(pos + 6),
+          view.getUint8(pos + 7)
+        );
+
+        if (type === 'tEXt') {
+          const data = new Uint8Array(buffer, pos + 8, length);
+          const content = new TextDecoder().decode(data);
+          const [keyword, ...rest] = content.split('\0');
+          const value = rest.join('\0');
+          if (keyword === 'Wand2Data' || keyword === 'Wand2') {
+            return resolve(value);
+          }
+        } else if (type === 'iTXt') {
+          const data = new Uint8Array(buffer, pos + 8, length);
+          const content = new TextDecoder().decode(data);
+          if (content.includes('{{Wand2')) {
+            const start = content.indexOf('{{Wand2');
+            const end = content.lastIndexOf('}}') + 2;
+            if (start !== -1 && end > start) {
+              return resolve(content.substring(start, end));
+            }
+          }
+        }
+        pos += length + 12; // length + type + data + crc
+      }
+      resolve(null);
+    };
+    reader.readAsArrayBuffer(file);
+  });
+};
 import { evaluateWand, getIconUrl } from './lib/evaluatorAdapter';
 import { useTranslation } from 'react-i18next';
 
@@ -127,6 +178,7 @@ function App() {
       showLegacyWandButton: false,
       deleteEmptySlots: true,
       exportHistory: true,
+      embedMetadataInImage: true,
       spellTypes: DEFAULT_SPELL_TYPES,
       spellGroups: DEFAULT_SPELL_GROUPS,
       warehouseFolderHeight: 200
@@ -433,6 +485,7 @@ function App() {
   const [selection, setSelection] = useState<{ wandSlot: string, indices: number[], startIdx: number } | null>(null);
   const [isSelecting, setIsSelecting] = useState(false);
   const [dragSource, setDragSource] = useState<{ wandSlot: string, idx: number, sid: string } | null>(null);
+  const [isDraggingFile, setIsDraggingFile] = useState(false);
   const [mousePos, setMousePos] = useState({ x: 0, y: 0 });
   const [hoveredSlot, setHoveredSlot] = useState<{ wandSlot: string, idx: number, isRightHalf: boolean } | null>(null);
   const hoveredSlotRef = useRef(hoveredSlot);
@@ -451,7 +504,7 @@ function App() {
         [key]: { ...(prev[key] || { data: null, id: 0 }), loading: true }
       }));
 
-      const res = await evaluateWand(wand, settings, isConnected, force);
+      const res = await evaluateWand(wand, settings, isConnected, tabId, slot, force);
       if (res) {
         // Only update if this is still the latest request for this slot
         if (res.id >= (latestRequestIdsRef.current[key] || 0)) {
@@ -741,6 +794,260 @@ function App() {
     setHoveredSlot(null);
   };
 
+  const syncWand = async (slot: string, data: WandData | null, isDelete = false) => {
+    if (!activeTab.isRealtime || !isConnected) return;
+    try {
+      await fetch('/api/sync', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ 
+          slot: parseInt(slot), 
+          delete: isDelete,
+          ...(data || {}) 
+        })
+      });
+    } catch { }
+  };
+
+  const updateWand = (slot: string, updates: Partial<WandData>, actionName = '修改法杖', icons?: string[]) => {
+    lastLocalUpdateRef.current = Date.now();
+    performAction(prevWands => {
+      const currentWand = prevWands[slot] || { ...DEFAULT_WAND };
+      const newWand = { ...currentWand, ...updates };
+
+      if (activeTab.isRealtime) {
+        syncWand(slot, newWand);
+      }
+
+      return { ...prevWands, [slot]: newWand };
+    }, actionName, icons);
+  };
+
+  const importFromText = useCallback(async (text: string, forceTarget?: { slot: string, idx: number }) => {
+    const isWand2Data = text.includes('{{Wand2');
+    const isWikiWand = text.includes('{{Wand') && !isWand2Data;
+    const isWandData = isWand2Data || isWikiWand;
+    const isSpellSeq = text.includes(',') || Object.keys(spellDb).some(id => text.includes(id));
+
+    if (!isWandData && !isSpellSeq) return false;
+
+    // Determine where to paste
+    let targetWandSlot = forceTarget?.slot;
+    let startIdx = forceTarget?.idx;
+
+    if (!targetWandSlot && hoveredSlotRef.current) {
+      targetWandSlot = hoveredSlotRef.current.wandSlot;
+      const hIdx = hoveredSlotRef.current.idx;
+      if (hIdx < 0) {
+        // Paste into Always Cast
+        const acIdx = (-hIdx) - 1;
+        const spellsList = text.split(',').map(s => s.trim()).filter(s => !!s);
+        if (spellsList.length > 0) {
+          performAction(prev => {
+            const next = { ...prev };
+            const w = { ...next[targetWandSlot!] };
+            const newAC = [...(w.always_cast || [])];
+            const insertPos = acIdx + (hoveredSlotRef.current!.isRightHalf ? 1 : 0);
+            newAC.splice(insertPos, 0, ...spellsList);
+            w.always_cast = newAC;
+            next[targetWandSlot!] = w;
+            if (activeTab.isRealtime) syncWand(targetWandSlot!, w);
+            return next;
+          }, '粘贴法术到始终施放');
+          return true;
+        }
+        return false;
+      }
+      startIdx = hIdx + (hoveredSlotRef.current.isRightHalf ? 1 : 0);
+    } else if (!targetWandSlot && selectionRef.current) {
+      targetWandSlot = selectionRef.current.wandSlot;
+      startIdx = Math.min(...selectionRef.current.indices);
+    }
+
+    if (!targetWandSlot || !startIdx) {
+      // If no target slot but it's Wand data, create a new wand instead of failing
+      if (isWandData) {
+        const nextSlot = (Math.max(0, ...Object.keys(activeTab.wands).map(Number)) + 1).toString();
+        
+        const getVal = (key: string) => {
+          const regex = new RegExp(`\\|\\s*${key}\\s*=\\s*([^|\\n}]+)`);
+          const match = text.match(regex);
+          if (!match) return null;
+          return match[1].trim();
+        };
+
+        const newSpells: Record<string, string> = {};
+        const alwaysCasts: string[] = [];
+        let deckCapacity = 0;
+
+        if (isWand2Data) {
+          const spellsStr = getVal('spells');
+          const spellsList = spellsStr ? spellsStr.split(',').map(s => s.trim()) : [];
+          spellsList.forEach((sid, i) => {
+            if (sid) newSpells[(i + 1).toString()] = sid;
+          });
+          deckCapacity = parseInt(getVal('capacity') || '0') || DEFAULT_WAND.deck_capacity;
+
+          const acStr = getVal('alwaysCasts') || getVal('always_cast');
+          if (acStr) {
+            acStr.split(',').forEach(s => {
+              const sid = s.trim();
+              if (sid) alwaysCasts.push(sid);
+            });
+          }
+        } else {
+          // Wiki Wand
+          deckCapacity = parseInt(getVal('capacity') || '0') || DEFAULT_WAND.deck_capacity;
+          for (let i = 1; i <= Math.max(deckCapacity, 100); i++) {
+            const name = getVal(`spell${i}`);
+            if (name) {
+              const norm = name.toLowerCase().replace(/[^a-z0-9]/g, '');
+              const id = spellNameToId[norm];
+              if (id) newSpells[i.toString()] = id;
+            }
+          }
+          const acName = getVal('alwaysCasts') || getVal('always_cast');
+          if (acName) {
+            const norm = acName.toLowerCase().replace(/[^a-z0-9]/g, '');
+            const id = spellNameToId[norm];
+            if (id) alwaysCasts.push(id);
+          }
+        }
+
+        const newWand: WandData = {
+          ...DEFAULT_WAND,
+          shuffle_deck_when_empty: getVal('shuffle')?.toLowerCase() === 'yes' || getVal('shuffle') === 'true',
+          actions_per_round: parseInt(getVal('spellsCast') || (isWand2Data ? '1' : '')) || parseInt(getVal('spellsPerCast') || '1') || DEFAULT_WAND.actions_per_round,
+          mana_max: parseFloat(getVal('manaMax') || '0') || DEFAULT_WAND.mana_max,
+          mana_charge_speed: parseFloat(getVal('manaCharge') || '0') || DEFAULT_WAND.mana_charge_speed,
+          reload_time: Math.round(parseFloat(getVal('rechargeTime') || '0') * 60) || DEFAULT_WAND.reload_time,
+          fire_rate_wait: Math.round(parseFloat(getVal('castDelay') || '0') * 60) || DEFAULT_WAND.fire_rate_wait,
+          deck_capacity: deckCapacity,
+          spread_degrees: parseFloat(getVal('spread') || '0') || DEFAULT_WAND.spread_degrees,
+          speed_multiplier: parseFloat(getVal('speed') || '1') || DEFAULT_WAND.speed_multiplier,
+          spells: newSpells,
+          always_cast: alwaysCasts
+        };
+
+        performAction(prevWands => ({
+          ...prevWands,
+          [nextSlot]: newWand
+        }), `从粘贴创建新法杖 (槽位 ${nextSlot})`);
+
+        if (activeTab.isRealtime) {
+          syncWand(nextSlot, newWand);
+        }
+
+        setTabs(prev => prev.map(t => t.id === activeTabId ? {
+          ...t,
+          expandedWands: new Set([...t.expandedWands, nextSlot])
+        } : t));
+
+        setNotification({ msg: t('app.notification.pasted_new_wand', { slot: nextSlot }), type: 'success' });
+        return true;
+      }
+      return false;
+    }
+
+    const wand = activeTab.wands[targetWandSlot] || { ...DEFAULT_WAND };
+
+    if (isWandData) {
+      const getVal = (key: string) => {
+        const regex = new RegExp(`\\|\\s*${key}\\s*=\\s*([^|\\n}]+)`);
+        const match = text.match(regex);
+        return match ? match[1].trim() : null;
+      };
+
+      const newSpells: Record<string, string> = {};
+      const alwaysCasts: string[] = [];
+      let deckCapacity = wand.deck_capacity;
+
+      if (isWand2Data) {
+        const spellsStr = getVal('spells');
+        const spellsList = spellsStr ? spellsStr.split(',').map(s => s.trim()) : [];
+        spellsList.forEach((sid, i) => {
+          if (sid) newSpells[(i + 1).toString()] = sid;
+        });
+        deckCapacity = parseInt(getVal('capacity') || '0') || deckCapacity;
+
+        const acStr = getVal('alwaysCasts') || getVal('always_cast');
+        if (acStr) {
+          acStr.split(',').forEach(s => {
+            const sid = s.trim();
+            if (sid) alwaysCasts.push(sid);
+          });
+        }
+      } else {
+        // Wiki Wand
+        deckCapacity = parseInt(getVal('capacity') || '0') || deckCapacity;
+        for (let i = 1; i <= Math.max(deckCapacity, 100); i++) {
+          const val = getVal(`spell${i}`);
+          if (val) {
+            const norm = val.toLowerCase().replace(/[^a-z0-9]/g, '');
+            const id = spellNameToId[norm];
+            if (id) newSpells[i.toString()] = id;
+          }
+        }
+        const acName = getVal('alwaysCasts') || getVal('always_cast');
+        if (acName) {
+          const norm = acName.toLowerCase().replace(/[^a-z0-9]/g, '');
+          const id = spellNameToId[norm];
+          if (id) alwaysCasts.push(id);
+        }
+      }
+      
+      const updates: Partial<WandData> = {
+        shuffle_deck_when_empty: getVal('shuffle')?.toLowerCase() === 'yes' || getVal('shuffle') === 'true',
+        actions_per_round: parseInt(getVal('spellsCast') || (isWand2Data ? '1' : '')) || parseInt(getVal('spellsPerCast') || '1') || wand.actions_per_round,
+        mana_max: parseFloat(getVal('manaMax') || '0') || wand.mana_max,
+        mana_charge_speed: parseFloat(getVal('manaCharge') || '0') || wand.mana_charge_speed,
+        reload_time: Math.round(parseFloat(getVal('rechargeTime') || '0') * 60) || wand.reload_time,
+        fire_rate_wait: Math.round(parseFloat(getVal('castDelay') || '0') * 60) || wand.fire_rate_wait,
+        deck_capacity: deckCapacity,
+        spread_degrees: parseFloat(getVal('spread') || '0') || wand.spread_degrees,
+        speed_multiplier: parseFloat(getVal('speed') || '1') || wand.speed_multiplier,
+        always_cast: alwaysCasts
+      };
+
+      updateWand(targetWandSlot, { ...updates, spells: newSpells }, '粘贴法杖数据', Object.values(newSpells));
+      return true;
+    } else {
+      const newSpellsList = text.split(',').map(s => s.trim());
+      const existingSpells: (string | null)[] = [];
+      const maxIdx = Math.max(wand.deck_capacity, ...Object.keys(wand.spells).map(Number));
+      for (let i = 1; i <= maxIdx; i++) {
+        existingSpells.push(wand.spells[i.toString()] || null);
+      }
+      const headIdx = startIdx - 1;
+      if (existingSpells[headIdx] === null) {
+        existingSpells.splice(headIdx, 1);
+      } else if (existingSpells[headIdx - 1] === null) {
+        existingSpells.splice(headIdx - 1, 1);
+        startIdx--;
+      }
+      const head = existingSpells.slice(0, startIdx - 1);
+      const tail = existingSpells.slice(startIdx - 1);
+      const combined = [...head, ...newSpellsList, ...tail];
+      const finalSpellsObj: Record<string, string> = {};
+      combined.forEach((sid, i) => {
+        if (sid) finalSpellsObj[(i + 1).toString()] = sid;
+      });
+      let newCapacity = wand.deck_capacity;
+      const lastSpellIdx = combined.reduce((acc, val, idx) => val !== null ? idx + 1 : acc, 0);
+      if (lastSpellIdx > wand.deck_capacity) {
+        if (settings.autoExpandOnPaste) {
+          newCapacity = lastSpellIdx;
+        } else {
+          if (confirm(`插入法术后超出了当前容量 (${lastSpellIdx} > ${wand.deck_capacity})，是否自动扩容？`)) {
+            newCapacity = lastSpellIdx;
+          }
+        }
+      }
+      updateWand(targetWandSlot, { spells: finalSpellsObj, deck_capacity: newCapacity }, '插入法术序列', newSpellsList.filter(s => s));
+      return true;
+    }
+  }, [spellDb, settings, activeTabId, activeTab, spellNameToId, performAction, syncWand, t, updateWand]);
+
   const copyToClipboard = async (isCut = false) => {
     let wandSlot: string;
     let indices: number[];
@@ -817,248 +1124,32 @@ function App() {
   };
 
   const pasteFromClipboard = async (forceTarget?: { slot: string, idx: number }) => {
-    const text = (await navigator.clipboard.readText()).trim();
-    if (!text) return false;
-
-    const isWand2Data = text.includes('{{Wand2');
-    const isWikiWand = text.includes('{{Wand') && !isWand2Data;
-    const isWandData = isWand2Data || isWikiWand;
-    const isSpellSeq = text.includes(',') || Object.keys(spellDb).some(id => text.includes(id));
-
-    if (!isWandData && !isSpellSeq) return false;
-
-    // Determine where to paste
-    let targetWandSlot = forceTarget?.slot;
-    let startIdx = forceTarget?.idx;
-
-    if (!targetWandSlot && hoveredSlotRef.current) {
-      targetWandSlot = hoveredSlotRef.current.wandSlot;
-      const hIdx = hoveredSlotRef.current.idx;
-      if (hIdx < 0) {
-        // Paste into Always Cast
-        const acIdx = (-hIdx) - 1;
-        const text = (await navigator.clipboard.readText()).trim();
-        const spellsList = text.split(',').map(s => s.trim()).filter(s => !!s);
-        if (spellsList.length > 0) {
-          performAction(prev => {
-            const next = { ...prev };
-            const w = { ...next[targetWandSlot!] };
-            const newAC = [...(w.always_cast || [])];
-            const insertPos = acIdx + (hoveredSlotRef.current!.isRightHalf ? 1 : 0);
-            newAC.splice(insertPos, 0, ...spellsList);
-            w.always_cast = newAC;
-            next[targetWandSlot!] = w;
-            if (activeTab.isRealtime) syncWand(targetWandSlot!, w);
-            return next;
-          }, '粘贴法术到始终施放');
-          return true;
+    try {
+      // Use the modern Clipboard API to check for both images and text
+      const items = await navigator.clipboard.read();
+      for (const item of items) {
+        if (item.types.includes('image/png')) {
+          const blob = await item.getType('image/png');
+          const file = new File([blob], "pasted.png", { type: "image/png" });
+          const metadata = await readMetadataFromPng(file);
+          if (metadata && (metadata.includes('{{Wand2') || metadata.includes('{{Wand'))) {
+            return await importFromText(metadata, forceTarget);
+          }
         }
-        return false;
+        if (item.types.includes('text/plain')) {
+          const blob = await item.getType('text/plain');
+          const text = (await blob.text()).trim();
+          if (text) {
+            return await importFromText(text, forceTarget);
+          }
+        }
       }
-      startIdx = hIdx + (hoveredSlotRef.current.isRightHalf ? 1 : 0);
-    } else if (!targetWandSlot && selectionRef.current) {
-      targetWandSlot = selectionRef.current.wandSlot;
-      startIdx = Math.min(...selectionRef.current.indices);
+    } catch (err) {
+      // Fallback for browsers/contexts where navigator.clipboard.read() is restricted
+      const text = (await navigator.clipboard.readText()).trim();
+      if (text) return importFromText(text, forceTarget);
     }
-
-    if (!targetWandSlot || !startIdx) {
-      // If no target slot but it's Wand data, create a new wand instead of failing
-      if (isWandData) {
-        const nextSlot = (Math.max(0, ...Object.keys(activeTab.wands).map(Number)) + 1).toString();
-        
-        const getVal = (key: string) => {
-          // Use boundary logic to avoid spell1 matching spell10
-          const regex = new RegExp(`\\|\\s*${key}\\s*=\\s*([^|\\n}]+)`);
-          const match = text.match(regex);
-          if (!match) return null;
-          return match[1].trim();
-        };
-
-        const newSpells: Record<string, string> = {};
-        const alwaysCasts: string[] = [];
-        let deckCapacity = 0;
-
-        if (isWand2Data) {
-          const spellsStr = getVal('spells');
-          const spellsList = spellsStr ? spellsStr.split(',').map(s => s.trim()) : [];
-          spellsList.forEach((sid, i) => {
-            if (sid) newSpells[(i + 1).toString()] = sid;
-          });
-          deckCapacity = parseInt(getVal('capacity') || '0') || DEFAULT_WAND.deck_capacity;
-
-          const acStr = getVal('alwaysCasts');
-          if (acStr) {
-            acStr.split(',').forEach(s => {
-              const sid = s.trim();
-              if (sid) alwaysCasts.push(sid);
-            });
-          }
-        } else {
-          // Wiki Wand
-          deckCapacity = parseInt(getVal('capacity') || '0') || DEFAULT_WAND.deck_capacity;
-          for (let i = 1; i <= Math.max(deckCapacity, 100); i++) {
-            const name = getVal(`spell${i}`);
-            if (name) {
-              const norm = name.toLowerCase().replace(/[^a-z0-9]/g, '');
-              const id = spellNameToId[norm];
-              if (id) newSpells[i.toString()] = id;
-            }
-          }
-          const acName = getVal('alwaysCasts');
-          if (acName) {
-            const norm = acName.toLowerCase().replace(/[^a-z0-9]/g, '');
-            const id = spellNameToId[norm];
-            if (id) alwaysCasts.push(id);
-          }
-        }
-
-        const newWand: WandData = {
-          ...DEFAULT_WAND,
-          shuffle_deck_when_empty: getVal('shuffle')?.toLowerCase() === 'yes' || getVal('shuffle') === 'true',
-          actions_per_round: parseInt(getVal('spellsCast') || (isWand2Data ? '1' : '')) || parseInt(getVal('spellsPerCast') || '1') || DEFAULT_WAND.actions_per_round,
-          mana_max: parseFloat(getVal('manaMax') || '0') || DEFAULT_WAND.mana_max,
-          mana_charge_speed: parseFloat(getVal('manaCharge') || '0') || DEFAULT_WAND.mana_charge_speed,
-          reload_time: Math.round(parseFloat(getVal('rechargeTime') || '0') * 60) || DEFAULT_WAND.reload_time,
-          fire_rate_wait: Math.round(parseFloat(getVal('castDelay') || '0') * 60) || DEFAULT_WAND.fire_rate_wait,
-          deck_capacity: deckCapacity,
-          spread_degrees: parseFloat(getVal('spread') || '0') || DEFAULT_WAND.spread_degrees,
-          speed_multiplier: parseFloat(getVal('speed') || '1') || DEFAULT_WAND.speed_multiplier,
-          spells: newSpells,
-          always_cast: alwaysCasts
-        };
-
-        performAction(prevWands => ({
-          ...prevWands,
-          [nextSlot]: newWand
-        }), `从粘贴创建新法杖 (槽位 ${nextSlot})`);
-
-        if (activeTab.isRealtime) {
-          syncWand(nextSlot, newWand);
-        }
-
-        setTabs(prev => prev.map(t => t.id === activeTabId ? {
-          ...t,
-          expandedWands: new Set([...t.expandedWands, nextSlot])
-        } : t));
-
-        setNotification({ msg: t('app.notification.pasted_new_wand', { slot: nextSlot }), type: 'success' });
-        return true;
-      }
-      return false;
-    }
-
-    const wand = activeTab.wands[targetWandSlot] || { ...DEFAULT_WAND };
-
-    if (isWandData) {
-      // --- Template Parsing (Overwrite style) ---
-      const getVal = (key: string) => {
-        const regex = new RegExp(`\\|\\s*${key}\\s*=\\s*([^|\\n}]+)`);
-        const match = text.match(regex);
-        return match ? match[1].trim() : null;
-      };
-
-      const newSpells: Record<string, string> = {};
-      const alwaysCasts: string[] = [];
-      let deckCapacity = wand.deck_capacity;
-
-      if (isWand2Data) {
-        const spellsStr = getVal('spells');
-        const spellsList = spellsStr ? spellsStr.split(',').map(s => s.trim()) : [];
-        spellsList.forEach((sid, i) => {
-          if (sid) newSpells[(i + 1).toString()] = sid;
-        });
-        deckCapacity = parseInt(getVal('capacity') || '0') || deckCapacity;
-
-        const acStr = getVal('alwaysCasts');
-        if (acStr) {
-          acStr.split(',').forEach(s => {
-            const sid = s.trim();
-            if (sid) alwaysCasts.push(sid);
-          });
-        }
-      } else {
-        // Wiki Wand
-        deckCapacity = parseInt(getVal('capacity') || '0') || deckCapacity;
-        for (let i = 1; i <= Math.max(deckCapacity, 100); i++) {
-          const val = getVal(`spell${i}`);
-          if (val) {
-            const norm = val.toLowerCase().replace(/[^a-z0-9]/g, '');
-            const id = spellNameToId[norm];
-            if (id) newSpells[i.toString()] = id;
-          }
-        }
-        const acName = getVal('alwaysCasts');
-        if (acName) {
-          const norm = acName.toLowerCase().replace(/[^a-z0-9]/g, '');
-          const id = spellNameToId[norm];
-          if (id) alwaysCasts.push(id);
-        }
-      }
-      
-      const updates: Partial<WandData> = {
-        shuffle_deck_when_empty: getVal('shuffle')?.toLowerCase() === 'yes' || getVal('shuffle') === 'true',
-        actions_per_round: parseInt(getVal('spellsCast') || (isWand2Data ? '1' : '')) || parseInt(getVal('spellsPerCast') || '1') || wand.actions_per_round,
-        mana_max: parseFloat(getVal('manaMax') || '0') || wand.mana_max,
-        mana_charge_speed: parseFloat(getVal('manaCharge') || '0') || wand.mana_charge_speed,
-        reload_time: Math.round(parseFloat(getVal('rechargeTime') || '0') * 60) || wand.reload_time,
-        fire_rate_wait: Math.round(parseFloat(getVal('castDelay') || '0') * 60) || wand.fire_rate_wait,
-        deck_capacity: deckCapacity,
-        spread_degrees: parseFloat(getVal('spread') || '0') || wand.spread_degrees,
-        speed_multiplier: parseFloat(getVal('speed') || '1') || wand.speed_multiplier,
-        always_cast: alwaysCasts
-      };
-
-      updateWand(targetWandSlot, { ...updates, spells: newSpells }, '粘贴法杖数据', Object.values(newSpells));
-      return true;
-    } else {
-      // --- Spell Sequence Parsing (Insertion style) ---
-      const newSpellsList = text.split(',').map(s => s.trim());
-      
-      // Get all existing spells as a sequence
-      const existingSpells: (string | null)[] = [];
-      const maxIdx = Math.max(wand.deck_capacity, ...Object.keys(wand.spells).map(Number));
-      for (let i = 1; i <= maxIdx; i++) {
-        existingSpells.push(wand.spells[i.toString()] || null);
-      }
-
-      // Perform insertion with "Consume Empty Slot" logic
-      const headIdx = startIdx - 1;
-      if (existingSpells[headIdx] === null) {
-        existingSpells.splice(headIdx, 1);
-      } else if (existingSpells[headIdx - 1] === null) {
-        existingSpells.splice(headIdx - 1, 1);
-        startIdx--;
-      }
-
-      const head = existingSpells.slice(0, startIdx - 1);
-      const tail = existingSpells.slice(startIdx - 1);
-      const combined = [...head, ...newSpellsList, ...tail];
-
-      // Re-map to object
-      const finalSpellsObj: Record<string, string> = {};
-      combined.forEach((sid, i) => {
-        if (sid) finalSpellsObj[(i + 1).toString()] = sid;
-      });
-
-      // Handle capacity
-      let newCapacity = wand.deck_capacity;
-      const lastSpellIdx = combined.reduce((acc, val, idx) => val !== null ? idx + 1 : acc, 0);
-      
-      if (lastSpellIdx > wand.deck_capacity) {
-        if (settings.autoExpandOnPaste) {
-          newCapacity = lastSpellIdx;
-        } else {
-          if (confirm(`插入法术后超出了当前容量 (${lastSpellIdx} > ${wand.deck_capacity})，是否自动扩容？`)) {
-            newCapacity = lastSpellIdx;
-          } else {
-            // Keep capacity, but the re-mapping already shifted things, so we just clip
-          }
-        }
-      }
-
-      updateWand(targetWandSlot, { spells: finalSpellsObj, deck_capacity: newCapacity }, '插入法术序列', newSpellsList.filter(s => s));
-      return true;
-    }
+    return false;
   };
 
   const insertEmptySlot = () => {
@@ -1117,16 +1208,6 @@ function App() {
       if (dragSource) setDragSource(null);
     };
     const handleKeyDown = async (e: KeyboardEvent) => {
-      // Intercept paste globally if it's wand data
-      if ((e.ctrlKey || e.metaKey) && e.key === 'v') {
-        const success = await pasteFromClipboard();
-        if (success) {
-          e.preventDefault();
-          e.stopPropagation();
-          return;
-        }
-      }
-
       if (e.target instanceof HTMLInputElement || e.target instanceof HTMLTextAreaElement) return;
       
       if ((e.ctrlKey || e.metaKey)) {
@@ -1228,13 +1309,126 @@ function App() {
       }
     };
 
+    const handleGlobalPaste = async (e: ClipboardEvent) => {
+      const isInput = e.target instanceof HTMLInputElement || e.target instanceof HTMLTextAreaElement;
+      
+      const items = Array.from(e.clipboardData?.items || []);
+      for (const item of items) {
+        if (item.type.startsWith('image/')) {
+          const file = item.getAsFile();
+          if (file) {
+            const metadata = await readMetadataFromPng(file);
+            if (metadata && (metadata.includes('{{Wand2') || metadata.includes('{{Wand'))) {
+              e.preventDefault();
+              await importFromText(metadata);
+              return;
+            }
+          }
+        }
+      }
+
+      if (!isInput) {
+        const text = e.clipboardData?.getData('text/plain').trim();
+        if (text) {
+          const success = await importFromText(text);
+          if (success) e.preventDefault();
+        }
+      }
+    };
+
+    const handleGlobalDropEvent = async (e: DragEvent) => {
+      e.preventDefault();
+      setIsDraggingFile(false);
+      
+      console.log("[Import] File dropped");
+      
+      // 1. Handle Files
+      const files = Array.from(e.dataTransfer?.files || []);
+      if (files.length > 0) {
+        for (const file of files) {
+          if (file.type.startsWith('image/')) {
+            console.log("[Import] Reading image metadata...");
+            const metadata = await readMetadataFromPng(file);
+            if (metadata && (metadata.includes('{{Wand2') || metadata.includes('{{Wand'))) {
+              await importFromText(metadata);
+              setNotification({ msg: "已从图片导入法杖配置", type: "success" });
+              continue;
+            }
+          }
+          
+          if (file.name.endsWith('.json')) {
+            console.log("[Import] Reading JSON workflow...");
+            const reader = new FileReader();
+            reader.onload = (ev) => {
+              try {
+                const data = JSON.parse(ev.target?.result as string);
+                const newTabId = Date.now().toString();
+                const fileName = file.name.replace('.json', '');
+                const isFullWorkflow = data && data.type === 'twwe_workflow' && data.wands;
+                const wands = isFullWorkflow ? data.wands : data;
+                
+                setTabs(prev => [
+                  ...prev,
+                  {
+                    id: newTabId,
+                    name: isFullWorkflow ? (data.name || fileName) : fileName,
+                    isRealtime: false,
+                    wands: wands,
+                    expandedWands: new Set(Object.keys(wands)),
+                    past: isFullWorkflow ? (data.past || []) : [],
+                    future: isFullWorkflow ? (data.future || []) : []
+                  }
+                ]);
+                setActiveTabId(newTabId);
+                setNotification({ msg: `已导入工作流: ${fileName}`, type: "success" });
+              } catch (err) { console.error("Drop import failed:", err); }
+            };
+            reader.readAsText(file);
+          }
+        }
+        return;
+      }
+
+      // 2. Handle dragging from other websites (URLs/Items)
+      const items = Array.from(e.dataTransfer?.items || []);
+      for (const item of items) {
+        if (item.kind === 'string' && item.type === 'text/plain') {
+          item.getAsString(async (text) => {
+            const success = await importFromText(text);
+            if (success) setNotification({ msg: "已从拖入文本导入", type: "success" });
+          });
+        }
+      }
+    };
+
+    const handleDragOver = (e: DragEvent) => {
+      e.preventDefault();
+      setIsDraggingFile(true);
+    };
+
+    const handleDragLeave = (e: DragEvent) => {
+      e.preventDefault();
+      // Only set to false if we're actually leaving the window
+      if (e.clientX <= 0 || e.clientY <= 0 || e.clientX >= window.innerWidth || e.clientY >= window.innerHeight) {
+        setIsDraggingFile(false);
+      }
+    };
+
     window.addEventListener('mouseup', handleMouseUp);
     window.addEventListener('keydown', handleKeyDown);
+    window.addEventListener('paste', handleGlobalPaste);
+    window.addEventListener('drop', handleGlobalDropEvent);
+    window.addEventListener('dragover', handleDragOver);
+    window.addEventListener('dragleave', handleDragLeave);
     return () => {
       window.removeEventListener('mouseup', handleMouseUp);
       window.removeEventListener('keydown', handleKeyDown);
+      window.removeEventListener('paste', handleGlobalPaste);
+      window.removeEventListener('drop', handleGlobalDropEvent);
+      window.removeEventListener('dragover', handleDragOver);
+      window.removeEventListener('dragleave', handleDragLeave);
     };
-  }, [activeTab, settings, spellDb]);
+  }, [activeTab, settings, spellDb, readMetadataFromPng, importFromText]);
 
   // --- Effects ---
   useEffect(() => {
@@ -1465,34 +1659,6 @@ function App() {
     }
   };
 
-  const syncWand = async (slot: string, data: WandData | null, isDelete = false) => {
-    if (!activeTab.isRealtime || !isConnected) return;
-    try {
-      await fetch('/api/sync', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ 
-          slot: parseInt(slot), 
-          delete: isDelete,
-          ...(data || {}) 
-        })
-      });
-    } catch { }
-  };
-
-  const updateWand = (slot: string, updates: Partial<WandData>, actionName = '修改法杖', icons?: string[]) => {
-    lastLocalUpdateRef.current = Date.now();
-    performAction(prevWands => {
-      const currentWand = prevWands[slot] || { ...DEFAULT_WAND };
-      const newWand = { ...currentWand, ...updates };
-
-      if (activeTab.isRealtime) {
-        syncWand(slot, newWand);
-      }
-
-      return { ...prevWands, [slot]: newWand };
-    }, actionName, icons);
-  };
 
   const addNewTab = () => {
     const id = Date.now().toString();
@@ -1780,7 +1946,9 @@ function App() {
   };
 
   return (
-    <div className="flex flex-col h-screen bg-zinc-950 overflow-hidden text-zinc-100 selection:bg-purple-500/30">
+    <div 
+      className="flex flex-col h-screen bg-zinc-950 overflow-hidden text-zinc-100 selection:bg-purple-500/30"
+    >
       <Header
         tabs={tabs}
         activeTabId={activeTabId}
@@ -2046,6 +2214,16 @@ function App() {
             className="w-full h-full image-pixelated border-2 border-indigo-500 rounded bg-zinc-900/80 shadow-2xl animate-pulse" 
             alt="" 
           />
+        </div>
+      )}
+
+      {isDraggingFile && (
+        <div className="fixed inset-0 z-[2000] bg-indigo-500/20 backdrop-blur-sm border-4 border-dashed border-indigo-500 flex items-center justify-center pointer-events-none animate-in fade-in duration-200">
+          <div className="bg-zinc-900 px-8 py-4 rounded-2xl shadow-2xl border border-white/10 flex flex-col items-center gap-4">
+            <Download size={48} className="text-indigo-400 animate-bounce" />
+            <p className="text-xl font-black uppercase tracking-widest text-indigo-100">Drop to Import Wand</p>
+            <p className="text-zinc-400 text-sm">PNG Image or JSON Workflow</p>
+          </div>
         </div>
       )}
     </div>

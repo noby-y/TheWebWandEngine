@@ -85,6 +85,7 @@ export interface AppSettings {
   showLegacyWandButton: boolean;
   deleteEmptySlots: boolean;
   exportHistory: boolean;
+  embedMetadataInImage: boolean;
   spellTypes: SpellTypeConfig[];
   spellGroups: SpellGroupConfig[];
   warehouseFolderHeight: number;

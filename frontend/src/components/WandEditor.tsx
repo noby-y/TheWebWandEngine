@@ -1,5 +1,6 @@
 import React from 'react';
-import { Monitor, X, RefreshCw } from 'lucide-react';
+import { Monitor, X, RefreshCw, Image as ImageIcon, Camera } from 'lucide-react';
+import { toPng } from 'html-to-image';
 import { WandData, SpellInfo, AppSettings } from '../types';
 import { PropInput } from './Common';
 import { getIconUrl } from '../lib/evaluatorAdapter';
@@ -46,6 +47,8 @@ export function WandEditor({
 }: WandEditorProps) {
   const { t, i18n } = useTranslation();
   const [isAltPressed, setIsAltPressed] = React.useState(false);
+  const wandRef = React.useRef<HTMLDivElement>(null);
+  const spellsRef = React.useRef<HTMLDivElement>(null);
 
   const absoluteToOrdinal = React.useMemo(() => {
     const map: Record<number, number> = {};
@@ -89,11 +92,180 @@ export function WandEditor({
     );
   };
 
+  const getWand2Text = () => {
+    const sequence = Array.from({ length: data.deck_capacity }).map((_, i) => data.spells[(i + 1).toString()] || "");
+    return `{{Wand2
+| wandCard     = Yes
+| wandPic      = 
+| spellsCast   = ${data.actions_per_round}
+| shuffle      = ${data.shuffle_deck_when_empty ? 'Yes' : 'No'}
+| castDelay    = ${(data.fire_rate_wait / 60).toFixed(2)}
+| rechargeTime = ${(data.reload_time / 60).toFixed(2)}
+| manaMax      = ${data.mana_max.toFixed(2)}
+| manaCharge   = ${data.mana_charge_speed.toFixed(2)}
+| capacity     = ${data.deck_capacity}
+| spread       = ${data.spread_degrees}
+| speed        = ${data.speed_multiplier.toFixed(2)}
+| spells       = ${sequence.join(',')}
+| alwaysCasts  = ${data.always_cast.join(',')}
+}}`;
+  };
+
+  const embedMetadata = async (blob: Blob, text: string): Promise<Blob> => {
+    const buffer = await blob.arrayBuffer();
+    const view = new DataView(buffer);
+    
+    // Check PNG signature
+    if (view.getUint32(0) !== 0x89504E47 || view.getUint32(4) !== 0x0D0A1A0A) {
+      return blob;
+    }
+
+    const chunks: { type: string; data: Uint8Array }[] = [];
+    let pos = 8;
+    while (pos < buffer.byteLength) {
+      const length = view.getUint32(pos);
+      const type = String.fromCharCode(...new Uint8Array(buffer.slice(pos + 4, pos + 8)));
+      const data = new Uint8Array(buffer.slice(pos + 8, pos + 8 + length));
+      chunks.push({ type, data });
+      pos += 12 + length;
+    }
+
+    // Insert tEXt chunk before IDAT or at the end
+    const keyword = "Wand2Data";
+    const encoder = new TextEncoder();
+    const textData = encoder.encode(keyword + "\0" + text);
+    const newChunk = { type: 'tEXt', data: textData };
+    
+    // Find first IDAT
+    const idatIdx = chunks.findIndex(c => c.type === 'IDAT');
+    if (idatIdx !== -1) {
+      chunks.splice(idatIdx, 0, newChunk);
+    } else {
+      chunks.splice(chunks.length - 1, 0, newChunk);
+    }
+
+    // Rebuild PNG
+    let totalSize = 8;
+    chunks.forEach(c => totalSize += 12 + c.data.length);
+    const newBuffer = new ArrayBuffer(totalSize);
+    const newView = new DataView(newBuffer);
+    
+    // Signature
+    newView.setUint32(0, 0x89504E47);
+    newView.setUint32(4, 0x0D0A1A0A);
+    
+    let currentPos = 8;
+    const crcTable = new Int32Array(256);
+    for (let i = 0; i < 256; i++) {
+      let c = i;
+      for (let j = 0; j < 8; j++) {
+        c = (c & 1) ? (0xEDB88320 ^ (c >>> 1)) : (c >>> 1);
+      }
+      crcTable[i] = c;
+    }
+
+    const calculateCrc = (type: string, data: Uint8Array) => {
+      let crc = -1;
+      const typeBytes = encoder.encode(type);
+      for (let i = 0; i < 4; i++) {
+        crc = crcTable[(crc ^ typeBytes[i]) & 0xFF] ^ (crc >>> 8);
+      }
+      for (let i = 0; i < data.length; i++) {
+        crc = crcTable[(crc ^ data[i]) & 0xFF] ^ (crc >>> 8);
+      }
+      return crc ^ -1;
+    };
+
+    chunks.forEach(c => {
+      newView.setUint32(currentPos, c.data.length);
+      const typeBytes = encoder.encode(c.type);
+      new Uint8Array(newBuffer, currentPos + 4, 4).set(typeBytes);
+      new Uint8Array(newBuffer, currentPos + 8, c.data.length).set(c.data);
+      const crc = calculateCrc(c.type, c.data);
+      newView.setUint32(currentPos + 8 + c.data.length, crc);
+      currentPos += 12 + c.data.length;
+    });
+
+    return new Blob([newBuffer], { type: 'image/png' });
+  };
+
+  const handleExportImage = async (mode: 'only_spells' | 'full') => {
+    const ref = mode === 'only_spells' ? spellsRef : wandRef;
+    if (!ref.current) return;
+
+    // Target elements for temporary style changes
+    const scrollables = ref.current.querySelectorAll('.overflow-y-auto, .custom-scrollbar');
+    const attributesContainer = ref.current.querySelector('.attributes-container');
+    
+    const originalStyles = Array.from(scrollables).map(el => {
+      const hEl = el as HTMLElement;
+      const original = {
+        el: hEl,
+        maxHeight: hEl.style.maxHeight,
+        overflow: hEl.style.overflow,
+        height: hEl.style.height
+      };
+      hEl.style.maxHeight = 'none';
+      hEl.style.overflow = 'visible';
+      hEl.style.height = 'auto';
+      return original;
+    });
+
+    // Ensure attributes container is visible and stable
+    let originalAttrStyle = '';
+    if (attributesContainer) {
+      const hEl = attributesContainer as HTMLElement;
+      originalAttrStyle = hEl.style.display;
+      hEl.style.display = 'flex';
+    }
+
+    try {
+      const dataUrl = await toPng(ref.current, {
+        pixelRatio: 3,
+        backgroundColor: '#0c0c0e',
+        cacheBust: true,
+        style: {
+          borderRadius: '0',
+          margin: '0',
+        },
+        filter: (node: Node) => {
+          if (node instanceof HTMLElement && node.classList.contains('export-ignore')) return false;
+          return true;
+        }
+      });
+
+      let blob = await (await fetch(dataUrl)).blob();
+
+      if (settings.embedMetadataInImage) {
+        blob = await embedMetadata(blob, getWand2Text());
+      }
+
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement('a');
+      link.download = `wand_${new Date().getTime()}.png`;
+      link.href = url;
+      link.click();
+      URL.revokeObjectURL(url);
+    } catch (err) {
+      console.error('Failed to export image:', err);
+    } finally {
+      // Restore original styles
+      originalStyles.forEach(s => {
+        s.el.style.maxHeight = s.maxHeight;
+        s.el.style.overflow = s.overflow;
+        s.el.style.height = s.height;
+      });
+      if (attributesContainer) {
+        (attributesContainer as HTMLElement).style.display = originalAttrStyle;
+      }
+    }
+  };
+
   return (
-    <div className="p-6 bg-zinc-950/50 border-t border-white/5 space-y-8 select-none">
-      <div className="flex items-start justify-between gap-8">
+    <div ref={wandRef} className="px-6 py-6 bg-[#0c0c0e] border-t border-white/5 space-y-8 select-none">
+      <div className="flex items-start gap-8 attributes-container">
         <div 
-          className="flex flex-wrap items-center bg-zinc-900/50 border border-white/5 rounded-xl p-1 pr-6 shadow-2xl"
+          className="flex flex-wrap items-center bg-zinc-900/50 border border-white/5 rounded-xl p-1 pr-6 shadow-2xl min-w-[600px] wand-attributes-box"
           onMouseUp={() => handleSlotMouseUp(slot, -1000)}
         >
           {/* Group 1: Shuffle */}
@@ -128,7 +300,25 @@ export function WandEditor({
           </div>
         </div>
 
-        <div className="flex items-center gap-3 shrink-0 h-fit">
+        <div className="flex items-center gap-3 shrink-0 h-fit export-ignore">
+          <div className="flex items-center bg-white/[0.02] border border-white/5 rounded-lg overflow-hidden">
+            <button 
+              onClick={() => handleExportImage('only_spells')}
+              className="flex items-center gap-2 px-3 py-2 hover:bg-white/5 text-zinc-400 border-r border-white/5 text-[10px] font-black uppercase tracking-widest transition-all"
+              title={t('settings.export_only_spells')}
+            >
+              <ImageIcon size={14} className="opacity-70" />
+              <span className="hidden sm:inline">{t('settings.export_only_spells')}</span>
+            </button>
+            <button 
+              onClick={() => handleExportImage('full')}
+              className="flex items-center gap-2 px-3 py-2 hover:bg-white/5 text-zinc-400 text-[10px] font-black uppercase tracking-widest transition-all"
+              title={t('settings.export_wand_and_spells')}
+            >
+              <Camera size={14} className="opacity-70" />
+              <span className="hidden sm:inline">{t('settings.export_wand_and_spells')}</span>
+            </button>
+          </div>
           <button 
             onClick={() => requestEvaluation(data, true)}
             className="flex items-center gap-2 px-3 py-2 bg-indigo-500/10 hover:bg-indigo-500/20 text-indigo-400 border border-indigo-500/30 rounded-lg text-[10px] font-black uppercase tracking-widest transition-all"
@@ -143,7 +333,8 @@ export function WandEditor({
         </div>
       </div>
 
-      {Array.isArray(data.always_cast) && data.always_cast.length > 0 && (
+      <div ref={spellsRef} className="space-y-8">
+        {Array.isArray(data.always_cast) && data.always_cast.length > 0 && (
         <div className="space-y-3">
           <div className="flex items-center gap-3">
             <div className="h-px flex-1 bg-gradient-to-r from-amber-500/30 to-transparent" />
@@ -383,7 +574,7 @@ export function WandEditor({
           })}
         </div>
       </div>
-
     </div>
-  );
+  </div>
+);
 }

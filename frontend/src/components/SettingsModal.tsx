@@ -720,6 +720,25 @@ export function SettingsModal({
                     </button>
                   </div>
                 )}
+                {isMatch(t('settings.embed_metadata')) && (
+                  <div className="flex justify-between items-center bg-white/5 p-3 rounded-lg border border-white/5">
+                    <div className="flex items-center gap-3">
+                      <div className="p-2 bg-blue-500/10 rounded-lg text-blue-400">
+                        <Wand2 size={16} />
+                      </div>
+                      <div>
+                        <div className="text-xs font-bold text-zinc-200">{t('settings.embed_metadata')}</div>
+                        <div className="text-[10px] text-zinc-500">{t('settings.embed_metadata_desc')}</div>
+                      </div>
+                    </div>
+                    <button
+                      onClick={() => setSettings(s => ({ ...s, embedMetadataInImage: !s.embedMetadataInImage }))}
+                      className={`w-10 h-5 rounded-full relative transition-all ${settings.embedMetadataInImage ? 'bg-indigo-600' : 'bg-zinc-700'}`}
+                    >
+                      <div className={`absolute top-1 w-3 h-3 rounded-full bg-white transition-all ${settings.embedMetadataInImage ? 'left-6' : 'left-1'}`} />
+                    </button>
+                  </div>
+                )}
                 <div className="flex flex-col gap-2">
                   <label className="neo-button bg-indigo-500/10 text-indigo-400 border border-indigo-500/20 cursor-pointer text-xs py-3 justify-center">
                     {t('settings.import_json')} <input type="file" className="hidden" onChange={onImport} />

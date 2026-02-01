@@ -14,19 +14,17 @@ export function CompactStat({ icon, value, label }: { icon: React.ReactNode, val
 
 export function PropInput({ label, value, onChange, colorClass, secondaryValue }: { label: string, value: number | string, onChange: (v: number) => void, colorClass?: string, secondaryValue?: string }) {
   const [inputValue, setInputValue] = React.useState(value.toString());
+  const [isFocused, setIsFocused] = React.useState(false);
 
   React.useEffect(() => {
-    if (value.toString() !== inputValue) {
+    if (value.toString() !== inputValue && !isFocused) {
       setInputValue(value.toString());
     }
-  }, [value]);
+  }, [value, isFocused]);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     let val = e.target.value;
-    // Allow only numbers, minus sign and decimal point
     val = val.replace(/[^0-9.-]/g, '');
-    
-    // Ensure only one minus sign at the start
     if (val.indexOf('-') > 0) val = val.replace('-', '');
     const minusCount = (val.match(/-/g) || []).length;
     if (minusCount > 1) val = '-' + val.replace(/-/g, '');
@@ -46,14 +44,23 @@ export function PropInput({ label, value, onChange, colorClass, secondaryValue }
   return (
     <div className="flex flex-col group/prop">
       <label className="text-[10px] font-black text-zinc-500 mb-1 uppercase tracking-wider transition-colors group-hover/prop:text-zinc-400">{label}</label>
-      <div className="flex items-baseline gap-2">
+      <div className="flex items-baseline gap-2 relative">
         <input
           type="text"
           value={inputValue}
           onChange={handleChange}
-          onBlur={() => setInputValue(value.toString())}
-          className={`bg-transparent font-mono text-xl font-bold w-24 focus:outline-none ${colorClass || 'text-white'}`}
+          onFocus={() => setIsFocused(true)}
+          onBlur={() => {
+            setIsFocused(false);
+            setInputValue(value.toString());
+          }}
+          className={`bg-transparent font-mono text-xl font-bold w-24 focus:outline-none transition-opacity ${colorClass || 'text-white'} ${isFocused ? 'opacity-100' : 'opacity-0'}`}
         />
+        {!isFocused && (
+          <div className={`absolute inset-0 flex items-baseline gap-2 pointer-events-none font-mono text-xl font-bold ${colorClass || 'text-white'}`}>
+            {value}
+          </div>
+        )}
         {secondaryValue && (
           <span className="text-xs font-mono text-zinc-600 italic whitespace-nowrap">{secondaryValue}</span>
         )}

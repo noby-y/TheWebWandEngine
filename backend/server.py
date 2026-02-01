@@ -8,6 +8,31 @@ import io
 import subprocess
 import webbrowser
 import mimetypes
+import signal
+
+def kill_existing_instance():
+    """尝试杀死已经在运行的后端实例 (占用 17471 端口的进程)"""
+    if sys.platform != "win32":
+        return
+    try:
+        # 使用 netstat 查找占用端口的 PID
+        output = subprocess.check_output(['netstat', '-aon'], text=True)
+        my_pid = os.getpid()
+        for line in output.splitlines():
+            if ':17471' in line and 'LISTENING' in line:
+                parts = line.split()
+                if len(parts) >= 5:
+                    pid = parts[-1]
+                    try:
+                        pid_int = int(pid)
+                        if pid_int != my_pid:
+                            print(f"[System] 发现旧实例正在运行 (PID: {pid})，正在清理...")
+                            subprocess.run(['taskkill', '/F', '/PID', pid], capture_output=True)
+                            time.sleep(0.5) # 给点时间释放端口
+                    except ValueError:
+                        continue
+    except Exception as e:
+        print(f"[System] 清理旧实例时出错: {e}")
 
 # 强制注册 JS 为正确类型，防止 Windows 注册表错误导致浏览器拒绝执行脚本 (黑屏问题)
 mimetypes.add_type('application/javascript', '.js')
@@ -19,7 +44,7 @@ try:
     HAS_PYPINYIN = True
 except ImportError:
     HAS_PYPINYIN = False
-from threading import Timer
+from threading import Timer, Lock
 from flask import Flask, request, jsonify, send_file, send_from_directory
 from flask_cors import CORS
 
@@ -55,6 +80,10 @@ else:
 
 # 配置 Flask 静态资源目录 (用于打包 EXE 后能找到网页)
 app.static_folder = FRONTEND_DIST
+
+# 进程管理：防止多个 luajit 同时运行撑爆内存
+active_processes = {}
+process_lock = Lock()
 
 # 预加载数据
 _SPELL_CACHE = {}
@@ -575,13 +604,20 @@ def sync_game_spells():
             return jsonify({"success": False, "error": "Game returned empty response"}), 500
         
         data = json.loads(res)
-        spells = data.get("spells", [])
-        _MOD_APPENDS_CACHE = data.get("appends", {})
-        _ACTIVE_MODS_CACHE = data.get("active_mods", [])
+        # 兼容处理：Noita 有时直接返回法术列表，有时返回包含 spells/appends 的字典
+        if isinstance(data, list):
+            spells = data
+            _MOD_APPENDS_CACHE = {}
+            _ACTIVE_MODS_CACHE = []
+        else:
+            spells = data.get("spells", [])
+            _MOD_APPENDS_CACHE = data.get("appends", {})
+            _ACTIVE_MODS_CACHE = data.get("active_mods", [])
         
         static_db = load_spell_database() 
         mod_db = {}
         for s in spells:
+            if not isinstance(s, dict): continue
             spell_id = s.get("id")
             if not spell_id: continue
             
@@ -591,10 +627,13 @@ def sync_game_spells():
             aliases = ""
             alias_py = ""
             alias_init = ""
+            # 安全检查：确保从 static_db 中获取的是字典
             if spell_id in static_db:
-                aliases = static_db[spell_id].get("aliases", "")
-                alias_py = static_db[spell_id].get("alias_pinyin", "")
-                alias_init = static_db[spell_id].get("alias_initials", "")
+                entry = static_db[spell_id]
+                if isinstance(entry, dict):
+                    aliases = entry.get("aliases", "")
+                    alias_py = entry.get("alias_pinyin", "")
+                    alias_init = entry.get("alias_initials", "")
             
             mod_db[spell_id] = {
                 "icon": s.get("sprite", "").lstrip("/"),
@@ -745,6 +784,11 @@ def sync_wiki():
 def evaluate_wand():
     data = request.get_json()
     
+    # 获取标识符，用于管理该插槽的进程
+    tab_id = data.get("tab_id", "default")
+    slot_id = data.get("slot_id", "1")
+    proc_key = f"{tab_id}-{slot_id}"
+
     # 提取参数，转换为评估工具需要的格式
     spells_data = data.get("spells", [])
     spell_uses = data.get("spell_uses", {}) # { "1": 5, "3": 0 }
@@ -789,8 +833,10 @@ def evaluate_wand():
     ]
 
     # 是否折叠树节点
-    if not data.get("fold_nodes", False):
-        # wand_eval_tree 默认 fold=True，传入 -f 会将其切换为 False
+    # 注意：wand_eval_tree 命令行中，默认 fold=true，传入 -f 会强制将其设为 false。
+    # 所以当用户【不想要】折叠时，才添加 -f。
+    # 前端 fold_nodes 默认为 true（想要折叠），所以只有当它明确为 false 时，才加 -f。
+    if data.get("fold_nodes") == False:
         cmd.append("-f")
 
     # 环境模拟 (IF_HP, IF_ENEMY, IF_PROJECTILE)
@@ -843,19 +889,44 @@ def evaluate_wand():
         mock_mod_dir = os.path.join(WAND_EVAL_DIR, "mods", "twwe_mock")
         os.makedirs(mock_mod_dir, exist_ok=True)
         
+        should_write_init = False
         for i, (path, content) in enumerate(_MOD_APPENDS_CACHE.items()):
-            # 为每个追加内容创建一个虚拟文件
             file_name = f"gen_{i}.lua"
-            with open(os.path.join(mock_mod_dir, file_name), "w", encoding="utf-8", errors="replace") as f:
+            file_path = os.path.join(mock_mod_dir, file_name)
+            
+            # 优化：内容没变就不写磁盘，减少 I/O
+            try:
+                if os.path.exists(file_path):
+                    with open(file_path, "r", encoding="utf-8", errors="ignore") as f:
+                        if f.read() == content:
+                            continue
+            except: pass
+
+            with open(file_path, "w", encoding="utf-8", errors="replace") as f:
                 f.write(content)
             mock_lua.append(f'ModLuaFileAppend("data/scripts/gun/gun_actions.lua", "mods/twwe_mock/{file_name}")')
+            should_write_init = True
 
     if mock_lua:
         # 写入 init.lua
         mock_mod_dir = os.path.join(WAND_EVAL_DIR, "mods", "twwe_mock")
         os.makedirs(mock_mod_dir, exist_ok=True)
-        with open(os.path.join(mock_mod_dir, "init.lua"), "w", encoding="utf-8") as f:
-            f.write("\n".join(mock_lua) + "\n")
+        
+        init_path = os.path.join(mock_mod_dir, "init.lua")
+        init_content = "\n".join(mock_lua) + "\n"
+        
+        # 同样增加缓存检查
+        write_init = True
+        try:
+            if os.path.exists(init_path):
+                with open(init_path, "r", encoding="utf-8", errors="ignore") as f:
+                    if f.read() == init_content:
+                        write_init = False
+        except: pass
+
+        if write_init:
+            with open(init_path, "w", encoding="utf-8") as f:
+                f.write(init_content)
         
         # 核心改动：我们需要把所有 mod 传给模拟器，以便它能找到文件（VFS）
         # 但是我们会在模拟器内部控制只运行 twwe_mock 的代码
@@ -864,8 +935,9 @@ def evaluate_wand():
             cmd.append("twwe_mock")
             
         # 即使 twwe_mock 已经存在，也要补全其他 mod 以支持 VFS 搜索
+        # 优化：只添加真正的字符串 ID，过滤掉可能被污染的键名
         for m in active_mods:
-            if m not in cmd and m != "wand_sync":
+            if isinstance(m, str) and m not in cmd and m not in ["wand_sync", "appends", "spells", "active_mods"]:
                 cmd.append(m)
 
     # 乱序设置
@@ -894,39 +966,90 @@ def evaluate_wand():
     print(f"[Eval] Command: {' '.join(cmd)}")
 
     try:
-        # 执行命令
-        result = subprocess.run(
+        # 管理旧进程：如果该位置已有进程在运行，先杀掉它释放内存
+        with process_lock:
+            if proc_key in active_processes:
+                try:
+                    old_proc = active_processes[proc_key]
+                    if old_proc.poll() is None: # 仍在运行
+                        print(f"[Eval] Terminating stale process for {proc_key}")
+                        old_proc.terminate()
+                        # 不等待 wait，防止阻塞当前线程
+                except Exception as e:
+                    print(f"[Eval] Error terminating process: {e}")
+                del active_processes[proc_key]
+
+        # 启动新进程
+        proc = subprocess.Popen(
             cmd, 
             cwd=WAND_EVAL_DIR, 
-            capture_output=True, 
-            text=True, 
-            encoding="utf-8",
-            errors="replace" # 避免编码错误导致崩溃
+            stdout=subprocess.PIPE,
+            stderr=subprocess.PIPE,
+            shell=False
         )
         
-        if result.returncode != 0:
-            print(f"[Eval] Failed with return code {result.returncode}")
-            print(f"[Eval] Stderr: {result.stderr}")
+        with process_lock:
+            active_processes[proc_key] = proc
+
+        try:
+            # 等待结果，设置合理超时（针对超大规模递归）
+            stdout, stderr = proc.communicate(timeout=60)
+        except subprocess.TimeoutExpired:
+            proc.kill()
+            return jsonify({"success": False, "error": "Evaluation timeout"}), 504
+        finally:
+            with process_lock:
+                if proc_key in active_processes and active_processes[proc_key] == proc:
+                    del active_processes[proc_key]
+
+        if proc.returncode != 0:
+            # 如果是被 terminate 杀掉的，returncode 通常是负数 (-15)
+            if proc.returncode < 0:
+                return jsonify({"success": False, "error": "Cancelled"}), 200
+            
+            err_msg = stderr.decode("utf-8", "replace") if stderr else "Unknown error"
+            print(f"[Eval] Failed with return code {proc.returncode}")
+            print(f"[Eval] Lua Error: {err_msg}") # 打印具体的 Lua 报错
             return jsonify({
                 "success": False, 
                 "error": "Evaluation failed", 
-                "details": result.stderr
+                "details": err_msg
             }), 500
         
         # 解析返回的 JSON
         try:
-            eval_data = json.loads(result.stdout)
-            return jsonify({
-                "success": True, 
-                "data": eval_data
-            })
-        except json.JSONDecodeError as je:
+            # 性能优化：直接返回字节流，避免 Python 层的 JSON 解析与二次序列化
+            if stdout:
+                size_mb = len(stdout) / (1024 * 1024)
+                
+                # 安全护栏：如果数据量巨大（超过 15MB）且用户关闭了折叠，
+                # 浏览器必死无疑，此时应拒绝传输并提醒用户开启折叠。
+                if size_mb > 15 and not data.get("fold_nodes", True):
+                    return jsonify({
+                        "success": False,
+                        "error": "结果数据过大 ({:.1f}MB)，浏览器无法在‘未开启折叠’的情况下渲染。".format(size_mb),
+                        "details": "检测到数百万级法术递归，请在右侧设置中开启‘合并完全一致的节点’后再进行评估。"
+                    }), 400
+
+                if size_mb > 20:
+                    print(f"[Eval] Warning: Huge result detected ({size_mb:.1f} MB). Rendering in browser may be slow.")
+                
+                return app.response_class(
+                    response=b'{"success":true,"data":' + stdout + b'}',
+                    status=200,
+                    mimetype='application/json'
+                )
+            else:
+                return jsonify({"success": False, "error": "Empty output from evaluator"}), 500
+        except Exception as je:
             print(f"[Eval] JSON parse error: {je}")
-            print(f"[Eval] Raw output: {result.stdout}")
+            # stdout 已经是字节流，需要解码才能打印
+            raw_out = stdout.decode("utf-8", "replace") if stdout else "Empty"
+            print(f"[Eval] Raw output: {raw_out}")
             return jsonify({
                 "success": False, 
                 "error": "Failed to parse evaluator output", 
-                "raw": result.stdout
+                "raw": raw_out
             }), 500
 
     except Exception as e:
@@ -945,6 +1068,9 @@ def send_assets(path):
 if __name__ == "__main__":
     is_frozen = getattr(sys, 'frozen', False)
     
+    # 启动前清理旧进程，防止端口占用导致无法连接游戏或逻辑错误
+    kill_existing_instance()
+
     def open_browser():
         webbrowser.open_new("http://127.0.0.1:17471")
 

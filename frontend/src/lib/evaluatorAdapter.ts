@@ -8,11 +8,12 @@ let lastRequestId = 0;
  */
 export function getIconUrl(iconPath: string, isConnected: boolean): string {
   const isStaticMode = (import.meta as any).env?.VITE_STATIC_MODE === 'true';
-  // 如果是离线静态模式，或者后端没连接（且没开启 API），使用本地静态资源
+  
+  // 如果是静态模式（GitHub Pages），始终使用相对路径
   if (isStaticMode) {
     return `./static_data/icons/${iconPath}`;
   }
-  // 否则尝试调用后端 API
+  // 否则（EXE/Dev模式），走后端 API
   return `/api/icon/${iconPath}`;
 }
 
@@ -24,16 +25,17 @@ export async function evaluateWand(
   wand: WandData, 
   settings: any, 
   isConnected: boolean,
+  tabId: string = 'default',
+  slotId: string = '1',
   force: boolean = false
 ): Promise<{ data: EvalResponse, id: number } | null> {
   
-  // 模式 A: 只有在非静态模式时尝试使用 API
   const isStaticMode = (import.meta as any).env?.VITE_STATIC_MODE === 'true';
-  
+  const requestId = ++lastRequestId;
+
+  // --- 路径 A: 桌面/EXE/Dev 模式 ---
   if (!isStaticMode) {
-    // API mode doesn't really support 'force' cancellation in the same way,
-    // but we can still use IDs to ignore stale responses.
-    const requestId = ++lastRequestId;
+    console.log(`[Evaluator] Using Backend API (${requestId})`);
     try {
       const spells: string[] = [];
       for (let i = 1; i <= wand.deck_capacity; i++) {
@@ -44,7 +46,8 @@ export async function evaluateWand(
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          // ... (same as before)
+          tab_id: tabId,
+          slot_id: slotId,
           mana_max: wand.mana_max,
           mana_charge_speed: wand.mana_charge_speed,
           reload_time: wand.reload_time,
@@ -67,41 +70,47 @@ export async function evaluateWand(
         })
       });
       
-      if (res.ok) {
-        const data = await res.json();
-        if (data.success) return { data: data.data, id: requestId };
+      if (!res.ok) {
+        const errText = await res.text();
+        console.error(`Backend Error: ${errText}`);
+        return null;
       }
-    } catch (e) {}
-  }
 
-  // 模式 B: 使用 Web Worker + Lua WASM
-  if (force && worker) {
-    worker.terminate();
-    worker = null;
-  }
-
-  const requestId = ++lastRequestId;
-
-  return new Promise((resolve, reject) => {
-    if (!worker) {
-      worker = new Worker(new URL('./evaluator.worker.ts', import.meta.url), {
-        type: 'module'
-      });
+      const data = await res.json();
+      if (data.success) return { data: data.data, id: requestId };
+      return null;
+    } catch (e) {
+      console.error("API Fetch failed:", e);
+      return null;
     }
+  }
 
-    const handler = (e: MessageEvent) => {
-      if (e.data.id !== requestId) return; // Ignore stale results
-
-      if (e.data.type === 'RESULT') {
-        worker?.removeEventListener('message', handler);
-        resolve({ data: e.data.data, id: requestId });
-      } else if (e.data.type === 'ERROR') {
-        worker?.removeEventListener('message', handler);
-        reject(e.data.error);
+  // --- 路径 B: GitHub Pages 模式 (纯 WASM) ---
+  console.log(`[Evaluator] Using WASM Engine (${requestId})`);
+  // 只有在 Static 模式下才初始化 Worker
+  return new Promise((resolve, reject) => {
+    try {
+      if (!worker) {
+        worker = new Worker(new URL('./evaluator.worker.ts', import.meta.url), {
+          type: 'module'
+        });
       }
-    };
 
-    worker.addEventListener('message', handler);
-    worker.postMessage({ type: 'EVALUATE', data: wand, options: settings, id: requestId });
+      const handler = (e: MessageEvent) => {
+        if (e.data.id !== requestId) return;
+        if (e.data.type === 'RESULT') {
+          worker?.removeEventListener('message', handler);
+          resolve({ data: e.data.data, id: requestId });
+        } else if (e.data.type === 'ERROR') {
+          worker?.removeEventListener('message', handler);
+          reject(e.data.error);
+        }
+      };
+
+      worker.addEventListener('message', handler);
+      worker.postMessage({ type: 'EVALUATE', data: wand, options: settings, id: requestId });
+    } catch (err) {
+      reject(err);
+    }
   });
 }
