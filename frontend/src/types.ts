@@ -86,6 +86,11 @@ export interface AppSettings {
   deleteEmptySlots: boolean;
   exportHistory: boolean;
   embedMetadataInImage: boolean;
+  pureSpellsExport: boolean;
+  showDragModeToggle: boolean;
+  editorDragMode: 'cursor' | 'hand';
+  useNoitaSwapLogic: boolean;
+  dragModeTogglePos?: { x: number, y: number };
   spellTypes: SpellTypeConfig[];
   spellGroups: SpellGroupConfig[];
   warehouseFolderHeight: number;

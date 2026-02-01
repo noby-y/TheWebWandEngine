@@ -12,6 +12,7 @@ interface WandEditorProps {
   spellDb: Record<string, SpellInfo>;
   selection: { wandSlot: string; indices: number[]; startIdx: number } | null;
   hoveredSlot: { wandSlot: string; idx: number; isRightHalf: boolean } | null;
+  dragSource: { wandSlot: string; idx: number; sid: string } | null;
   updateWand: (slot: string, partial: Partial<WandData>, actionName?: string, icons?: string[]) => void;
   handleSlotMouseDown: (slot: string, idx: number, isRightClick?: boolean) => void;
   handleSlotMouseUp: (slot: string, idx: number) => void;
@@ -32,6 +33,7 @@ export function WandEditor({
   spellDb,
   selection,
   hoveredSlot,
+  dragSource,
   updateWand,
   handleSlotMouseDown,
   handleSlotMouseUp,
@@ -193,10 +195,68 @@ export function WandEditor({
     const ref = mode === 'only_spells' ? spellsRef : wandRef;
     if (!ref.current) return;
 
-    // Target elements for temporary style changes
-    const scrollables = ref.current.querySelectorAll('.overflow-y-auto, .custom-scrollbar');
-    const attributesContainer = ref.current.querySelector('.attributes-container');
+    const isPure = mode === 'only_spells' && settings.pureSpellsExport;
+    const container = ref.current;
+
+    // 保存原始容器样式，用于导出后恢复
+    const originalContainerStyles = {
+      width: container.style.width,
+      display: container.style.display,
+      maxWidth: container.style.maxWidth,
+      minWidth: container.style.minWidth,
+      backgroundColor: container.style.backgroundColor,
+      boxShadow: container.style.boxShadow
+    };
+
+    // 查找所有的 grid、flex 容器及其直接父级
+    const grids = Array.from(container.querySelectorAll('.grid')) as HTMLElement[];
+    const flexWrappers = Array.from(container.querySelectorAll('.flex-wrap')) as HTMLElement[];
+    const scrollables = container.querySelectorAll('.overflow-y-auto, .custom-scrollbar');
     
+    const originalGridStyles = grids.map(g => ({
+      el: g,
+      gridTemplateColumns: g.style.gridTemplateColumns,
+      computedCols: getComputedStyle(g).gridTemplateColumns.split(' ').filter(s => s !== '').length,
+      width: g.style.width,
+      parentWidth: (g.parentElement as HTMLElement)?.style.width
+    }));
+    
+    const originalFlexStyles = flexWrappers.map(f => ({
+      el: f,
+      width: f.style.width
+    }));
+
+    const originalScrollStyles = Array.from(scrollables).map(s => ({
+      el: s as HTMLElement,
+      width: (s as HTMLElement).style.width
+    }));
+
+    // 设置容器为紧凑布局并去除背景（如果是 Pure 模式）
+    container.style.width = 'fit-content';
+    container.style.display = 'inline-block';
+    container.style.maxWidth = 'none';
+    container.style.minWidth = '0';
+    if (isPure) {
+      container.style.backgroundColor = 'transparent';
+      container.style.boxShadow = 'none';
+    }
+
+    // 目标元素的临时样式更改
+    const attributesContainer = container.querySelector('.attributes-container');
+    
+    // 仅法术模式：隐藏前面的空格子和背景
+    const allSlots = Array.from(container.querySelectorAll('.group\\/cell, .group\\/ac'));
+    let firstNonEmptyIdx = -1;
+    
+    if (isPure) {
+      for (let i = 0; i < allSlots.length; i++) {
+        if (allSlots[i].querySelector('img')) {
+          firstNonEmptyIdx = i;
+          break;
+        }
+      }
+    }
+
     const originalStyles = Array.from(scrollables).map(el => {
       const hEl = el as HTMLElement;
       const original = {
@@ -208,8 +268,85 @@ export function WandEditor({
       hEl.style.maxHeight = 'none';
       hEl.style.overflow = 'visible';
       hEl.style.height = 'auto';
+      hEl.style.width = 'fit-content'; // 强制滚动容器收缩
       return original;
     });
+
+    // Save and apply styles for pure mode
+    const slotModifications: { el: HTMLElement, display: string, bg: string, border: string, shadow: string }[] = [];
+    if (isPure) {
+      allSlots.forEach((slot, i) => {
+        const el = slot as HTMLElement;
+        const inner = el.querySelector('div') as HTMLElement;
+        if (!inner) return;
+
+        // 获取该格子在 Grid 中的实际容器
+        const isAC = el.classList.contains('group/ac');
+        const gridItem = isAC ? el : el.parentElement;
+
+        const mod = {
+          el: gridItem as HTMLElement,
+          display: (gridItem as HTMLElement).style.display,
+          bg: inner.style.backgroundColor,
+          border: inner.style.borderColor,
+          shadow: inner.style.boxShadow
+        };
+        
+        // 隐藏不需要的格子
+        if (i < firstNonEmptyIdx || !el.querySelector('img')) {
+          if (gridItem) (gridItem as HTMLElement).style.display = 'none';
+        } else {
+          // 使背景和边框透明
+          inner.style.backgroundColor = 'transparent';
+          inner.style.borderColor = 'transparent';
+          inner.style.boxShadow = 'none';
+          
+          if (el.classList.contains('group/ac')) {
+            const wrapper = el.querySelector('div') as HTMLElement;
+            if (wrapper) {
+              wrapper.style.backgroundColor = 'transparent';
+              wrapper.style.borderColor = 'transparent';
+              wrapper.style.boxShadow = 'none';
+            }
+          }
+        }
+        slotModifications.push(mod);
+      });
+
+      // Hide the "Always Cast Slots" header if it's there
+      const acHeader = ref.current.querySelector('.text-amber-500')?.parentElement?.parentElement as HTMLElement;
+      if (acHeader) {
+        acHeader.style.display = 'none';
+      }
+    }
+
+    // 在隐藏完格子后，调整栅格列数以消除右侧空白
+    const gap = settings.editorSpellGap || 0;
+    const cellWidth = 56 + gap;
+    grids.forEach((g, idx) => {
+      const original = originalGridStyles[idx];
+      // 只统计当前可见（未被隐藏）的格子
+      const visibleChildren = Array.from(g.children).filter(c => {
+        return (c as HTMLElement).style.display !== 'none' && !c.classList.contains('export-ignore');
+      });
+      
+      if (visibleChildren.length > 0) {
+        // 如果可见格子数少于当前列数，则缩小列数；否则保持当前列数以维持换行
+        const actualCols = Math.min(visibleChildren.length, original.computedCols || 1);
+        g.style.gridTemplateColumns = `repeat(${actualCols}, ${cellWidth}px)`;
+        g.style.width = 'fit-content';
+        if (g.parentElement) g.parentElement.style.width = 'fit-content';
+      }
+    });
+    
+    flexWrappers.forEach(f => {
+      f.style.width = 'fit-content';
+    });
+
+    // 强制同步渲染并获取精确尺寸
+    const rect = container.getBoundingClientRect();
+    const finalWidth = Math.ceil(rect.width);
+    const finalHeight = Math.ceil(rect.height);
 
     // Ensure attributes container is visible and stable
     let originalAttrStyle = '';
@@ -220,16 +357,30 @@ export function WandEditor({
     }
 
     try {
-      const dataUrl = await toPng(ref.current, {
+      const dataUrl = await toPng(container, {
         pixelRatio: 3,
-        backgroundColor: '#0c0c0e',
+        width: finalWidth,
+        height: finalHeight,
+        backgroundColor: isPure ? 'transparent' : '#0c0c0e',
         cacheBust: true,
         style: {
           borderRadius: '0',
           margin: '0',
+          width: `${finalWidth}px`,
+          height: `${finalHeight}px`,
         },
         filter: (node: Node) => {
-          if (node instanceof HTMLElement && node.classList.contains('export-ignore')) return false;
+          if (node instanceof HTMLElement) {
+            if (node.classList.contains('export-ignore')) return false;
+            // Hide delete buttons, + placeholders, and slot indices in pure mode
+            if (isPure) {
+              if (node.classList.contains('lucide-x') || 
+                  node.innerText === '+' || 
+                  (node.classList.contains('absolute') && !node.querySelector('img'))) {
+                return false;
+              }
+            }
+          }
           return true;
         }
       });
@@ -249,15 +400,53 @@ export function WandEditor({
     } catch (err) {
       console.error('Failed to export image:', err);
     } finally {
-      // Restore original styles
+      // 恢复原始样式
       originalStyles.forEach(s => {
         s.el.style.maxHeight = s.maxHeight;
         s.el.style.overflow = s.overflow;
         s.el.style.height = s.height;
+        s.el.style.width = ''; 
       });
+
+      if (container) {
+        container.style.width = originalContainerStyles.width;
+        container.style.display = originalContainerStyles.display;
+        container.style.maxWidth = originalContainerStyles.maxWidth;
+        container.style.minWidth = originalContainerStyles.minWidth;
+        container.style.backgroundColor = originalContainerStyles.backgroundColor;
+        container.style.boxShadow = originalContainerStyles.boxShadow;
+      }
+
+      originalGridStyles.forEach(s => {
+        s.el.style.gridTemplateColumns = s.gridTemplateColumns;
+        s.el.style.width = s.width;
+        if (s.el.parentElement) s.el.parentElement.style.width = s.parentWidth || '';
+      });
+      
+      originalFlexStyles.forEach(s => {
+        s.el.style.width = s.width;
+      });
+
+      originalScrollStyles.forEach(s => {
+        s.el.style.width = s.width;
+      });
+
       if (attributesContainer) {
         (attributesContainer as HTMLElement).style.display = originalAttrStyle;
       }
+      
+      // 恢复 Pure 模式修改
+      slotModifications.forEach(m => {
+        m.el.style.display = m.display;
+        const inner = m.el.classList.contains('group/ac') ? m.el.querySelector('div') : m.el.querySelector('.group\\/cell');
+        if (inner instanceof HTMLElement) {
+          inner.style.backgroundColor = m.bg;
+          inner.style.borderColor = m.border;
+          inner.style.boxShadow = m.shadow;
+        }
+      });
+      const acHeader = ref.current.querySelector('.text-amber-500')?.parentElement?.parentElement as HTMLElement;
+      if (acHeader) acHeader.style.display = '';
     }
   };
 
@@ -486,15 +675,20 @@ export function WandEditor({
                   }}
                   className={`
                       w-full h-full rounded-lg border flex items-center justify-center relative group/cell transition-all active:scale-95
-                      ${isLocked ? 'bg-black/40 border-transparent opacity-10' : 'bg-zinc-800/80 border-white/5 hover:border-indigo-500/50 cursor-pointer shadow-inner hover:bg-zinc-700/80'}
+                      ${isLocked ? 'bg-black/40 border-transparent opacity-10' : `bg-zinc-800/80 border-white/5 shadow-inner hover:bg-zinc-700/80 ${settings.editorDragMode === 'hand' ? 'cursor-grab active:cursor-grabbing' : 'cursor-pointer'}`}
                       ${isSelected ? 'ring-2 ring-indigo-500 ring-inset bg-indigo-500/20 border-indigo-400/50 z-10' : ''}
+                      ${isHovered && dragSource && settings.useNoitaSwapLogic ? 'border-indigo-500 bg-indigo-500/30 scale-105 z-20' : 'hover:border-indigo-500/50'}
                     `}
                 >
-                  {isHovered && (
-                    <div 
-                      className="absolute top-0 bottom-0 w-1 bg-indigo-400 z-50 animate-pulse rounded-full" 
-                      style={{ [hoveredSlot.isRightHalf ? 'right' : 'left']: `-${gap / 2 + 2}px` }}
-                    />
+                  {isHovered && dragSource && (
+                    settings.useNoitaSwapLogic ? (
+                      <div className="absolute inset-0 border-2 border-indigo-400 rounded-lg animate-pulse pointer-events-none" />
+                    ) : (
+                      <div 
+                        className="absolute top-0 bottom-0 w-1 bg-indigo-400 z-50 animate-pulse rounded-full" 
+                        style={{ [hoveredSlot.isRightHalf ? 'right' : 'left']: `-${gap / 2 + 2}px` }}
+                      />
+                    )
                   )}
                   {spell ? (
                     <div className="relative w-full h-full flex items-center justify-center pointer-events-none">

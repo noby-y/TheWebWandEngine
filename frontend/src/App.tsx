@@ -48,6 +48,7 @@ import { SpellPicker } from './components/SpellPicker';
 import { CompactStat } from './components/Common';
 import WandEvaluator from './components/WandEvaluator';
 import { WandWarehouse } from './components/WandWarehouse';
+import { FloatingDragModeToggle } from './components/FloatingDragModeToggle';
 
 const readMetadataFromPng = async (file: File): Promise<string | null> => {
   return new Promise((resolve) => {
@@ -147,8 +148,8 @@ function App() {
   const [settings, setSettings] = useState<AppSettings>(() => {
     const saved = localStorage.getItem('twwe_settings') || localStorage.getItem('wand2h_settings');
     const defaults: AppSettings = {
-      commonLimit: 10,
-      categoryLimit: 10,
+      commonLimit: 20,
+      categoryLimit: 20,
       allowCompactEdit: false,
       pickerRowHeight: 32,
       themeColors: [
@@ -179,6 +180,10 @@ function App() {
       deleteEmptySlots: true,
       exportHistory: true,
       embedMetadataInImage: true,
+      pureSpellsExport: false,
+      showDragModeToggle: true,
+      editorDragMode: 'cursor',
+      useNoitaSwapLogic: false,
       spellTypes: DEFAULT_SPELL_TYPES,
       spellGroups: DEFAULT_SPELL_GROUPS,
       warehouseFolderHeight: 200
@@ -646,14 +651,16 @@ function App() {
 
   // --- Selection & Clipboard Logic ---
   const handleSlotMouseDown = (wandSlot: string, idx: number, isRightClick: boolean = false) => {
-    if (isRightClick) {
+    const isHandMode = settings.editorDragMode === 'hand';
+    if (isRightClick || (isHandMode && !isRightClick)) {
       const wand = activeTab.wands[wandSlot];
       const sid = idx < 0 ? wand?.always_cast[(-idx) - 1] : wand?.spells[idx.toString()];
       if (sid) {
         setDragSource({ wandSlot, idx, sid });
       }
-      return;
+      if (isHandMode && !isRightClick) return;
     }
+    if (isHandMode) return;
     if (idx < 0) return; // Don't support multi-selection for always cast yet
     setIsSelecting(true);
     setSelection({ wandSlot, indices: [idx], startIdx: idx });
@@ -691,7 +698,7 @@ function App() {
         const targetWand = sourceWandSlot === targetWandSlot ? sourceWand : { ...nextWands[targetWandSlot] };
         
         if (targetIdx === -1000 || targetIdx < 0) {
-          // Drop into Always Cast
+          // Always Cast logic - remains insertion based
           const newAC = [...(targetWand.always_cast || [])];
           if (targetIdx === -1000) {
             newAC.push(sid);
@@ -703,44 +710,73 @@ function App() {
             newAC.splice(acIdx + (isRightHalf ? 1 : 0), 0, sid);
           }
           targetWand.always_cast = newAC;
+        } else if (settings.useNoitaSwapLogic) {
+          // SWAP logic (Noita style)
+          const targetSid = targetWand.spells[targetIdx.toString()];
+          const targetUses = targetWand.spell_uses?.[targetIdx.toString()];
+
+          const nextTargetSpells = { ...targetWand.spells };
+          const nextTargetUses = { ...(targetWand.spell_uses || {}) };
+          
+          nextTargetSpells[targetIdx.toString()] = sid;
+          if (uses !== undefined) nextTargetUses[targetIdx.toString()] = uses;
+          else delete nextTargetUses[targetIdx.toString()];
+
+          targetWand.spells = nextTargetSpells;
+          targetWand.spell_uses = nextTargetUses;
+
+          if (sourceIdx >= 0) {
+            const sourceWandToUpdate = sourceWandSlot === targetWandSlot ? targetWand : sourceWand;
+            const nextSourceSpells = { ...sourceWandToUpdate.spells };
+            const nextSourceUses = { ...(sourceWandToUpdate.spell_uses || {}) };
+
+            if (targetSid) {
+              nextSourceSpells[sourceIdx.toString()] = targetSid;
+              if (targetUses !== undefined) nextSourceUses[sourceIdx.toString()] = targetUses;
+              else delete nextSourceUses[sourceIdx.toString()];
+            } else {
+              delete nextSourceSpells[sourceIdx.toString()];
+              delete nextSourceUses[sourceIdx.toString()];
+            }
+            sourceWandToUpdate.spells = nextSourceSpells;
+            sourceWandToUpdate.spell_uses = nextSourceUses;
+          } else if (targetSid) {
+            targetWand.always_cast = [...targetWand.always_cast, targetSid];
+          }
+
+          if (targetIdx > targetWand.deck_capacity) {
+            targetWand.deck_capacity = targetIdx;
+          }
         } else {
-          // Drop into normal deck
-          // Calculate insertion index like Paste
+          // INSERTION logic (Fixed)
           const isRightHalf = hoveredSlotRef.current?.wandSlot === targetWandSlot && 
                              hoveredSlotRef.current?.idx === targetIdx && 
                              hoveredSlotRef.current?.isRightHalf;
           const insertIdx = targetIdx + (isRightHalf ? 1 : 0);
 
-          // Get all spells as a sequence
-          const sequence: { sid: string, uses?: number }[] = [];
-          const maxIdx = Math.max(targetWand.deck_capacity, ...Object.keys(targetWand.spells).map(Number));
-          
+          // Build a map of all slots (including empty)
+          const maxIdx = Math.max(targetWand.deck_capacity, ...Object.keys(targetWand.spells).map(Number), sourceWandSlot === targetWandSlot ? sourceIdx : 0);
+          const slots: { sid: string, uses?: number }[] = [];
           for (let i = 1; i <= maxIdx; i++) {
             if (sourceWandSlot === targetWandSlot && i === sourceIdx) continue;
-            const s = targetWand.spells[i.toString()];
-            sequence.push({ sid: s || "", uses: targetWand.spell_uses?.[i.toString()] });
+            slots.push({
+              sid: targetWand.spells[i.toString()] || "",
+              uses: targetWand.spell_uses?.[i.toString()]
+            });
           }
 
-          let finalInsertIdx = insertIdx;
+          let adjustedInsertIdx = insertIdx;
           if (sourceWandSlot === targetWandSlot && sourceIdx >= 0 && sourceIdx < insertIdx) {
-            finalInsertIdx--; 
+            adjustedInsertIdx--;
           }
 
-          const seqIdx = finalInsertIdx - 1;
-          if (sequence[seqIdx] && sequence[seqIdx].sid === "") {
-            sequence.splice(seqIdx, 1);
-          } else if (sequence[seqIdx - 1] && sequence[seqIdx - 1].sid === "") {
-            sequence.splice(seqIdx - 1, 1);
-            finalInsertIdx--;
-          }
-          
-          const head = sequence.slice(0, Math.max(0, finalInsertIdx - 1));
-          const tail = sequence.slice(Math.max(0, finalInsertIdx - 1));
-          const combined = [...head, { sid, uses }, ...tail];
+          // Splice into the list
+          slots.splice(Math.max(0, adjustedInsertIdx - 1), 0, { sid, uses });
 
+          // Rebuild spells objects
           const finalSpells: Record<string, string> = {};
           const finalUses: Record<string, number> = {};
-          combined.forEach((item, i) => {
+          slots.forEach((item, i) => {
             if (item.sid) {
               finalSpells[(i + 1).toString()] = item.sid;
               if (item.uses !== undefined) finalUses[(i + 1).toString()] = item.uses;
@@ -750,9 +786,9 @@ function App() {
           targetWand.spells = finalSpells;
           targetWand.spell_uses = finalUses;
 
-          const lastIdx = combined.reduce((acc, val, idx) => val.sid !== "" ? idx + 1 : acc, 0);
-          if (lastIdx > targetWand.deck_capacity) {
-            targetWand.deck_capacity = lastIdx;
+          const lastSpellIdx = slots.reduce((acc, val, idx) => val.sid !== "" ? idx + 1 : acc, 0);
+          if (lastSpellIdx > targetWand.deck_capacity) {
+            targetWand.deck_capacity = lastSpellIdx;
           }
         }
 
@@ -1984,6 +2020,7 @@ function App() {
               spellDb={spellDb}
               selection={selection}
               hoveredSlot={hoveredSlot}
+              dragSource={dragSource}
               clipboard={clipboard}
               toggleExpand={toggleExpand}
               deleteWand={deleteWand}
@@ -2195,6 +2232,8 @@ function App() {
             setNotification({ msg: `已导入法杖: ${w.name}`, type: 'success' });
           }}
         />
+
+        <FloatingDragModeToggle settings={settings} setSettings={setSettings} />
       </main>
 
       <Footer

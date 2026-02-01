@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { 
   Settings, X, Zap, Info, Download, Upload, 
   Search, Wand2, Activity, Layers, Database, Star,
-  HelpCircle
+  HelpCircle, Image as ImageIcon, Hand, RefreshCw
 } from 'lucide-react';
 import { Plus, Trash2, Edit2, GripVertical } from 'lucide-react';
 import { AppSettings, WandData, SpellTypeConfig, SpellGroupConfig } from '../types';
@@ -215,6 +215,12 @@ export function SettingsModal({
                 {isMatch(t('settings.language')) && (
                   <LanguageSwitcher />
                 )}
+              </div>
+            )}
+
+            {/* APPEARANCE */}
+            {(searchQuery || activeCategory === 'appearance') && (
+              <div className="space-y-6">
                 {isMatch(t('settings.common_limit')) && (
                   <div className="space-y-2">
                     <label className="text-[10px] font-black text-zinc-400 uppercase tracking-widest">{t('settings.common_limit')}</label>
@@ -233,12 +239,6 @@ export function SettingsModal({
                     </div>
                   </div>
                 )}
-              </div>
-            )}
-
-            {/* APPEARANCE */}
-            {(searchQuery || activeCategory === 'appearance') && (
-              <div className="space-y-6">
                 {isMatch(t('settings.wrap_limit')) && (
                   <div className="space-y-2">
                     <label className="text-[10px] font-black text-zinc-400 uppercase tracking-widest">{t('settings.wrap_limit')} ({settings.wrapLimit})</label>
@@ -286,6 +286,44 @@ export function SettingsModal({
                       className={`w-10 h-5 rounded-full relative transition-colors ${settings.hideLabels ? 'bg-indigo-600' : 'bg-zinc-700'}`}
                     >
                       <div className={`absolute top-1 w-3 h-3 rounded-full bg-white transition-all ${settings.hideLabels ? 'left-6' : 'left-1'}`} />
+                    </button>
+                  </div>
+                )}
+                {isMatch(t('settings.show_drag_mode_toggle')) && (
+                  <div className="flex justify-between items-center bg-white/5 p-3 rounded-lg border border-white/5">
+                    <div className="flex items-center gap-3">
+                      <div className="p-2 bg-indigo-500/10 rounded-lg text-indigo-400">
+                        <Hand size={16} />
+                      </div>
+                      <div>
+                        <div className="text-xs font-bold text-zinc-200">{t('settings.show_drag_mode_toggle')}</div>
+                        <div className="text-[10px] text-zinc-500">{t('settings.show_drag_mode_toggle_desc')}</div>
+                      </div>
+                    </div>
+                    <button
+                      onClick={() => setSettings(s => ({ ...s, showDragModeToggle: !s.showDragModeToggle }))}
+                      className={`w-10 h-5 rounded-full relative transition-colors ${settings.showDragModeToggle ? 'bg-indigo-600' : 'bg-zinc-700'}`}
+                    >
+                      <div className={`absolute top-1 w-3 h-3 rounded-full bg-white transition-all ${settings.showDragModeToggle ? 'left-6' : 'left-1'}`} />
+                    </button>
+                  </div>
+                )}
+                {isMatch(t('settings.use_noita_swap_logic')) && (
+                  <div className="flex justify-between items-center bg-white/5 p-3 rounded-lg border border-white/5">
+                    <div className="flex items-center gap-3">
+                      <div className="p-2 bg-amber-500/10 rounded-lg text-amber-400">
+                        <RefreshCw size={16} />
+                      </div>
+                      <div>
+                        <div className="text-xs font-bold text-zinc-200">{t('settings.use_noita_swap_logic')}</div>
+                        <div className="text-[10px] text-zinc-500">{t('settings.use_noita_swap_logic_desc')}</div>
+                      </div>
+                    </div>
+                    <button
+                      onClick={() => setSettings(s => ({ ...s, useNoitaSwapLogic: !s.useNoitaSwapLogic }))}
+                      className={`w-10 h-5 rounded-full relative transition-colors ${settings.useNoitaSwapLogic ? 'bg-indigo-600' : 'bg-zinc-700'}`}
+                    >
+                      <div className={`absolute top-1 w-3 h-3 rounded-full bg-white transition-all ${settings.useNoitaSwapLogic ? 'left-6' : 'left-1'}`} />
                     </button>
                   </div>
                 )}
@@ -736,6 +774,25 @@ export function SettingsModal({
                       className={`w-10 h-5 rounded-full relative transition-all ${settings.embedMetadataInImage ? 'bg-indigo-600' : 'bg-zinc-700'}`}
                     >
                       <div className={`absolute top-1 w-3 h-3 rounded-full bg-white transition-all ${settings.embedMetadataInImage ? 'left-6' : 'left-1'}`} />
+                    </button>
+                  </div>
+                )}
+                {isMatch(t('settings.pure_spells_export')) && (
+                  <div className="flex justify-between items-center bg-white/5 p-3 rounded-lg border border-white/5">
+                    <div className="flex items-center gap-3">
+                      <div className="p-2 bg-emerald-500/10 rounded-lg text-emerald-400">
+                        <ImageIcon size={16} />
+                      </div>
+                      <div>
+                        <div className="text-xs font-bold text-zinc-200">{t('settings.pure_spells_export')}</div>
+                        <div className="text-[10px] text-zinc-500">{t('settings.pure_spells_export_desc')}</div>
+                      </div>
+                    </div>
+                    <button
+                      onClick={() => setSettings(s => ({ ...s, pureSpellsExport: !s.pureSpellsExport }))}
+                      className={`w-10 h-5 rounded-full relative transition-all ${settings.pureSpellsExport ? 'bg-indigo-600' : 'bg-zinc-700'}`}
+                    >
+                      <div className={`absolute top-1 w-3 h-3 rounded-full bg-white transition-all ${settings.pureSpellsExport ? 'left-6' : 'left-1'}`} />
                     </button>
                   </div>
                 )}
