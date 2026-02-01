@@ -118,7 +118,7 @@
     "import_json": "Import JSON",
     "export_backup": "Export Backup",
     "embed_metadata": "Embed Metadata in Image",
-    "embed_metadata_desc": "When exporting an image, embed the Wand2 text data into the PNG. Others can drag the image into Wand2H to restore the wand.",
+    "embed_metadata_desc": "When exporting an image, embed the Wand2 text data into the PNG. Others can drag the image into TWWE to restore the wand.",
     "export_only_spells": "Only Spells",
     "export_wand_and_spells": "With Stats",
     "spell_type_colors": "Spell Type Colors",

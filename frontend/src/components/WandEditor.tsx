@@ -1,5 +1,5 @@
 import React from 'react';
-import { Monitor, X, RefreshCw, Image as ImageIcon, Camera } from 'lucide-react';
+import { X, RefreshCw, Image as ImageIcon, Camera } from 'lucide-react';
 import { toPng } from 'html-to-image';
 import { WandData, SpellInfo, AppSettings } from '../types';
 import { PropInput } from './Common';
@@ -327,9 +327,6 @@ export function WandEditor({
             <RefreshCw size={12} className="opacity-70" />
             {t('evaluator.force_analyze')}
           </button>
-          <div className="text-[10px] font-black text-zinc-600 bg-white/[0.02] border border-white/5 px-3 py-2 rounded-lg tracking-[0.2em] flex items-center gap-2">
-            <Monitor size={14} className="opacity-50" /> EDITOR VIEW
-          </div>
         </div>
       </div>
 
