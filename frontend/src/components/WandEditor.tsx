@@ -464,28 +464,28 @@ export function WandEditor({
               className={`flex items-center gap-2 px-3 py-1.5 rounded border transition-all ${data.shuffle_deck_when_empty ? 'bg-red-500/10 border-red-500/30 text-red-400' : 'bg-emerald-500/10 border-emerald-500/30 text-emerald-400'}`}
             >
               <div className={`w-1.5 h-1.5 rounded-full animate-pulse ${data.shuffle_deck_when_empty ? 'bg-red-500' : 'bg-emerald-500'}`} />
-              <span className="text-[10px] font-black uppercase tracking-widest">{data.shuffle_deck_when_empty ? 'Shuffle' : 'No Shuffle'}</span>
+              <span className="text-[10px] font-black uppercase tracking-widest">{data.shuffle_deck_when_empty ? t('editor.shuffle') : t('editor.no_shuffle')}</span>
             </button>
           </div>
 
           {/* Group 2: Mana */}
           <div className="px-8 py-2 border-r border-white/5 flex gap-10">
-            <PropInput label="Mana Max" value={data.mana_max} colorClass="text-cyan-400" onChange={v => updateWand(slot, { mana_max: v })} />
-            <PropInput label="Recharge" value={data.mana_charge_speed} colorClass="text-cyan-400" onChange={v => updateWand(slot, { mana_charge_speed: v })} />
+            <PropInput label={t('editor.mana_max')} value={data.mana_max} colorClass="text-cyan-400" onChange={v => updateWand(slot, { mana_max: v })} />
+            <PropInput label={t('editor.recharge')} value={data.mana_charge_speed} colorClass="text-cyan-400" onChange={v => updateWand(slot, { mana_charge_speed: v })} />
           </div>
 
           {/* Group 3: Timing */}
           <div className="px-8 py-2 border-r border-white/5 flex gap-10">
-            {renderTimeInput("Cast Delay", data.fire_rate_wait, "fire_rate_wait")}
-            {renderTimeInput("Rechg. Time", data.reload_time, "reload_time")}
+            {renderTimeInput(t('editor.cast_delay'), data.fire_rate_wait, "fire_rate_wait")}
+            {renderTimeInput(t('editor.recharge_time'), data.reload_time, "reload_time")}
           </div>
 
           {/* Group 4: Specs */}
           <div className="px-8 py-2 flex gap-10">
-            <PropInput label="Capacity" value={data.deck_capacity} onChange={v => updateWand(slot, { deck_capacity: v })} />
-            <PropInput label="Spread" value={data.spread_degrees} colorClass={data.spread_degrees <= 0 ? 'text-emerald-400' : 'text-red-400'} onChange={v => updateWand(slot, { spread_degrees: v })} />
-            <PropInput label="Spells/Cast" value={data.actions_per_round} onChange={v => updateWand(slot, { actions_per_round: Math.max(1, Math.round(v)) })} />
-            <PropInput label="Speed" value={data.speed_multiplier} colorClass="text-indigo-400" onChange={v => updateWand(slot, { speed_multiplier: v })} />
+            <PropInput label={t('editor.capacity')} value={data.deck_capacity} onChange={v => updateWand(slot, { deck_capacity: v })} />
+            <PropInput label={t('editor.spread')} value={data.spread_degrees} colorClass={data.spread_degrees <= 0 ? 'text-emerald-400' : 'text-red-400'} onChange={v => updateWand(slot, { spread_degrees: v })} />
+            <PropInput label={t('editor.spells_per_cast')} value={data.actions_per_round} onChange={v => updateWand(slot, { actions_per_round: Math.max(1, Math.round(v)) })} />
+            <PropInput label={t('editor.speed')} value={data.speed_multiplier} colorClass="text-indigo-400" onChange={v => updateWand(slot, { speed_multiplier: v })} />
           </div>
         </div>
 
@@ -524,7 +524,7 @@ export function WandEditor({
         <div className="space-y-3">
           <div className="flex items-center gap-3">
             <div className="h-px flex-1 bg-gradient-to-r from-amber-500/30 to-transparent" />
-            <span className="text-[10px] font-black text-amber-500 uppercase tracking-[0.3em]">Always Cast Slots</span>
+            <span className="text-[10px] font-black text-amber-500 uppercase tracking-[0.3em]">{t('editor.always_cast_slots')}</span>
             <div className="h-px flex-1 bg-gradient-to-l from-amber-500/30 to-transparent" />
           </div>
           <div className="flex flex-wrap gap-3">
@@ -719,7 +719,7 @@ export function WandEditor({
                             {uses !== undefined && (settings.showSpellCharges || uses === 0) && uses !== -1 && !isTriggered && (
                               <div 
                                 className={`absolute bottom-0 left-0 px-1.5 py-0.5 bg-black/90 text-[10px] font-mono font-black border-tr border-white/10 rounded-tr pointer-events-auto cursor-pointer select-none z-20 shadow-lg ${uses === 0 ? 'text-red-500' : 'text-amber-400'}`}
-                                title="点击修改次数 (Alt+点击设为0, 再点击还原)"
+                                title={t('editor.modify_uses_tip')}
                                 onClick={(e) => {
                                    e.stopPropagation();
                                    const newUses = uses === 0 ? (spell.max_uses ?? 10) : 0;

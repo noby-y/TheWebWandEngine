@@ -36,6 +36,14 @@ export function SpellPicker({
 
   const translateSpellType = (name: string) => {
     const mapping: Record<string, string> = {
+      [t('settings.spell_types_list.projectile')]: t('settings.spell_types_list.projectile'),
+      [t('settings.spell_types_list.static_projectile')]: t('settings.spell_types_list.static_projectile'),
+      [t('settings.spell_types_list.modifier')]: t('settings.spell_types_list.modifier'),
+      [t('settings.spell_types_list.multicast')]: t('settings.spell_types_list.multicast'),
+      [t('settings.spell_types_list.material')]: t('settings.spell_types_list.material'),
+      [t('settings.spell_types_list.other')]: t('settings.spell_types_list.other'),
+      [t('settings.spell_types_list.utility')]: t('settings.spell_types_list.utility'),
+      [t('settings.spell_types_list.passive')]: t('settings.spell_types_list.passive'),
       '投射物': t('settings.spell_types_list.projectile'),
       '静态投射物': t('settings.spell_types_list.static_projectile'),
       '修正': t('settings.spell_types_list.modifier'),
@@ -50,6 +58,10 @@ export function SpellPicker({
 
   const translateSpellGroup = (name: string) => {
     const mapping: Record<string, string> = {
+      [t('settings.spell_groups_list.projectile')]: t('settings.spell_groups_list.projectile'),
+      [t('settings.spell_groups_list.modifier')]: t('settings.spell_groups_list.modifier'),
+      [t('settings.spell_groups_list.utility_multicast_other')]: t('settings.spell_groups_list.utility_multicast_other'),
+      [t('settings.spell_groups_list.static_material_passive')]: t('settings.spell_groups_list.static_material_passive'),
       '投射物': t('settings.spell_groups_list.projectile'),
       '修正': t('settings.spell_groups_list.modifier'),
       '实用+多重+其他': t('settings.spell_groups_list.utility_multicast_other'),

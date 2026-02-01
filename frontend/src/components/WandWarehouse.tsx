@@ -706,7 +706,7 @@ export function WandWarehouse({
                <div className="flex gap-2">
                  <button 
                     onClick={async () => {
-                      if (confirm(t('warehouse.title') === '魔杖仓库' ? '将尝试从 Wand Editor (Yukimi) 导入所有存档，是否继续？' : 'Attempting to import all saves from Wand Editor (Yukimi), continue?')) {
+                      if (confirm(t('warehouse.import_yukimi_confirm'))) {
                         try {
                           const res = await fetch('/api/import/wand-editor');
                           const data = await res.json();
@@ -726,7 +726,7 @@ export function WandWarehouse({
                  </button>
                  <button 
                     onClick={async () => {
-                      if (confirm(t('warehouse.title') === '魔杖仓库' ? '将尝试从 Spell Lab 导入所有存档，是否继续？' : 'Attempting to import all saves from Spell Lab, continue?')) {
+                      if (confirm(t('warehouse.import_spell_lab_confirm'))) {
                             try {
                               const res = await fetch('/api/import/spell-lab');
                               const data = await res.json();
@@ -898,7 +898,7 @@ export function WandWarehouse({
                             URL.revokeObjectURL(url);
                           }}
                           className="p-2 hover:bg-white/5 rounded text-zinc-500 hover:text-amber-400 transition-colors"
-                          title="导出此标签"
+                          title={t('warehouse.export_tag')}
                         >
                           <Download size={14} />
                         </button>
@@ -910,7 +910,7 @@ export function WandWarehouse({
                         </button>
                         <button 
                           onClick={() => {
-                            if (confirm('确定要删除这个智能标签吗？')) {
+                            if (confirm(t('warehouse.delete_smart_tag_confirm'))) {
                               setSmartTags(prev => prev.filter(t => t.id !== st.id));
                             }
                           }}
@@ -938,7 +938,7 @@ export function WandWarehouse({
 
           <div className="p-4 bg-black/40 border-t border-white/10 flex gap-2">
             <label className="flex-1 py-2 bg-zinc-800 hover:bg-zinc-700 rounded-lg text-[10px] font-black uppercase tracking-widest text-zinc-400 hover:text-white flex items-center justify-center gap-2 transition-all cursor-pointer">
-              <Upload size={14} /> 导入方案
+              <Upload size={14} /> {t('warehouse.import_plans')}
               <input 
                 type="file" 
                 className="hidden" 
@@ -972,10 +972,10 @@ export function WandWarehouse({
                       });
 
                       if (toAdd.length > 0) {
-                        alert(`成功导入 ${toAdd.length} 个新标签`);
+                        alert(t('warehouse.import_tags_success', { count: toAdd.length }));
                         return [...prev, ...toAdd];
                       }
-                      alert('没有新标签被导入（可能已存在或格式不正确）');
+                      alert(t('warehouse.import_tags_none'));
                       return prev;
                     });
                   }
@@ -995,7 +995,7 @@ export function WandWarehouse({
               }}
               className="flex-1 py-2 bg-zinc-800 hover:bg-zinc-700 rounded-lg text-[10px] font-black uppercase tracking-widest text-zinc-400 hover:text-white flex items-center justify-center gap-2 transition-all"
             >
-              <Download size={14} /> 导出方案
+              <Download size={14} /> {t('warehouse.export_plans')}
             </button>
           </div>
         </div>
@@ -1022,7 +1022,7 @@ export function WandWarehouse({
                 value={editingSmartTag.name}
                 onChange={e => setEditingSmartTag({ ...editingSmartTag, name: e.target.value })}
                 className="w-full bg-zinc-900 border border-white/10 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-amber-500/50 transition-all"
-                placeholder="例如: 10 10 4 2"
+                placeholder={t('warehouse.combination_placeholder')}
               />
             </div>
 
@@ -1058,7 +1058,7 @@ export function WandWarehouse({
               <div className="flex items-center justify-between">
                 <label className="text-[10px] font-black text-zinc-500 uppercase tracking-widest flex items-center gap-2">
                    <span>{t('warehouse.spell_combination')}</span>
-                   <span className="text-zinc-700 font-normal">| {t('settings.title') === 'Settings' ? 'Right click to clear, Ctrl+V to paste' : '右键清除, 支持 Ctrl+V 粘贴'}</span>
+                   <span className="text-zinc-700 font-normal">| {t('warehouse.smart_tag_edit_tip')}</span>
                 </label>
               </div>
 
@@ -1087,7 +1087,7 @@ export function WandWarehouse({
                                         ? "bg-zinc-800 border-zinc-600 hover:border-amber-500" 
                                         : "bg-white/5 border-white/5 hover:bg-white/10 hover:border-white/20"
                                 )}
-                                title={spell?.name || "空槽位 (点击下方列表添加，右键清除)"}
+                                title={spell?.name || t('warehouse.empty_slot_tip')}
                             >
                                 {spell && <img src={getIconUrl(spell.icon, isConnected)} className="w-8 h-8 image-pixelated" alt="" />}
                                 <div className="absolute top-0.5 right-0.5 w-1.5 h-1.5 rounded-full bg-zinc-700/50" />

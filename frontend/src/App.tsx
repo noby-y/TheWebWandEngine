@@ -310,7 +310,7 @@ function App() {
   } | null>(null);
 
   // --- History (Undo/Redo) ---
-  const performAction = (action: (prevWands: Record<string, WandData>) => Record<string, WandData>, actionName = '未知操作', icons?: string[], saveHistory = true) => {
+  const performAction = (action: (prevWands: Record<string, WandData>) => Record<string, WandData>, actionName = t('app.notification.unknown_action'), icons?: string[], saveHistory = true) => {
     setTabs(prevTabs => prevTabs.map(t => {
       if (t.id === activeTabId) {
         const nextWands = action(t.wands);
@@ -801,7 +801,7 @@ function App() {
         }
 
         return nextWands;
-      }, '移动法术', [dragSource.sid]);
+      }, t('app.notification.move_spell'), [dragSource.sid]);
 
       setDragSource(null);
     }
@@ -845,7 +845,7 @@ function App() {
     } catch { }
   };
 
-  const updateWand = (slot: string, updates: Partial<WandData>, actionName = '修改法杖', icons?: string[]) => {
+  const updateWand = (slot: string, updates: Partial<WandData>, actionName = t('app.notification.modify_wand'), icons?: string[]) => {
     lastLocalUpdateRef.current = Date.now();
     performAction(prevWands => {
       const currentWand = prevWands[slot] || { ...DEFAULT_WAND };
@@ -889,7 +889,7 @@ function App() {
             next[targetWandSlot!] = w;
             if (activeTab.isRealtime) syncWand(targetWandSlot!, w);
             return next;
-          }, '粘贴法术到始终施放');
+          }, t('app.notification.paste_to_always_cast'));
           return true;
         }
         return false;
@@ -968,7 +968,7 @@ function App() {
         performAction(prevWands => ({
           ...prevWands,
           [nextSlot]: newWand
-        }), `从粘贴创建新法杖 (槽位 ${nextSlot})`);
+        }), t('app.notification.create_new_wand_from_paste', { slot: nextSlot }));
 
         if (activeTab.isRealtime) {
           syncWand(nextSlot, newWand);
@@ -1045,7 +1045,7 @@ function App() {
         always_cast: alwaysCasts
       };
 
-      updateWand(targetWandSlot, { ...updates, spells: newSpells }, '粘贴法杖数据', Object.values(newSpells));
+      updateWand(targetWandSlot, { ...updates, spells: newSpells }, t('app.notification.paste_wand_data'), Object.values(newSpells));
       return true;
     } else {
       const newSpellsList = text.split(',').map(s => s.trim());
@@ -1074,12 +1074,12 @@ function App() {
         if (settings.autoExpandOnPaste) {
           newCapacity = lastSpellIdx;
         } else {
-          if (confirm(`插入法术后超出了当前容量 (${lastSpellIdx} > ${wand.deck_capacity})，是否自动扩容？`)) {
+          if (confirm(t('app.notification.insert_exceed_capacity_confirm', { lastIdx: lastSpellIdx, capacity: wand.deck_capacity }))) {
             newCapacity = lastSpellIdx;
           }
         }
       }
-      updateWand(targetWandSlot, { spells: finalSpellsObj, deck_capacity: newCapacity }, '插入法术序列', newSpellsList.filter(s => s));
+      updateWand(targetWandSlot, { spells: finalSpellsObj, deck_capacity: newCapacity }, t('app.notification.insert_spell_sequence'), newSpellsList.filter(s => s));
       return true;
     }
   }, [spellDb, settings, activeTabId, activeTab, spellNameToId, performAction, syncWand, t, updateWand]);
@@ -1145,7 +1145,7 @@ function App() {
 
     if (textToCopy !== undefined) {
       await navigator.clipboard.writeText(textToCopy);
-      setNotification({ msg: isCut ? '已剪切到剪贴板' : '已复制到剪贴板', type: 'success' });
+      setNotification({ msg: isCut ? t('app.notification.cut_to_clipboard') : t('app.notification.copied_to_clipboard'), type: 'success' });
       
       if (isCut) {
         const newSpells = { ...wand.spells };
@@ -1154,7 +1154,7 @@ function App() {
           delete newSpells[i.toString()];
           delete newSpellUses[i.toString()];
         });
-        updateWand(wandSlot, { spells: newSpells, spell_uses: newSpellUses }, '剪切法术', sequence.filter(s => s));
+        updateWand(wandSlot, { spells: newSpells, spell_uses: newSpellUses }, t('app.notification.cut_spell'), sequence.filter(s => s));
       }
     }
   };
@@ -1225,7 +1225,7 @@ function App() {
       newCapacity = lastSpellIdx;
     }
 
-    updateWand(targetWandSlot, { spells: finalSpellsObj, deck_capacity: newCapacity }, '插入空法术位');
+    updateWand(targetWandSlot, { spells: finalSpellsObj, deck_capacity: newCapacity }, t('app.notification.insert_empty_slot'));
   };
 
   useEffect(() => {
@@ -1319,7 +1319,7 @@ function App() {
                   spells: newSpells, 
                   spell_uses: newSpellUses, 
                   deck_capacity: newCap 
-                }, '删除法杖格子');
+                }, t('app.notification.delete_wand_slot'));
                 setSelection(null);
               }
             } else {
@@ -1329,7 +1329,7 @@ function App() {
                 delete newSpells[idx];
                 delete newSpellUses[idx];
               });
-              updateWand(targetSlot, { spells: newSpells, spell_uses: newSpellUses }, '删除法术');
+              updateWand(targetSlot, { spells: newSpells, spell_uses: newSpellUses }, t('app.notification.delete_spell'));
             }
           }
         }
@@ -1387,7 +1387,7 @@ function App() {
             const metadata = await readMetadataFromPng(file);
             if (metadata && (metadata.includes('{{Wand2') || metadata.includes('{{Wand'))) {
               await importFromText(metadata);
-              setNotification({ msg: "已从图片导入法杖配置", type: "success" });
+              setNotification({ msg: t('app.notification.imported_from_image'), type: "success" });
               continue;
             }
           }
@@ -1416,7 +1416,7 @@ function App() {
                   }
                 ]);
                 setActiveTabId(newTabId);
-                setNotification({ msg: `已导入工作流: ${fileName}`, type: "success" });
+                setNotification({ msg: t('app.notification.imported_workflow_name', { name: fileName }), type: "success" });
               } catch (err) { console.error("Drop import failed:", err); }
             };
             reader.readAsText(file);
@@ -1431,7 +1431,7 @@ function App() {
         if (item.kind === 'string' && item.type === 'text/plain') {
           item.getAsString(async (text) => {
             const success = await importFromText(text);
-            if (success) setNotification({ msg: "已从拖入文本导入", type: "success" });
+            if (success) setNotification({ msg: t('app.notification.imported_from_text'), type: "success" });
           });
         }
       }
@@ -1562,18 +1562,18 @@ function App() {
 
   const syncGameSpells = async () => {
     if (!isConnected) return;
-    setNotification({ msg: '正在从游戏同步模组法术...', type: 'info' });
+    setNotification({ msg: t('app.notification.syncing_mod_spells'), type: 'info' });
     try {
       const res = await fetch('/api/sync-game-spells');
       const data = await res.json();
       if (data.success) {
         await fetchSpellDb();
-        setNotification({ msg: `同步成功：已加载 ${data.count} 个模组法术`, type: 'success' });
+        setNotification({ msg: t('app.notification.sync_mod_spells_success', { count: data.count }), type: 'success' });
       } else {
-        setNotification({ msg: `同步失败: ${data.error}`, type: 'info' });
+        setNotification({ msg: t('app.notification.sync_failed_with_error', { error: data.error }), type: 'info' });
       }
     } catch (e) {
-      setNotification({ msg: '同步失败', type: 'info' });
+      setNotification({ msg: t('app.notification.sync_failed'), type: 'info' });
     }
   };
 
@@ -1614,7 +1614,7 @@ function App() {
 
         // If forced (manual click), skip the "recently updated" check and apply directly
         if (force) {
-          applyGameWands(activeTabId, gameWands, '强制拉取游戏数据');
+          applyGameWands(activeTabId, gameWands, t('app.notification.force_pull_game_data'));
           return;
         }
 
@@ -1624,7 +1624,7 @@ function App() {
             // Web wins, push to game
             Object.entries(currentWeb).forEach(([slot, d]) => syncWand(slot, d));
             lastKnownGameWandsRef.current[activeTabId] = JSON.parse(JSON.stringify(currentWeb));
-            setNotification({ msg: '已自动同步：网页修改已覆盖游戏', type: 'success' });
+            setNotification({ msg: t('app.notification.auto_sync_web_over_game'), type: 'success' });
           } else if (settings.conflictStrategy === 'new_workflow') {
             // Game wins but as new workflow
             const id = Date.now().toString();
@@ -1638,7 +1638,7 @@ function App() {
               future: []
             }]);
             lastKnownGameWandsRef.current[activeTabId] = JSON.parse(JSON.stringify(currentWeb));
-            setNotification({ msg: '已自动同步：游戏状态已另存为新工作流', type: 'info' });
+            setNotification({ msg: t('app.notification.auto_sync_game_to_new'), type: 'info' });
           } else {
             // Ask
             setConflict({ tabId: activeTabId, gameWands });
@@ -1654,10 +1654,10 @@ function App() {
           // Only game changed -> Pull normally
           // Optimization: If we recently updated locally, ignore game "changes" that might be stale data
           if (!force && Date.now() - lastLocalUpdateRef.current < 5000) return;
-          applyGameWands(activeTabId, gameWands, '从游戏同步数据');
+          applyGameWands(activeTabId, gameWands, t('app.notification.sync_from_game'));
         } else if (!lastKnown) {
           // First time seeing the game
-          applyGameWands(activeTabId, gameWands, '初始同步');
+          applyGameWands(activeTabId, gameWands, t('app.notification.initial_sync'));
         }
       }
     } catch { }
@@ -1669,7 +1669,7 @@ function App() {
 
   const pushAllToGame = async () => {
     if (!isConnected) {
-      setNotification({ msg: '未连接到游戏，无法推送', type: 'info' });
+      setNotification({ msg: t('app.notification.not_connected_to_game'), type: 'info' });
       return;
     }
     const wands = activeTab.wands;
@@ -1689,9 +1689,9 @@ function App() {
           })
         });
       }
-      setNotification({ msg: `已将当前工作流的 ${entries.length} 根法杖推送到游戏`, type: 'success' });
+      setNotification({ msg: t('app.notification.pushed_to_game', { count: entries.length }), type: 'success' });
     } catch (e) {
-      setNotification({ msg: '推送失败', type: 'info' });
+      setNotification({ msg: t('app.notification.push_failed'), type: 'info' });
     }
   };
 
@@ -1701,7 +1701,7 @@ function App() {
     const defaultWand = { ...DEFAULT_WAND, ...settings.defaultWandStats };
     const newTab: Tab = {
       id,
-      name: `新工作流 ${tabs.length + 1}`,
+      name: t('app.notification.new_workflow_default', { id: tabs.length + 1 }),
       isRealtime: false,
       wands: { '1': defaultWand },
       expandedWands: new Set(['1']),
@@ -1727,7 +1727,7 @@ function App() {
     performAction(prevWands => ({
       ...prevWands,
       [nextSlot]: newWand
-    }), `添加新法杖 (槽位 ${nextSlot})`);
+    }), t('app.notification.add_new_wand', { slot: nextSlot }));
     
     if (activeTab.isRealtime) {
       syncWand(nextSlot, newWand);
@@ -1745,7 +1745,7 @@ function App() {
       const next = { ...prevWands };
       delete next[slot];
       return next;
-    }, `删除法杖 (槽位 ${slot})`);
+    }, t('app.notification.delete_wand', { slot: slot }));
 
     if (activeTab.isRealtime) {
       syncWand(slot, null, true);
@@ -1812,7 +1812,7 @@ function App() {
       wikiText += `}}`;
       try {
         await navigator.clipboard.writeText(wikiText);
-        setNotification({ msg: '已复制为老版Wand模板', type: 'success' });
+        setNotification({ msg: t('app.notification.copied_legacy_template'), type: 'success' });
       } catch (err) {
         console.error('Clipboard error:', err);
       }
@@ -1872,7 +1872,7 @@ function App() {
         if (activeTab.isRealtime) syncWand(wandSlot, newWand);
         return { ...prevWands, [wandSlot]: newWand };
       }
-    }, spellId ? `更改法术` : `清除槽位 ${spellIdx}`, spellId ? [spellId] : []);
+    }, spellId ? t('app.notification.change_spell') : t('app.notification.clear_slot', { idx: spellIdx }), spellId ? [spellId] : []);
     setPickerConfig(null);
   };
 
@@ -1901,7 +1901,7 @@ function App() {
   const importAllData = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
-    if (!confirm('导入备份将覆盖当前所有工作流和设置，确定继续吗？')) return;
+    if (!confirm(t('app.notification.import_backup_confirm'))) return;
 
     const reader = new FileReader();
     reader.onload = (ev) => {
@@ -1916,8 +1916,8 @@ function App() {
           setTabs(processedTabs);
           if (processedTabs.length > 0) setActiveTabId(processedTabs[0].id);
         }
-        alert('全部数据导入成功！');
-      } catch (err) { alert('导入失败: 文件格式不正确'); }
+        alert(t('app.notification.import_all_success'));
+      } catch (err) { alert(t('app.notification.import_failed_format')); }
     };
     reader.readAsText(file);
     e.target.value = ''; // Reset input
@@ -1952,7 +1952,7 @@ function App() {
           }
         ]);
         setActiveTabId(newTabId);
-      } catch (err) { alert('导入失败: 格式错误'); }
+      } catch (err) { alert(t('app.notification.import_failed_generic')); }
     };
     reader.readAsText(file);
     e.target.value = ''; // Reset input
@@ -2170,7 +2170,7 @@ function App() {
               lastKnownGameWandsRef.current[conflict!.tabId] = JSON.parse(JSON.stringify(activeTab.wands));
               setConflict(null);
             } else if (strategy === 'game') {
-              performAction(() => conflict!.gameWands, '冲突解决: 使用游戏数据覆盖');
+              performAction(() => conflict!.gameWands, t('app.notification.force_pull_game_data'));
               lastKnownGameWandsRef.current[conflict!.tabId] = JSON.parse(JSON.stringify(conflict!.gameWands));
               setConflict(null);
             } else if (strategy === 'both') {
@@ -2219,7 +2219,7 @@ function App() {
             performAction(prevWands => ({
               ...prevWands,
               [nextSlot]: { ...w }
-            }), `从仓库导入法杖 (${w.name})`);
+            }), t('app.notification.imported_from_warehouse', { name: w.name }));
             
             setTabs(prev => prev.map(t => t.id === activeTabId ? {
               ...t,
@@ -2229,7 +2229,7 @@ function App() {
             if (activeTab.isRealtime) {
               syncWand(nextSlot, w as any);
             }
-            setNotification({ msg: `已导入法杖: ${w.name}`, type: 'success' });
+            setNotification({ msg: t('app.notification.imported_wand_success', { name: w.name }), type: 'success' });
           }}
         />
 
@@ -2260,8 +2260,8 @@ function App() {
         <div className="fixed inset-0 z-[2000] bg-indigo-500/20 backdrop-blur-sm border-4 border-dashed border-indigo-500 flex items-center justify-center pointer-events-none animate-in fade-in duration-200">
           <div className="bg-zinc-900 px-8 py-4 rounded-2xl shadow-2xl border border-white/10 flex flex-col items-center gap-4">
             <Download size={48} className="text-indigo-400 animate-bounce" />
-            <p className="text-xl font-black uppercase tracking-widest text-indigo-100">Drop to Import Wand</p>
-            <p className="text-zinc-400 text-sm">PNG Image or JSON Workflow</p>
+            <p className="text-xl font-black uppercase tracking-widest text-indigo-100">{t('app.notification.drop_to_import')}</p>
+            <p className="text-zinc-400 text-sm">{t('app.notification.import_formats')}</p>
           </div>
         </div>
       )}

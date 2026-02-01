@@ -181,7 +181,7 @@ export function WandCard({
             <button
               onClick={(e) => { e.stopPropagation(); copyWand(slot); }}
               className="p-1.5 hover:bg-white/10 text-zinc-500 hover:text-indigo-400 rounded transition-colors"
-              title="复制 (Ctrl+C)"
+              title={t('wand_card.copy')}
             >
               <Scissors size={14} />
             </button>
@@ -189,7 +189,7 @@ export function WandCard({
               <button
                 onClick={(e) => { e.stopPropagation(); copyLegacyWand(slot); }}
                 className="p-1.5 hover:bg-white/10 text-zinc-500 hover:text-amber-400 rounded transition-colors text-[10px] font-black"
-                title="复制为老版Wand模板"
+                title={t('wand_card.copy_legacy')}
               >
                 W
               </button>
@@ -198,7 +198,7 @@ export function WandCard({
               onClick={(e) => { e.stopPropagation(); pasteWand(slot); }}
               disabled={!clipboard}
               className={`p-1.5 rounded transition-colors ${clipboard ? 'hover:bg-white/10 text-zinc-500 hover:text-emerald-400' : 'text-zinc-800 cursor-not-allowed'}`}
-              title="粘贴 (覆盖)"
+              title={t('wand_card.paste_overwrite')}
             >
               <Clipboard size={14} />
             </button>
@@ -206,7 +206,7 @@ export function WandCard({
             <button
               onClick={(e) => { e.stopPropagation(); if (onSaveToWarehouse) onSaveToWarehouse(data); }}
               className="p-1.5 hover:bg-purple-500/20 text-zinc-500 hover:text-purple-400 rounded transition-colors"
-              title="保存到魔杖仓库"
+              title={t('wand_card.save_to_warehouse')}
             >
               <Library size={14} />
             </button>

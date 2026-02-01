@@ -271,7 +271,7 @@ const WandEvaluator: React.FC<Props> = ({ data, spellDb, onHoverSlots, settings,
         <section>
           <h3 className="sticky top-0 z-40 py-2 bg-zinc-950/80 backdrop-blur-sm text-[10px] font-black text-zinc-500 mb-4 flex items-center gap-2 tracking-widest uppercase">
             <span className="w-1.5 h-1.5 bg-amber-500 shadow-[0_0_8px_rgba(245,158,11,0.5)] rounded-full"></span>
-            {t('evaluator.overall_counts')} (Overall)
+            {t('evaluator.overall_counts')}
           </h3>
           <div className="flex flex-wrap gap-2 opacity-60 grayscale-[0.5] hover:opacity-100 hover:grayscale-0 transition-all duration-300">
             {sortedOverallCounts.map(([id, count]) => {
@@ -304,7 +304,7 @@ const WandEvaluator: React.FC<Props> = ({ data, spellDb, onHoverSlots, settings,
         <div className="sticky top-0 z-40 py-2 bg-zinc-950/80 backdrop-blur-sm flex items-center justify-between mb-4">
           <h3 className="text-[10px] font-black text-zinc-500 flex items-center gap-2 tracking-widest uppercase">
             <span className="w-1.5 h-1.5 bg-blue-500 shadow-[0_0_8px_rgba(59,130,246,0.5)] rounded-full"></span>
-            {t('evaluator.shot_states')} (Shot States)
+            {t('evaluator.shot_states')}
           </h3>
         </div>
         
@@ -565,12 +565,12 @@ const CastStatsPanel: React.FC<{ group: any, spellDb: Record<string, SpellInfo> 
         <div className="pt-3 border-t border-white/5 space-y-2">
           <div className="text-[8px] font-black text-zinc-600 uppercase tracking-widest flex items-center gap-1.5">
             <div className="w-1 h-1 bg-blue-500/50 rounded-full"></div>
-            CAST FINAL SETTLEMENT
+            {t('evaluator.cast_final_settlement')}
           </div>
           <div className="grid grid-cols-1 gap-1">
             {castDelay && (
               <div className="flex justify-between items-center bg-blue-500/5 px-2 py-1 rounded border border-blue-500/10">
-                <span className="text-[8px] text-zinc-400 font-bold uppercase tracking-tighter">Cast Delay</span>
+                <span className="text-[8px] text-zinc-400 font-bold uppercase tracking-tighter">{t('evaluator.cast_delay')}</span>
                 <span className="text-[10px] font-mono font-black text-blue-400">
                   {castDelay}f
                 </span>
@@ -578,7 +578,7 @@ const CastStatsPanel: React.FC<{ group: any, spellDb: Record<string, SpellInfo> 
             )}
             {recharge && Number(recharge) > 0 && (
               <div className="flex justify-between items-center bg-amber-500/5 px-2 py-1 rounded border border-amber-500/10">
-                <span className="text-[8px] text-zinc-400 font-bold uppercase tracking-tighter">Recharge Time</span>
+                <span className="text-[8px] text-zinc-400 font-bold uppercase tracking-tighter">{t('evaluator.recharge_time')}</span>
                 <span className="text-[10px] font-mono font-black text-amber-500">
                   {recharge}f
                 </span>
@@ -586,7 +586,7 @@ const CastStatsPanel: React.FC<{ group: any, spellDb: Record<string, SpellInfo> 
             )}
             {manaDrain && (
               <div className="flex justify-between items-center bg-purple-500/5 px-2 py-1 rounded border border-purple-500/10 mt-1">
-                <span className="text-[8px] text-zinc-400 font-bold uppercase tracking-tighter">Mana Drain</span>
+                <span className="text-[8px] text-zinc-400 font-bold uppercase tracking-tighter">{t('evaluator.mana_drain')}</span>
                 <span className="text-[10px] font-mono font-black text-purple-400">
                   {manaDrain}
                 </span>
@@ -609,7 +609,7 @@ const ShotStateCard: React.FC<{ state: ShotState, isHighlighted?: boolean }> = R
             {state.id}
           </div>
         </div>
-        <span className={`${isHighlighted ? 'opacity-100' : 'opacity-0'} group-hover/state:opacity-100 text-[8px] text-zinc-600 transition-opacity`}>SHOT STATE</span>
+        <span className={`${isHighlighted ? 'opacity-100' : 'opacity-0'} group-hover/state:opacity-100 text-[8px] text-zinc-600 transition-opacity`}>{t('evaluator.shot_state_label')}</span>
       </div>
       <div className="space-y-1.5">
         {Object.entries(state.stats)

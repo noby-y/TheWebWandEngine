@@ -140,16 +140,16 @@ export const WarehouseWandCard = React.memo(({
                   <span>{t('settings.categories.wand')}</span>
                </div>
                <div className="grid grid-cols-2 gap-x-4 gap-y-1 text-[10px] font-mono">
-                  <div className="flex justify-between"><span className="text-zinc-500">{t('settings.default_wand_stats').includes('法力') ? '法力' : 'Mana'}</span> <span className="text-cyan-400">{wand.mana_max}</span></div>
-                  <div className="flex justify-between"><span className="text-zinc-500">{t('settings.default_wand_stats').includes('充能') ? '充能' : 'Recharge'}</span> <span className="text-cyan-400">{wand.mana_charge_speed}</span></div>
-                  <div className="flex justify-between"><span className="text-zinc-500">{t('settings.default_wand_stats').includes('延迟') ? '延迟' : 'Delay'}</span> <span className="text-amber-400">{wand.fire_rate_wait}s</span></div>
-                  <div className="flex justify-between"><span className="text-zinc-500">{t('settings.default_wand_stats').includes('重装') ? '重装' : 'Rechg'}</span> <span className="text-green-400">{wand.reload_time}s</span></div>
-                  <div className="flex justify-between"><span className="text-zinc-500">{t('settings.default_wand_stats').includes('容量') ? '容量' : 'Cap.'}</span> <span className="text-zinc-300">{wand.deck_capacity}</span></div>
-                  <div className="flex justify-between"><span className="text-zinc-500">{t('settings.default_wand_stats').includes('扩散') ? '扩散' : 'Spr.'}</span> <span className="text-zinc-300">{wand.spread_degrees}°</span></div>
+                  <div className="flex justify-between"><span className="text-zinc-500">{t('wand_stats.mana_max')}</span> <span className="text-cyan-400">{wand.mana_max}</span></div>
+                  <div className="flex justify-between"><span className="text-zinc-500">{t('wand_stats.mana_charge_speed')}</span> <span className="text-cyan-400">{wand.mana_charge_speed}</span></div>
+                  <div className="flex justify-between"><span className="text-zinc-500">{t('wand_stats.fire_rate_wait')}</span> <span className="text-amber-400">{wand.fire_rate_wait}s</span></div>
+                  <div className="flex justify-between"><span className="text-zinc-500">{t('wand_stats.reload_time')}</span> <span className="text-green-400">{wand.reload_time}s</span></div>
+                  <div className="flex justify-between"><span className="text-zinc-500">{t('wand_stats.deck_capacity')}</span> <span className="text-zinc-300">{wand.deck_capacity}</span></div>
+                  <div className="flex justify-between"><span className="text-zinc-500">{t('wand_stats.spread_degrees')}</span> <span className="text-zinc-300">{wand.spread_degrees}°</span></div>
                </div>
                {wand.always_cast && wand.always_cast.length > 0 && (
                   <div className="mt-1 pt-1 border-t border-white/5">
-                     <span className="text-[9px] text-blue-400 block mb-0.5">{t('settings.title') === 'Settings' ? 'Always Casts:' : '始终施放:'}</span>
+                     <span className="text-[9px] text-blue-400 block mb-0.5">{t('wand_stats.always_casts')}</span>
                      <div className="flex gap-0.5">
                         {wand.always_cast.map((sid, i) => {
                            const s = spellDb[sid];
