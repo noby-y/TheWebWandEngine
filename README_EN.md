@@ -20,8 +20,8 @@ This project integrates the following open-source component:
 ### Acknowledgments
 The development of this project was inspired and assisted by the following projects/resources:
 - **[Component Explorer](https://github.com/dextercd/Noita-Component-Explorer)**: Provided detailed reference for component field parsing.
-- **[Spell Lab Shugged](https://github.com/shoozzzh/Spell-Lab-Shugged)**: A pioneer in wand logic simulation and UI interaction.
-- **[Wand Editor](https://github.com/KagiamamaHIna/Wand-Editor)**: Provided excellent interaction inspiration and some shared code logic.
+- **[Spell Lab Shugged](https://github.com/shoozzzh/Spell-Lab-Shugged)**: An excellent wand editing tool that provided UI interaction inspiration for this project.
+- **[Wand Editor](https://github.com/KagiamamaHIna/Wand-Editor)**: An excellent wand editing tool; this project referenced its UI design and used some of its code.
 - **[KuroLeaf's Noita Aliases](https://noita.wiki.gg/zh/wiki/User:KuroLeaf/aliases.csv)**: Provided a comprehensive spell alias mapping table, greatly assisting multi-language localization.
 
 This project is licensed under the **GPL-3.0** License.

@@ -20,8 +20,8 @@
 ### 致谢 (Acknowledgments)
 在开发过程中，以下项目的代码逻辑、数据结构或设计思路为本项目提供了巨大的灵感和参考，特此致谢：
 - **[Component Explorer](https://github.com/dextercd/Noita-Component-Explorer)**: 提供了详尽的组件字段解析参考。
-- **[Spell Lab Shugged](https://github.com/shoozzzh/Spell-Lab-Shugged)**: 法杖逻辑模拟与 UI 交互的先驱。
-- **[Wand Editor](https://github.com/KagiamamaHIna/Wand-Editor)**: 提供了优秀的交互灵感，以及使用了部分Wand Editor的代码。
+- **[Spell Lab Shugged](https://github.com/shoozzzh/Spell-Lab-Shugged)**: 优秀的法杖编辑工具，为本项目提供了 UI 交互灵感。
+- **[Wand Editor](https://github.com/KagiamamaHIna/Wand-Editor)**: 优秀的法杖编辑工具，本项目参考了其 UI 设计并使用了部分代码。
 - **[KuroLeaf's Noita Aliases](https://noita.wiki.gg/zh/wiki/User:KuroLeaf/aliases.csv)**: 提供了法术别名对照表，极大地帮助了拼音搜索。
 
 本项目遵守 **GPL-3.0** 开源协议。
