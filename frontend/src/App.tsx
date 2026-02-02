@@ -57,7 +57,7 @@ const readMetadataFromPng = async (file: File): Promise<string | null> => {
       const buffer = e.target?.result as ArrayBuffer;
       if (!buffer) return resolve(null);
       const view = new DataView(buffer);
-      
+
       // Check PNG signature
       if (view.byteLength < 8 || view.getUint32(0) !== 0x89504E47 || view.getUint32(4) !== 0x0D0A1A0A) {
         return resolve(null);
@@ -191,8 +191,8 @@ function App() {
     if (saved) {
       try {
         const parsed = JSON.parse(saved);
-        return { 
-          ...defaults, 
+        return {
+          ...defaults,
           ...parsed,
           // Ensure nested objects exist
           defaultWandStats: parsed.defaultWandStats || {}
@@ -279,7 +279,7 @@ function App() {
       // 1. Normalize ID (e.g. "LIGHT_BULLET" -> "lightbullet")
       const idNorm = id.toLowerCase().replace(/[^a-z0-9]/g, '');
       map[idNorm] = id;
-      
+
       // 2. Normalize Localized Name (e.g. "二重咒语" -> "二重咒语")
       if (info.name) {
         const nameNorm = info.name.toLowerCase().replace(/[^a-z0-9]/g, '');
@@ -314,7 +314,7 @@ function App() {
     setTabs(prevTabs => prevTabs.map(t => {
       if (t.id === activeTabId) {
         const nextWands = action(t.wands);
-        
+
         if (!saveHistory) return { ...t, wands: nextWands };
 
         const newItem: HistoryItem = {
@@ -514,9 +514,9 @@ function App() {
         // Only update if this is still the latest request for this slot
         if (res.id >= (latestRequestIdsRef.current[key] || 0)) {
           latestRequestIdsRef.current[key] = res.id;
-          setEvalResults(prev => ({ 
-            ...prev, 
-            [key]: { data: res.data, id: res.id, loading: false } 
+          setEvalResults(prev => ({
+            ...prev,
+            [key]: { data: res.data, id: res.id, loading: false }
           }));
         }
       }
@@ -528,18 +528,18 @@ function App() {
       }));
     }
   }, [
-    settings.numCasts, 
-    settings.unlimitedSpells, 
-    settings.initialIfHalf, 
-    settings.simulateLowHp, 
-    settings.simulateManyEnemies, 
+    settings.numCasts,
+    settings.unlimitedSpells,
+    settings.initialIfHalf,
+    settings.simulateLowHp,
+    settings.simulateManyEnemies,
     settings.simulateManyProjectiles,
     isConnected
   ]);
 
   useEffect(() => {
     if (!activeTab || !activeTab.expandedWands) return;
-    
+
     activeTab.expandedWands.forEach(slot => {
       const wand = activeTab.wands[slot];
       if (!wand) return;
@@ -603,7 +603,7 @@ function App() {
 
     const allSpells = Object.values(spellDb);
     const isEnglish = i18n.language.startsWith('en');
-    
+
     // Score-based search
     const scored = allSpells.map(s => {
       let score = 0;
@@ -621,7 +621,7 @@ function App() {
       else if (name === query) score += 90;
       else if (en === query) score += 85;
       else if (aliases.includes(query)) score += 80;
-      
+
       // Starts with
       else if (id.startsWith(query)) score += 70;
       else if (name.startsWith(query)) score += 65;
@@ -676,11 +676,11 @@ function App() {
       performAction(prevWands => {
         const nextWands = { ...prevWands };
         const sourceWand = { ...nextWands[sourceWandSlot] };
-        
+
         // 1. Get source data and REMOVE from source
         const sid = sourceIdx < 0 ? sourceWand.always_cast[(-sourceIdx) - 1] : sourceWand.spells[sourceIdx.toString()];
         const uses = sourceIdx < 0 ? undefined : sourceWand.spell_uses?.[sourceIdx.toString()];
-        
+
         if (sourceIdx < 0) {
           const newAC = [...(sourceWand.always_cast || [])];
           newAC.splice((-sourceIdx) - 1, 1);
@@ -693,10 +693,10 @@ function App() {
           sourceWand.spells = newSourceSpells;
           sourceWand.spell_uses = newSourceUses;
         }
-        
+
         // 2. Prepare Target Wand
         const targetWand = sourceWandSlot === targetWandSlot ? sourceWand : { ...nextWands[targetWandSlot] };
-        
+
         if (targetIdx === -1000 || targetIdx < 0) {
           // Always Cast logic - remains insertion based
           const newAC = [...(targetWand.always_cast || [])];
@@ -704,9 +704,9 @@ function App() {
             newAC.push(sid);
           } else {
             const acIdx = (-targetIdx) - 1;
-            const isRightHalf = hoveredSlotRef.current?.wandSlot === targetWandSlot && 
-                               hoveredSlotRef.current?.idx === targetIdx && 
-                               hoveredSlotRef.current?.isRightHalf;
+            const isRightHalf = hoveredSlotRef.current?.wandSlot === targetWandSlot &&
+              hoveredSlotRef.current?.idx === targetIdx &&
+              hoveredSlotRef.current?.isRightHalf;
             newAC.splice(acIdx + (isRightHalf ? 1 : 0), 0, sid);
           }
           targetWand.always_cast = newAC;
@@ -717,7 +717,7 @@ function App() {
 
           const nextTargetSpells = { ...targetWand.spells };
           const nextTargetUses = { ...(targetWand.spell_uses || {}) };
-          
+
           nextTargetSpells[targetIdx.toString()] = sid;
           if (uses !== undefined) nextTargetUses[targetIdx.toString()] = uses;
           else delete nextTargetUses[targetIdx.toString()];
@@ -749,9 +749,9 @@ function App() {
           }
         } else {
           // INSERTION logic (Fixed)
-          const isRightHalf = hoveredSlotRef.current?.wandSlot === targetWandSlot && 
-                             hoveredSlotRef.current?.idx === targetIdx && 
-                             hoveredSlotRef.current?.isRightHalf;
+          const isRightHalf = hoveredSlotRef.current?.wandSlot === targetWandSlot &&
+            hoveredSlotRef.current?.idx === targetIdx &&
+            hoveredSlotRef.current?.isRightHalf;
           const insertIdx = targetIdx + (isRightHalf ? 1 : 0);
 
           // Build a map of all slots (including empty)
@@ -836,10 +836,10 @@ function App() {
       await fetch('/api/sync', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ 
-          slot: parseInt(slot), 
+        body: JSON.stringify({
+          slot: parseInt(slot),
           delete: isDelete,
-          ...(data || {}) 
+          ...(data || {})
         })
       });
     } catch { }
@@ -904,7 +904,7 @@ function App() {
       // If no target slot but it's Wand data, create a new wand instead of failing
       if (isWandData) {
         const nextSlot = (Math.max(0, ...Object.keys(activeTab.wands).map(Number)) + 1).toString();
-        
+
         const getVal = (key: string) => {
           const regex = new RegExp(`\\|\\s*${key}\\s*=\\s*([^|\\n}]+)`);
           const match = text.match(regex);
@@ -1031,7 +1031,7 @@ function App() {
           if (id) alwaysCasts.push(id);
         }
       }
-      
+
       const updates: Partial<WandData> = {
         shuffle_deck_when_empty: getVal('shuffle')?.toLowerCase() === 'yes' || getVal('shuffle') === 'true',
         actions_per_round: parseInt(getVal('spellsCast') || (isWand2Data ? '1' : '')) || parseInt(getVal('spellsPerCast') || '1') || wand.actions_per_round,
@@ -1109,7 +1109,7 @@ function App() {
 
     // Sort indices to get a clean sequence
     const sortedIndices = [...indices].sort((a, b) => a - b);
-    
+
     let textToCopy = "";
     // Get sequence including empty slots (empty strings)
     const sequence = sortedIndices.map(i => {
@@ -1146,7 +1146,7 @@ function App() {
     if (textToCopy !== undefined) {
       await navigator.clipboard.writeText(textToCopy);
       setNotification({ msg: isCut ? t('app.notification.cut_to_clipboard') : t('app.notification.copied_to_clipboard'), type: 'success' });
-      
+
       if (isCut) {
         const newSpells = { ...wand.spells };
         const newSpellUses = { ...(wand.spell_uses || {}) };
@@ -1190,8 +1190,8 @@ function App() {
 
   const insertEmptySlot = () => {
     let targetWandSlot = hoveredSlotRef.current?.wandSlot;
-    let startIdx = (hoveredSlotRef.current && hoveredSlotRef.current.idx > 0) 
-      ? (hoveredSlotRef.current.idx + (hoveredSlotRef.current.isRightHalf ? 1 : 0)) 
+    let startIdx = (hoveredSlotRef.current && hoveredSlotRef.current.idx > 0)
+      ? (hoveredSlotRef.current.idx + (hoveredSlotRef.current.isRightHalf ? 1 : 0))
       : null;
 
     if (!targetWandSlot && selectionRef.current) {
@@ -1245,7 +1245,7 @@ function App() {
     };
     const handleKeyDown = async (e: KeyboardEvent) => {
       if (e.target instanceof HTMLInputElement || e.target instanceof HTMLTextAreaElement) return;
-      
+
       if ((e.ctrlKey || e.metaKey)) {
         if (e.key === 'h') {
           e.preventDefault();
@@ -1279,7 +1279,7 @@ function App() {
       } else if (e.key === 'Delete' || e.key === 'Backspace') {
         const sel = selectionRef.current;
         const hovered = hoveredSlotRef.current;
-        
+
         let targetSlot: string | null = null;
         let targetIndices: number[] = [];
 
@@ -1315,10 +1315,10 @@ function App() {
                   nextIdx++;
                 }
                 const newCap = Math.max(1, wand.deck_capacity - indicesToRem.size);
-                updateWand(targetSlot, { 
-                  spells: newSpells, 
-                  spell_uses: newSpellUses, 
-                  deck_capacity: newCap 
+                updateWand(targetSlot, {
+                  spells: newSpells,
+                  spell_uses: newSpellUses,
+                  deck_capacity: newCap
                 }, t('app.notification.delete_wand_slot'));
                 setSelection(null);
               }
@@ -1347,7 +1347,7 @@ function App() {
 
     const handleGlobalPaste = async (e: ClipboardEvent) => {
       const isInput = e.target instanceof HTMLInputElement || e.target instanceof HTMLTextAreaElement;
-      
+
       const items = Array.from(e.clipboardData?.items || []);
       for (const item of items) {
         if (item.type.startsWith('image/')) {
@@ -1375,9 +1375,9 @@ function App() {
     const handleGlobalDropEvent = async (e: DragEvent) => {
       e.preventDefault();
       setIsDraggingFile(false);
-      
+
       console.log("[Import] File dropped");
-      
+
       // 1. Handle Files
       const files = Array.from(e.dataTransfer?.files || []);
       if (files.length > 0) {
@@ -1391,7 +1391,7 @@ function App() {
               continue;
             }
           }
-          
+
           if (file.name.endsWith('.json')) {
             console.log("[Import] Reading JSON workflow...");
             const reader = new FileReader();
@@ -1402,7 +1402,7 @@ function App() {
                 const fileName = file.name.replace('.json', '');
                 const isFullWorkflow = data && data.type === 'twwe_workflow' && data.wands;
                 const wands = isFullWorkflow ? data.wands : data;
-                
+
                 setTabs(prev => [
                   ...prev,
                   {
@@ -1468,7 +1468,33 @@ function App() {
 
   // --- Effects ---
   useEffect(() => {
-    fetchSpellDb();
+    const init = async () => {
+      const success = await fetchSpellDb();
+      if (success) {
+        // Handle URL parameters
+        const params = new URLSearchParams(window.location.search);
+        let wandData = params.get('wand') || params.get('data');
+        if (wandData) {
+          // Check if it's base64 (to handle long wand data)
+          if (!wandData.startsWith('{{') && !wandData.includes(',')) {
+            try {
+              wandData = atob(wandData);
+            } catch (e) {
+              // Not base64, continue as is
+            }
+          }
+
+          // Small delay to ensure everything is ready
+          setTimeout(() => {
+            importFromText(wandData!);
+            // Clean up URL to avoid re-import on refresh if desired
+            // window.history.replaceState({}, '', window.location.pathname);
+          }, 100);
+        }
+      }
+    };
+    init();
+
     const isStaticMode = (import.meta as any).env?.VITE_STATIC_MODE === 'true';
     if (isStaticMode) {
       setIsConnected(false);
@@ -1682,10 +1708,10 @@ function App() {
         await fetch('/api/sync', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ 
-            slot: parseInt(slot), 
+          body: JSON.stringify({
+            slot: parseInt(slot),
             delete: false,
-            ...data 
+            ...data
           })
         });
       }
@@ -1723,16 +1749,16 @@ function App() {
     const nextSlot = (Math.max(0, ...Object.keys(activeTab.wands).map(Number)) + 1).toString();
     const newWand = { ...DEFAULT_WAND, ...settings.defaultWandStats };
     lastLocalUpdateRef.current = Date.now();
-    
+
     performAction(prevWands => ({
       ...prevWands,
       [nextSlot]: newWand
     }), t('app.notification.add_new_wand', { slot: nextSlot }));
-    
+
     if (activeTab.isRealtime) {
       syncWand(nextSlot, newWand);
     }
-    
+
     setTabs(prev => prev.map(t => t.id === activeTabId ? {
       ...t,
       expandedWands: new Set([...t.expandedWands, nextSlot])
@@ -1850,7 +1876,7 @@ function App() {
     lastLocalUpdateRef.current = Date.now();
     performAction(prevWands => {
       const wand = prevWands[wandSlot] || { ...DEFAULT_WAND };
-      
+
       if (spellIdx.startsWith('ac-')) {
         const acIdx = parseInt(spellIdx.split('-')[1]);
         const newAC = [...(wand.always_cast || [])];
@@ -1982,7 +2008,7 @@ function App() {
   };
 
   return (
-    <div 
+    <div
       className="flex flex-col h-screen bg-zinc-950 overflow-hidden text-zinc-100 selection:bg-purple-500/30"
     >
       <Header
@@ -2083,7 +2109,7 @@ function App() {
             <div className="px-3 py-1.5 border-b border-white/5 mb-1">
               <span className="text-[10px] font-black text-zinc-500 uppercase tracking-widest">{t('tabs.workflow_options')}</span>
             </div>
-            
+
             <button
               onClick={() => {
                 toggleSync(tabMenu.tabId);
@@ -2220,12 +2246,12 @@ function App() {
               ...prevWands,
               [nextSlot]: { ...w }
             }), t('app.notification.imported_from_warehouse', { name: w.name }));
-            
+
             setTabs(prev => prev.map(t => t.id === activeTabId ? {
               ...t,
               expandedWands: new Set([...t.expandedWands, nextSlot])
             } : t));
-            
+
             if (activeTab.isRealtime) {
               syncWand(nextSlot, w as any);
             }
@@ -2244,14 +2270,14 @@ function App() {
       />
 
       {dragSource && spellDb[dragSource.sid] && (
-        <div 
+        <div
           className="fixed pointer-events-none z-[1000] w-12 h-12"
           style={{ left: mousePos.x + 5, top: mousePos.y + 5 }}
         >
-          <img 
-            src={getIconUrl(spellDb[dragSource.sid].icon, isConnected)} 
-            className="w-full h-full image-pixelated border-2 border-indigo-500 rounded bg-zinc-900/80 shadow-2xl animate-pulse" 
-            alt="" 
+          <img
+            src={getIconUrl(spellDb[dragSource.sid].icon, isConnected)}
+            className="w-full h-full image-pixelated border-2 border-indigo-500 rounded bg-zinc-900/80 shadow-2xl animate-pulse"
+            alt=""
           />
         </div>
       )}
