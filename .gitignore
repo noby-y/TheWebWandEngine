@@ -1,13 +1,16 @@
 # ==========================================
 # 1. 极致白名单：默认忽略所有内容
+#    Whitelist : Ignore all by default
 # ==========================================
 /*
 !.gitignore
 
 # ==========================================
 # 2. 允许的核心逻辑文件夹
+#    Core Logic Folders
 # ==========================================
 # 后端
+# Backend
 !/backend/
 /backend/__pycache__/
 /backend/*.pyc
@@ -18,6 +21,7 @@
 /backend/test_wak.py
 
 # 前端
+# Frontend
 !/frontend/
 /frontend/node_modules/
 /frontend/dist/
@@ -26,13 +30,16 @@
 /frontend/.DS_Store
 
 # 核心算法引擎 (GPL-3.0)
+# Core Algorithm Engine
 !/wand_eval_tree/
 
 # Noita 插件代码
+#       mod code
 !/wand_sync/
 
 # ==========================================
 # 3. 允许的根目录配置文件
+#    Root dir configuration files
 # ==========================================
 !/requirements.txt
 !/twwe.spec
@@ -48,6 +55,7 @@
 
 # ==========================================
 # 4. 显式排除的第三方/敏感内容 (多重保险)
+#    Explicitly excluded: 3rd party content
 # ==========================================
 /noitadata/
 /bin/
@@ -57,6 +65,7 @@
 /*.txt
 
 # 再次确认允许关键文件（覆盖上一条规则）
+# Override previous rules for critical files
 !/README.md
 !/README_EN.md
 !/requirements.txt
