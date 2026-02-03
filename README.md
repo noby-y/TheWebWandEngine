@@ -107,6 +107,7 @@ cd frontend && npm install && npm run dev
 - **[Spell Lab Shugged](https://github.com/shoozzzh/Spell-Lab-Shugged)**: 优秀的法杖编辑工具，为本项目提供了 UI 交互灵感。
 - **[Wand Editor](https://github.com/KagiamamaHIna/Wand-Editor)**: 优秀的法杖编辑工具，本项目参考了其 UI 设计并使用了部分代码。。
 - **[KuroLeaf's Noita Aliases](https://noita.wiki.gg/zh/wiki/User:KuroLeaf/aliases.csv)**: 拼音搜索的别名对照数据支持。
+- **AI 辅助编程**: 本项目的大部分代码（包括前端 React 架构、后端 Python 服务及部分 Lua 逻辑）由 AI 辅助编写而成。
 
 ## 📝 许可证
 本项目遵守 **GPL-3.0** 开源协议。

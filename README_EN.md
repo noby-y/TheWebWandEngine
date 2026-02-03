@@ -107,6 +107,7 @@ The following projects provided significant inspiration and reference during dev
 - **[Spell Lab Shugged](https://github.com/shoozzzh/Spell-Lab-Shugged)**: Excellent wand editing tool that inspired many UI interactions.
 - **[Wand Editor](https://github.com/KagiamamaHIna/Wand-Editor)**: Excellent wand editing tool; this project referenced its UI design and used some of its code.
 - **[KuroLeaf's Noita Aliases](https://noita.wiki.gg/zh/wiki/User:KuroLeaf/aliases.csv)**: Alias data support for Pinyin search.
+- **AI-Assisted Development**: Most of the code in this project (including the frontend React architecture, backend Python services, and some Lua logic) was generated or co-authored with AI.
 
 ## 📝 License
 This project is licensed under the **GPL-3.0** License.
