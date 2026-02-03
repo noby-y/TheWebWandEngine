@@ -2,7 +2,7 @@
 
 [中文版](./README.md) | English
 
-A Web-based Noita wand evaluation and synchronization tool. This project aims to provide an intuitive interface for players to analyze wand logic and interact with in-game data in real-time through a dedicated synchronization plugin.
+This is a web-based tool for evaluating and synchronizing Noita wands. It provides an intuitive interface for analyzing wand logic and interacting with in-game data in real time through a dedicated game mod. It also supports modded spells
 
 ## ✨ Features
 - **Real-time Synchronization**: Use the `wand_sync` mod to pull wand data directly from your active Noita session.
