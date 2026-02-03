@@ -2,7 +2,7 @@
 
 [中文版](./README.md) | English
 
-A Web-based Noita wand evaluation and synchronization tool. This project aims to provide an intuitive interface for players to analyze wand logic and interact with in-game data in real-time through a dedicated synchronization plugin.
+This is a web-based tool for evaluating and synchronizing Noita wands. It provides an intuitive interface for analyzing wand logic and interacting with in-game data in real time through a dedicated game mod. It also supports modded spells
 
 ## ✨ Features
 - **Real-time Synchronization**: Use the `wand_sync` mod to pull wand data directly from your active Noita session.
@@ -29,7 +29,7 @@ This project is licensed under the **GPL-3.0** License.
 ## 🚀 Quick Start
 
 ### 1. Download & Install (Recommended)
-Download the latest portable version from [Releases](https://github.com/NathanSnail/TWWE/releases):
+Download the latest portable version from [Releases](https://github.com/Asmallhamis/TheWebWandEngine/releases/latest):
 Simply run `TheWebWandEngine.exe` to start.
 
 ### 2. In-game Synchronization
