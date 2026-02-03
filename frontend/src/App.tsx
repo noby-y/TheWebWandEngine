@@ -172,7 +172,7 @@ function App() {
       simulateManyEnemies: false,
       simulateManyProjectiles: false,
       groupIdenticalCasts: true,
-      foldNodes: false,
+      foldNodes: true,
       showIndices: true,
       editorSpellGap: 6,
       showStatsInFrames: true,
