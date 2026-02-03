@@ -137,21 +137,8 @@ async function getNewLuaEngine(customVFS?: Record<string, string>) {
             return VFS_CACHE[cleanPath];
         }
         
-        // 2. Fallback to Sync XHR (Slow, Deprecated, but backup)
-        try {
-            const isProd = import.meta.url.includes('/assets/');
-            const relPath = isProd ? `../static_data/lua/${cleanPath}` : `../../static_data/lua/${cleanPath}`;
-            const url = new URL(relPath, import.meta.url).href;
-            
-            console.warn(`[Worker] Cache miss for ${cleanPath}, falling back to sync XHR`);
-            
-            const xhr = new XMLHttpRequest();
-            xhr.open('GET', url, false); 
-            xhr.send(null);
-            if (xhr.status === 200) {
-                return xhr.responseText;
-            }
-        } catch (e) {}
+        // 2. Static Mode Safety: If it's not in cache/custom, it doesn't exist.
+        // DO NOT fall back to Sync XHR on GitHub Pages as it causes massive lag.
         return undefined;
     });
 
