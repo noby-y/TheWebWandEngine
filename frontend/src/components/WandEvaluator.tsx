@@ -112,12 +112,14 @@ const ShotTree: React.FC<{
   return (
     <div className="flex flex-col gap-6">
       {nodes.map((node) => (
-        <div key={node.state.id} className="flex items-center shrink-0">
-          <div className="relative flex items-center">
-            {/* 左侧连接线 */}
-            {!isRoot && (
-              <div className="w-8 h-px bg-zinc-800 shrink-0"></div>
-            )}
+        <div key={node.state.id} className="flex items-start shrink-0">
+          <div className="relative flex items-start">
+            {/* 左侧连接线 + 卡片头部对齐容器 */}
+            <div className="flex items-center h-[44px] shrink-0">
+              {!isRoot && (
+                <div className="w-8 h-px bg-zinc-800 shrink-0"></div>
+              )}
+            </div>
 
             <ShotStateCard 
               state={node.state} 
@@ -137,7 +139,7 @@ const ShotTree: React.FC<{
                 </div>
                 {/* 垂直分支线 */}
                 {node.children.length > 1 && (
-                  <div className="absolute left-0 top-[24px] bottom-[24px] w-px bg-zinc-800"></div>
+                  <div className="absolute left-0 top-[22px] bottom-[22px] w-px bg-zinc-800"></div>
                 )}
               </div>
             )}
@@ -656,63 +658,65 @@ const TreeNode: React.FC<{
   const isMarked = node.index && node.index.some(idx => markedSlots.includes(idx));
 
   return (
-    <div className={`flex items-center shrink-0`}>
-      <div className="relative flex items-center">
-        {/* 左侧连接线 */}
-        {!isRoot && (
-          <div className="w-6 h-px bg-zinc-800 shrink-0"></div>
-        )}
+    <div className={`flex items-start shrink-0`}>
+      <div className="relative flex items-start">
+        {/* 左侧连接线 + 节点卡片 包装器 */}
+        <div className="flex items-center h-[46px] shrink-0">
+          {!isRoot && (
+            <div className="w-6 h-px bg-zinc-800 shrink-0"></div>
+          )}
 
-        <div 
-          onMouseEnter={() => {
-            node.index && onHover?.(node.index);
-            node.shot_id && onHoverShotId?.(node.shot_id);
-          }}
-          onMouseLeave={() => {
-            onHover?.(null);
-            onHoverShotId?.(null);
-          }}
-          className={`
-            group relative p-2 rounded border transition-all cursor-help shrink-0
-            ${isCast ? 'bg-indigo-500/10 border-indigo-500/30' : 'bg-zinc-900 border-white/10 shadow-xl'}
-            ${isMarked ? 'ring-2 ring-amber-500 ring-offset-2 ring-offset-black scale-105 z-10 !border-amber-500/50' : ''}
-            hover:scale-110 hover:z-20 hover:border-indigo-400 hover:bg-indigo-400/20
-          `}
-        >
-          <div className="flex items-center gap-2 min-w-[24px] justify-center">
-            {iconUrl ? (
-              <img src={iconUrl} alt={node.name} className="w-7 h-7 image-pixelated drop-shadow-md" title={displayName} />
-            ) : (
-              <span className="text-[10px] font-black font-mono text-zinc-400 px-1 whitespace-nowrap uppercase italic tracking-tighter">
-                {displayName}
-              </span>
-            )}
-            
-            {node.count > 1 && (
-              <span className="text-[10px] font-black bg-indigo-500 text-white px-1 rounded shadow-sm">
-                x{node.count}
-              </span>
-            )}
+          <div 
+            onMouseEnter={() => {
+              node.index && onHover?.(node.index);
+              node.shot_id && onHoverShotId?.(node.shot_id);
+            }}
+            onMouseLeave={() => {
+              onHover?.(null);
+              onHoverShotId?.(null);
+            }}
+            className={`
+              group relative p-2 rounded border transition-all cursor-help shrink-0
+              ${isCast ? 'bg-indigo-500/10 border-indigo-500/30' : 'bg-zinc-900 border-white/10 shadow-xl'}
+              ${isMarked ? 'ring-2 ring-amber-500 ring-offset-2 ring-offset-black scale-105 z-10 !border-amber-500/50' : ''}
+              hover:scale-110 hover:z-20 hover:border-indigo-400 hover:bg-indigo-400/20
+            `}
+          >
+            <div className="flex items-center gap-2 min-w-[24px] justify-center">
+              {iconUrl ? (
+                <img src={iconUrl} alt={node.name} className="w-7 h-7 image-pixelated drop-shadow-md" title={displayName} />
+              ) : (
+                <span className="text-[10px] font-black font-mono text-zinc-400 px-1 whitespace-nowrap uppercase italic tracking-tighter">
+                  {displayName}
+                </span>
+              )}
+              
+              {node.count > 1 && (
+                <span className="text-[10px] font-black bg-indigo-500 text-white px-1 rounded shadow-sm">
+                  x{node.count}
+                </span>
+              )}
 
-            {node.shot_id && (
-              <div className="absolute -top-1.5 -right-1.5 px-1 bg-blue-600 text-white text-[7px] font-black rounded-sm border border-blue-400/50 shadow-lg z-30">
-                @{node.shot_id}
-              </div>
-            )}
+              {node.shot_id && (
+                <div className="absolute -top-1.5 -right-1.5 px-1 bg-blue-600 text-white text-[7px] font-black rounded-sm border border-blue-400/50 shadow-lg z-30">
+                  @{node.shot_id}
+                </div>
+              )}
 
-            {showIndices && node.index && node.index.length > 0 && (
-              <div className="absolute -bottom-1.5 -right-1 text-cyan-400 text-[10px] font-black z-20 scale-110 drop-shadow-[0_0_2px_rgba(0,0,0,0.8)]">
-                {node.index.map(idx => absoluteToOrdinal?.[idx] || idx).join(',')}
+              {showIndices && node.index && node.index.length > 0 && (
+                <div className="absolute -bottom-1.5 -right-1 text-cyan-400 text-[10px] font-black z-20 scale-110 drop-shadow-[0_0_2px_rgba(0,0,0,0.8)]">
+                  {node.index.map(idx => absoluteToOrdinal?.[idx] || idx).join(',')}
+                </div>
+              )}
+            </div>
+
+            {/* 浮动标签（Extra Info） */}
+            {node.extra && (
+              <div className="absolute -top-8 left-1/2 -translate-x-1/2 whitespace-nowrap bg-zinc-800 text-[9px] font-bold px-2 py-1 rounded border border-white/10 text-zinc-300 opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none z-30 shadow-2xl uppercase tracking-tighter">
+                {node.extra}
               </div>
             )}
           </div>
-
-          {/* 浮动标签（Extra Info） */}
-          {node.extra && (
-            <div className="absolute -top-8 left-1/2 -translate-x-1/2 whitespace-nowrap bg-zinc-800 text-[9px] font-bold px-2 py-1 rounded border border-white/10 text-zinc-300 opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none z-30 shadow-2xl uppercase tracking-tighter">
-              {node.extra}
-            </div>
-          )}
         </div>
 
         {/* 子节点渲染：如果是最后一级，不需要右侧间距 */}
@@ -721,7 +725,7 @@ const TreeNode: React.FC<{
             {/* 这里的连接线容器确保了深度嵌套时不会坍缩 */}
               <div className="flex flex-col gap-3 ml-0 shrink-0">
                 {node.children.map((child, i) => (
-                  <div key={i} className="flex items-center">
+                  <div key={i} className="flex items-start">
                     <TreeNode 
                       node={child} 
                       spellDb={spellDb} 
@@ -736,7 +740,7 @@ const TreeNode: React.FC<{
               </div>
             {/* 垂直分支线 */}
             {node.children.length > 1 && (
-              <div className="absolute left-6 top-5 bottom-5 w-px bg-zinc-800"></div>
+              <div className="absolute left-0 top-[23px] bottom-[23px] w-px bg-zinc-800"></div>
             )}
           </div>
         )}
